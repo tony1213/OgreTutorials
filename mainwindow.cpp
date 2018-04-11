@@ -9,15 +9,17 @@ OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindo
     mViewport = NULL;
     mainEntity = NULL;
     mSceneNode = NULL;
-    angleX = 1;
-    angleY = 1;
     rotX = 1;
     rotY = 1;
     mZoom = 1;
-    mRotate = 1;
     mouseLeftPressed = false;
     mouseRightPressed = false;
     mouseMiddleBtn = false;
+
+    //TODO
+    mRoot = new Ogre::Root("/home/tony/work/ogre/tutorials/OgreTutorials/media/plugins.cfg");
+    setupRenderSystem();
+    mRoot->initialise(false);
     setupResources();
 }
 
@@ -38,11 +40,8 @@ OgreView::~OgreView()
     }
 }
 
-
-void OgreView::setupResources()
-{
+void OgreView::setupRenderSystem(){
     qDebug("setupResources");
-    mRoot = new Ogre::Root("/home/tony/work/ogre/tutorials/OgreTutorials/media/plugins.cfg");
     const Ogre::RenderSystemList *rsList;
 #if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR == 6
     rsList = mRoot->getAvailableRenderers();
@@ -64,9 +63,13 @@ void OgreView::setupResources()
     }
     mRenderSystem->setConfigOption("Full Screen","No");
     mRoot->setRenderSystem(mRenderSystem);
-    mRoot->initialise(false);
+}
 
+void OgreView::setupResources()
+{
+    qDebug("setupResources");
     Ogre::ConfigFile cf;
+    //TODO
     cf.load("/home/tony/work/ogre/tutorials/OgreTutorials/media/resources.cfg");
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
@@ -82,7 +85,6 @@ void OgreView::setupResources()
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
         }
     }
-    //Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
 void OgreView::setupView()
@@ -90,14 +92,13 @@ void OgreView::setupView()
     qDebug("setupView");
     if(mRenderWindow)
         return;
-
     Ogre::NameValuePairList params;
     QWidget *q_parent = dynamic_cast <QWidget *> (parent());
     params["parentWindowHandle"] = Ogre::StringConverter::toString ((unsigned long)QX11Info::display()) +
             ":" + Ogre::StringConverter::toString ((unsigned int)QX11Info::appScreen()) +
             ":" + Ogre::StringConverter::toString ((unsigned long)q_parent->winId());
-
     mRenderWindow = mRoot->createRenderWindow("View", width(), height(), false, &params);
+
     mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC);
     mCamera = mSceneManager->createCamera("PlayerCam");
     mCamera->setPosition(Ogre::Vector3(0,0,80));
