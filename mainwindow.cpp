@@ -9,15 +9,11 @@ OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindo
     mViewport = NULL;
     mainEntity = NULL;
     mSceneNode = NULL;
-    rotX = 1;
-    rotY = 1;
+
     mZoom = 1;
-    mouseLeftPressed = false;
-    mouseRightPressed = false;
-    mouseMiddleBtn = false;
 
     //TODO
-    mRoot = new Ogre::Root("/home/tony/work/ogre/tutorials/OgreTutorials/media/plugins.cfg");
+    mRoot = new Ogre::Root("/home/tony/work/ogre/tutorials/OgreTutorials/Media/plugins.cfg");
     setupRenderSystem();
     mRoot->initialise(false);
     setupResources();
@@ -70,7 +66,7 @@ void OgreView::setupResources()
     qDebug("setupResources");
     Ogre::ConfigFile cf;
     //TODO
-    cf.load("/home/tony/work/ogre/tutorials/OgreTutorials/media/resources.cfg");
+    cf.load("/home/tony/work/ogre/tutorials/OgreTutorials/Media/resources.cfg");
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
     while(seci.hasMoreElements())
@@ -127,9 +123,9 @@ void OgreView::createLight()
     mainLight->setPosition(20,80,50);
 }
 
-void OgreView::paintEvent(QPaintEvent *evt)
+void OgreView::paintEvent(QPaintEvent *event)
 {
-    Q_UNUSED(evt);
+    Q_UNUSED(event);
     if(mRenderWindow == NULL)
         setupView();
     update();
@@ -143,90 +139,36 @@ void OgreView::update()
     }
 }
 
-void OgreView::keyPressEvent(QKeyEvent* evt)
-{
-    qDebug("keypressevent");
-    if(mainEntity != NULL && mSceneNode != NULL)
-    {
-        switch(evt->key())
-        {
-        case Qt::Key_W:
-        case Qt::Key_Up:
-        {
-            qDebug("W/UP");
-            rotX = -0.1;
-            mSceneNode->pitch(Ogre::Radian(rotX));
-
-            break;
-        }
-        case Qt::Key_S:
-        case Qt::Key_Down:
-        {
-            qDebug("S/Down");
-            rotX = 0.1;
-            mSceneNode->pitch(Ogre::Radian(rotX));
-            break;
-        }
-        case Qt::Key_A:
-        case Qt::Key_Left:
-        {
-            qDebug("A/Left");
-            rotY = -0.1;
-            mSceneNode->yaw(Ogre::Radian(rotY));
-            break;
-        }
-        case Qt::Key_D:
-        case Qt::Key_Right:
-        {
-            qDebug("D/Right");
-            rotY = 0.1;
-            mSceneNode->yaw(Ogre::Radian(rotY));
-            break;
-        }
-        }
-    }
-}
-
-
-void OgreView::mousePressEvent(QMouseEvent* evt)
+void OgreView::mousePressEvent(QMouseEvent* event)
 {
     qDebug("mousePressEvent");
-    if(evt->button() == Qt::LeftButton)
+    if(event->button() == Qt::LeftButton)
     {
-        mouseLeftPressed = true;
+        mouseLeftPosOriginal = Ogre::Vector2(event->x(), event->y());
     }
-    if(evt->button() == Qt::RightButton)
-    {
-        mouseRightPressed = true;
-        mousePos = Ogre::Vector2(evt->x(), evt->y());
-    }
-    if(evt->button() == Qt::MidButton)
-    {
-        mouseMiddleBtn = true;
+    if(event->button() == Qt::RightButton){
+        mouseRightPosOriginal = Ogre::Vector2(event->x(), event->y());
     }
 }
 
-void OgreView::mouseReleaseEvent(QMouseEvent *evt)
-{
-    qDebug("mouseReleaseEvent");
-    if(evt->button() == Qt::LeftButton)
-    {
-        mouseLeftPressed = false;
+void OgreView::mouseMoveEvent(QMouseEvent *event){
+    qDebug()<<"mouseMoveEvent:";
+    if(event->buttons() & Qt::RightButton){
+        mouseRightPosNew = Ogre::Vector2(event->x(), event->y());
+        mZoom = mouseRightPosNew.x - mouseRightPosOriginal.x;
+        mSceneNode->setPosition(0,0,mZoom);
     }
-    if(evt->button() == Qt::RightButton)
-    {
-        mouseRightPressed = false;
-        mousePos = Ogre::Vector2(evt->x(), evt->y());
+    if(event->buttons() & Qt::LeftButton){
+        mouseLeftPosNew = Ogre::Vector2(event->x(), event->y());
+        Ogre::Real yawValue = mouseLeftPosNew.x-mouseLeftPosOriginal.x;
+        mSceneNode->yaw(Ogre::Radian(yawValue));
     }
-    if(evt->button() == Qt::MidButton)
-    {
-        mouseMiddleBtn = false;
-    }
+    update();
 }
 
-void OgreView::wheelEvent(QWheelEvent* evt)
+void OgreView::wheelEvent(QWheelEvent* event)
 {
-    if(evt->delta()>0){
+    if(event->delta()>0){
         mSceneNode->setPosition(0,0,mZoom++);
     }
     else{

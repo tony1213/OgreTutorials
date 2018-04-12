@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     QWidget window;
 
-    window.resize(800, 600);
+    window.resize(1600, 1200);
     window.setWindowTitle("Simple example");
 
     OgreView* ogreWidget = new OgreView(&window);

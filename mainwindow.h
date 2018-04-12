@@ -21,11 +21,10 @@ protected:
     void createScene();
     void createLight();
 
-    void paintEvent(QPaintEvent* evt);
-    void keyPressEvent(QKeyEvent* evt);
-    void mousePressEvent(QMouseEvent* evt);
-    void mouseReleaseEvent(QMouseEvent* evt);
-    void wheelEvent(QWheelEvent* evt);
+    void paintEvent(QPaintEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void wheelEvent(QWheelEvent* event);
 
     Ogre::RenderWindow* mRenderWindow;
     Ogre::RenderSystem *mRenderSystem;
@@ -36,15 +35,12 @@ protected:
     Ogre::Light* mainLight;
     Ogre::Entity* mainEntity;
     Ogre::SceneNode* mSceneNode;
-    Ogre::Real rotX;
-    Ogre::Real rotY;
+
     Ogre::Real mZoom;
-    Ogre::Vector2 mousePos;
-    Ogre::Vector3 mDirection;
 
-    bool mouseLeftPressed;
-    bool mouseRightPressed;
-    bool mouseMiddleBtn;
-
+    Ogre::Vector2 mouseRightPosOriginal;
+    Ogre::Vector2 mouseRightPosNew;
+    Ogre::Vector2 mouseLeftPosOriginal;
+    Ogre::Vector2 mouseLeftPosNew;
 };
 #endif // MAINWINDOW_H
