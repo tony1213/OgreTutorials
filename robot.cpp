@@ -1,0 +1,134 @@
+/*
+ * Copyright (c) 2008, Willow Garage, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Willow Garage, Inc. nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+#include "robot.h"
+#include "robot_link.h"
+
+#include <urdf_model/model.h>
+
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreEntity.h>
+#include <OgreMaterialManager.h>
+#include <OgreMaterial.h>
+#include <OgreResourceGroupManager.h>
+#include <tinyxml.h>
+
+
+Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const std::string& name)
+{
+
+    root_visual_node_ = root_node->createChildSceneNode();
+    scene_manager_ = sceneManger;
+    link_factory_ = new LinkFactory();
+
+
+}
+
+
+Robot::~Robot()
+{
+  scene_manager_->destroySceneNode(root_visual_node_);
+  delete link_factory_;
+  link_factory_ = NULL; 
+}
+
+RobotLink* Robot::LinkFactory::createLink(
+    Robot* robot,
+    const urdf::LinkConstSharedPtr& link,
+    const std::string& parent_joint_name,
+    bool visual,
+    bool collision)
+{
+  return new RobotLink(robot,link, parent_joint_name, visual, collision);
+}
+
+
+
+/** void RobotModelDisplay::load() **
+* robot_description_ is: urdf file name...
+***/
+void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface &urdf, */ bool visual, bool collision ){
+   // std::string robot_description_;   
+   TiXmlDocument doc;
+   doc.Parse( robot_description_.c_str() );
+   doc.Parse( robot_description_.c_str() );
+   if( !doc.RootElement() )
+   {
+    //setStatus( StatusProperty::Error, "URDF", "URDF failed XML parse" );
+    qDebug("URDF failed XML parse");
+    return;
+  }
+  urdf::Model urdf;
+  if( !urdf.initXml( doc.RootElement() ))
+  {
+    //setStatus( StatusProperty::Error, "URDF", "URDF failed Model parse" );
+    qDebug("URDF failed Model parse");
+    return;
+  }
+  qDebug("URDF parsed OK" );
+  //using descr ; the descr is 
+  typedef std::map<std::string, urdf::LinkSharedPtr > M_NameToUrdfLink;
+  M_NameToUrdfLink::const_iterator link_it = urdf.links_.begin();
+  M_NameToUrdfLink::const_iterator link_end = urdf.links_.end();
+
+  for( ; link_it != link_end; ++link_it )
+  {
+      const urdf::LinkConstSharedPtr& urdf_link = link_it->second;
+      std::string parent_joint_name;
+
+      if (urdf_link != urdf.getRoot() && urdf_link->parent_joint)
+      {
+        parent_joint_name = urdf_link->parent_joint->name;
+      }
+      RobotLink* link = link_factory_->createLink( this,
+                                                   urdf_link,
+                                                   parent_joint_name,
+                                                   visual,
+                                                   collision );
+      if (urdf_link == urdf.getRoot())
+      {
+        root_link_ = link;
+      }
+      links_[urdf_link->name] = link;
+
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
