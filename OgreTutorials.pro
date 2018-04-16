@@ -14,7 +14,7 @@ TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
 unix {
-    INCLUDEPATH += /usr/include/OGRE
+    INCLUDEPATH += /usr/local/include/OGRE
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
 }
@@ -22,8 +22,9 @@ unix {
 workdir=$(cd $(dirname $0); pwd)
 
 LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge
+#LIBS += -L"/usr/lib/x86_64-linux-gnu" -lcurl
 
-LIBS += -lboost_filesystem -lboost_system  -ltinyxml 
+LIBS += -lboost_filesystem -lboost_system  -ltinyxml -lcurl 
 INCLUDEPATH += /opt/ros/kinetic/include
 
 
@@ -31,12 +32,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         robot_link.cpp \
-        robot.cpp 
+        robot.cpp \
+        stl_loader.cpp \
+        retriever.cpp 
 
 HEADERS += \
         mainwindow.h \
         robot_link.h \
-        robot.h 
+        robot.h \
+        stl_loader.h \
+        retriever.h
 
 FORMS += \
         mainwindow.ui
