@@ -28,6 +28,9 @@
  */
 
 
+#ifndef ROBOT_LINK_H
+#define ROBOT_LINK_H
+
 #include <string>
 #include <map>
 
@@ -58,6 +61,7 @@ class RibbonTrail;
 }
 
 
+class Robot;
 
 /**
  * \struct RobotLink
@@ -67,7 +71,7 @@ class RobotLink: public QObject
 {
 Q_OBJECT
 public:
-  RobotLink( const urdf::LinkConstSharedPtr& link,
+  RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf::LinkConstSharedPtr& link,
              const std::string& parent_joint_name,
              bool visual,
              bool collision);
@@ -88,9 +92,11 @@ private:
 
   void createVisual( const urdf::LinkConstSharedPtr& link);
 
+  void loadMeshFromResource(const std::string& resource_path);
 
 
 protected:
+  Robot* robot_;
   Ogre::SceneManager* scene_manager_;
 
   std::string name_;                          ///< Name of this link
@@ -108,3 +114,4 @@ private:
 };
 
 
+#endif // ROBOT_LINK_H

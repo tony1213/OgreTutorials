@@ -40,14 +40,13 @@
 #include <OgreSharedPtr.h>
 #include <OgreTechnique.h>
 
-//#include <ros/console.h>
 
 //#include <resource_retriever/retriever.h>
 #include <urdf_model/model.h>
 #include <urdf_model/link.h>
 
 
-
+#include "robot.h"
 #include "robot_link.h"
 
 
@@ -59,13 +58,15 @@ namespace fs=boost::filesystem;
 
 
 
-RobotLink::RobotLink( const urdf::LinkConstSharedPtr& link,
+RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf::LinkConstSharedPtr& link,
                       const std::string& parent_joint_name,
                       bool visual,
                       bool collision)
+:robot_(robot)
 {
 
-
+    scene_manager_ = scenemanager; 
+    visual_node_ = robot_->getVisualNode()->createChildSceneNode();
 
 
 }
@@ -73,23 +74,115 @@ RobotLink::RobotLink( const urdf::LinkConstSharedPtr& link,
 RobotLink::~RobotLink()
 {
 
+    for( size_t i = 0; i < visual_meshes_.size(); i++ )
+    {
+        scene_manager_->destroyEntity( visual_meshes_[ i ]);
+    } 
+
+
 }
 
 void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity)
 {
 
+   Ogre::SceneNode* offset_node = scene_node->createChildSceneNode();
+
+  static int count = 0;
+  std::stringstream ss;
+  ss << "Robot Link" << count++;
+  std::string entity_name = ss.str();
+
+  Ogre::Vector3 scale(Ogre::Vector3::UNIT_SCALE);
+
+  Ogre::Vector3 offset_position(Ogre::Vector3::ZERO);
+  Ogre::Quaternion offset_orientation(Ogre::Quaternion::IDENTITY);
+
+
+  {
+    Ogre::Vector3 position( origin.position.x, origin.position.y, origin.position.z );
+    Ogre::Quaternion orientation( Ogre::Quaternion::IDENTITY );
+    orientation = orientation * Ogre::Quaternion( origin.rotation.w, origin.rotation.x, origin.rotation.y, origin.rotation.z  );
+
+    offset_position = position;
+    offset_orientation = orientation;
+  }
+
+  if(geom.type == urdf::Geometry::MESH){
+      const urdf::Mesh& mesh = static_cast<const urdf::Mesh&>(geom);
+
+      if ( mesh.filename.empty() )
+          return;
+      scale = Ogre::Vector3(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+
+      std::string model_name = mesh.filename;
+      //will load mesh file and create entity
+      try
+     {
+     // loadMeshFromResource(model_name);
+       entity = scene_manager_->createEntity( ss.str(), model_name );
+    }
+    catch( Ogre::InvalidParametersException& e )
+    {
+    }
+    catch( Ogre::Exception& e )
+    {
+    }
+
+  }
+  if ( entity )
+  {
+    offset_node->attachObject(entity);
+    offset_node->setScale(scale);
+    offset_node->setPosition(offset_position);
+    offset_node->setOrientation(offset_orientation);
+    //perhaps set material 
+
+  }
 
 
 
 }
 
+/** ogre load mesh file */
+void RobotLink::loadMeshFromResource(const std::string& resource_path){
+
+
+
+}
 
 void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
 
+    bool valid_visual_found = false;
 
 
+    std::vector<urdf::VisualSharedPtr >::const_iterator vi;
+  for( vi = link->visual_array.begin(); vi != link->visual_array.end(); vi++ )
+  {
+    urdf::VisualSharedPtr visual = *vi;
+    if( visual && visual->geometry )
+    {
+      Ogre::Entity* visual_mesh = NULL;
+      createEntityForGeometryElement( link, *visual->geometry, visual->origin, visual->material_name, visual_node_, visual_mesh );
+      if( visual_mesh )
+      {
+        visual_meshes_.push_back( visual_mesh );
+        valid_visual_found = true;
+      }
+    }
+  }
 
 
+  if( !valid_visual_found && link->visual && link->visual->geometry )
+  {
+    Ogre::Entity* visual_mesh = NULL;
+    createEntityForGeometryElement( link, *link->visual->geometry, link->visual->origin, link->visual->material_name, visual_node_, visual_mesh );
+    if( visual_mesh )
+    {
+      visual_meshes_.push_back( visual_mesh );
+    }
+  }
+
+  visual_node_->setVisible(true);
 
 
 

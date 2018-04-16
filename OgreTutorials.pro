@@ -19,15 +19,24 @@ unix {
     PKGCONFIG += OGRE
 }
 
-LIBS += -lboost_system
+workdir=$(cd $(dirname $0); pwd)
+
+LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge
+
+LIBS += -lboost_filesystem -lboost_system  -ltinyxml 
+INCLUDEPATH += /opt/ros/kinetic/include
 
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        robot_link.cpp \
+        robot.cpp 
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        robot_link.h \
+        robot.h 
 
 FORMS += \
         mainwindow.ui
