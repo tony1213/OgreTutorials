@@ -46,7 +46,7 @@
 
 #include <urdf/model.h> // can be replaced later by urdf_model/types.h
 #include <urdf_model/pose.h>
-
+#include <OgreMesh.h>
 
 namespace Ogre
 {
@@ -92,7 +92,7 @@ private:
 
   void createVisual( const urdf::LinkConstSharedPtr& link);
 
-  void loadMeshFromResource(const std::string& resource_path);
+  Ogre::MeshPtr loadMeshFromResource(const std::string& resource_path);
 
 
 protected:

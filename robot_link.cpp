@@ -40,15 +40,23 @@
 #include <OgreSharedPtr.h>
 #include <OgreTechnique.h>
 
+#include <OgreMeshManager.h>
+#include <OgreTexture.h>
+#include <OgrePass.h>
+#include <OgreTextureUnitState.h>
+#include <OgreMeshSerializer.h>
+#include <OgreSubMesh.h>
+#include <OgreHardwareBufferManager.h>
 
-//#include <resource_retriever/retriever.h>
 #include <urdf_model/model.h>
 #include <urdf_model/link.h>
 
 
 #include "robot.h"
 #include "robot_link.h"
+#include "retriever.h"
 
+#include "stl_loader.h"
 
 namespace fs=boost::filesystem;
 
@@ -118,7 +126,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
       //will load mesh file and create entity
       try
      {
-     // loadMeshFromResource(model_name);
+       loadMeshFromResource(model_name);
        entity = scene_manager_->createEntity( ss.str(), model_name );
     }
     catch( Ogre::InvalidParametersException& e )
@@ -144,9 +152,51 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
 }
 
 /** ogre load mesh file */
-void RobotLink::loadMeshFromResource(const std::string& resource_path){
+Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
 
+  if (Ogre::MeshManager::getSingleton().resourceExists(resource_path))
+  {
+      return Ogre::MeshManager::getSingleton().getByName(resource_path);
+  }
+  else
+  {
+    fs::path model_path(resource_path);
+#if BOOST_FILESYSTEM_VERSION == 3
+    std::string ext = model_path.extension().string();
+#else
+    std::string ext = model_path.extension();
+#endif
+    if (ext == ".stl" || ext == ".STL" || ext == ".stlb" || ext == ".STLB")
+    {
+      resource_retriever::Retriever retriever;
+      resource_retriever::MemoryResource res;
+      try
+      {
+        res = retriever.get(resource_path);
+      }
+      catch (resource_retriever::Exception& e)
+      {
+        return Ogre::MeshPtr();
+      }
 
+      if (res.size == 0)
+      {
+        return Ogre::MeshPtr();
+      }
+
+      ogre_tools::STLLoader loader;
+      if (!loader.load(res.data.get(), res.size, resource_path))
+      {
+        return Ogre::MeshPtr();
+      }
+
+      return loader.toMesh(resource_path);
+    }
+    
+ 
+   }
+
+   return Ogre::MeshPtr();
 
 }
 
