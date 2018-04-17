@@ -35,7 +35,10 @@ SOURCES += \
         robot.cpp \
         stl_loader.cpp \
         retriever.cpp \
-        robot_joint.cpp 
+        robot_joint.cpp \
+        property.cpp \
+        property_tree_model.cpp \
+        config.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +46,10 @@ HEADERS += \
         robot.h \
         stl_loader.h \
         retriever.h \
-        robot_joint.h
+        robot_joint.h \
+        property.h \
+        property_tree_model.h \
+        config.h
 
 FORMS += \
         mainwindow.ui

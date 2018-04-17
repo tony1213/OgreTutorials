@@ -70,7 +70,8 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
                       const std::string& parent_joint_name,
                       bool visual,
                       bool collision)
-:robot_(robot)
+:robot_(robot),
+ robot_alpha_(1.0)
 {
 
     scene_manager_ = scenemanager; 
