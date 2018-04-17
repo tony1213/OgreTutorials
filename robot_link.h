@@ -77,6 +77,8 @@ public:
              bool collision);
   virtual ~RobotLink();
 
+  virtual void setRobotAlpha(float a);
+
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
   
@@ -109,7 +111,7 @@ private:
 
   Ogre::SceneNode* visual_node_;              ///< The scene node the visual meshes are attached to
 
-
+  float robot_alpha_; ///< Alpha value from top-level robot alpha Property (set via setRobotAlpha())
 
 };
 

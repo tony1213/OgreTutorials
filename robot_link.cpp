@@ -90,6 +90,13 @@ RobotLink::~RobotLink()
 
 }
 
+void RobotLink::setRobotAlpha( float a )
+{
+  robot_alpha_ = a;
+ // updateAlpha();
+}
+
+
 void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity)
 {
 
@@ -114,7 +121,6 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     offset_position = position;
     offset_orientation = orientation;
   }
-
   if(geom.type == urdf::Geometry::MESH){
       const urdf::Mesh& mesh = static_cast<const urdf::Mesh&>(geom);
 

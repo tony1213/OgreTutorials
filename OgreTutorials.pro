@@ -34,14 +34,16 @@ SOURCES += \
         robot_link.cpp \
         robot.cpp \
         stl_loader.cpp \
-        retriever.cpp 
+        retriever.cpp \
+        robot_joint.cpp 
 
 HEADERS += \
         mainwindow.h \
         robot_link.h \
         robot.h \
         stl_loader.h \
-        retriever.h
+        retriever.h \
+        robot_joint.h
 
 FORMS += \
         mainwindow.ui

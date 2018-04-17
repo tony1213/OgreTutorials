@@ -52,6 +52,9 @@ class RibbonTrail;
 class SceneNode;
 }
 
+class Robot;
+class RobotLink;
+class RobotJoint;
 
 class Robot : public QObject
 {
@@ -69,11 +72,26 @@ public:
    */
   virtual void load(std::string robot_description_, /* const urdf::ModelInterface &urdf, */ bool visual = true, bool collision = true );
 
-  typedef std::map< std::string, RobotLink* > M_NameToLink;
+  enum LinkTreeStyle {
+    STYLE_LINK_LIST,         // list of all links sorted by link name
+    STYLE_DEFAULT = STYLE_LINK_LIST,
+    STYLE_JOINT_LIST,        // list of joints sorted by joint name
+    STYLE_LINK_TREE,         // tree of links
+    STYLE_JOINT_LINK_TREE    // tree of joints with links
+  };
 
-  const M_NameToLink& getLinks() const { return links_; }
+
+  void setAlpha(float a);
+  float getAlpha() { return alpha_; }
   RobotLink* getRootLink() { return root_link_; }
   RobotLink* getLink( const std::string& name );
+  RobotJoint* getJoint( const std::string& name );
+
+  typedef std::map< std::string, RobotLink* > M_NameToLink;
+  typedef std::map< std::string, RobotJoint* > M_NameToJoint;
+  const M_NameToLink& getLinks() const { return links_; }
+  const M_NameToJoint& getJoints() const { return joints_; }
+
   const std::string& getName() { return name_; }
   Ogre::SceneNode* getVisualNode() { return root_visual_node_; }
   Ogre::SceneManager* getSceneManager() { return scene_manager_; }
@@ -87,18 +105,25 @@ public:
                                    const std::string& parent_joint_name,
                                    bool visual,
                                    bool collision);
-   // virtual RobotJoint* createJoint( Robot* robot, const urdf::JointConstSharedPtr& joint);
+    virtual RobotJoint* createJoint( Robot* robot, const urdf::JointConstSharedPtr& joint);
   };
 
+protected:
+     /** used by setLinkTreeStyle() to recursively build link & joint tree. */
+  void addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotLink *link);
+  void addJointToLinkTree(LinkTreeStyle style,/* Property *parent,  */ RobotJoint *joint);
+      
 
-  protected:
       LinkFactory *link_factory_;
-      RobotLink *root_link_;
       M_NameToLink links_;                      ///< Map of name to link info, stores all loaded links.
+      M_NameToJoint joints_;                    ///< Map of name to joint info, stores all loaded joints
+      RobotLink *root_link_;
       Ogre::SceneNode* root_visual_node_;           ///< Node all our visual nodes are children of
       Ogre::SceneManager* scene_manager_;
 
       std::string name_;
+
+      float alpha_;
 
 
 };

@@ -30,6 +30,7 @@
 
 #include "robot.h"
 #include "robot_link.h"
+#include "robot_joint.h"
 
 #include <urdf_model/model.h>
 
@@ -69,6 +70,94 @@ RobotLink* Robot::LinkFactory::createLink(
     bool collision)
 {
   return new RobotLink(robot, sceneManger, link, parent_joint_name, visual, collision);
+}
+
+RobotJoint* Robot::LinkFactory::createJoint(
+    Robot* robot,
+    const urdf::JointConstSharedPtr& joint)
+{
+  return new RobotJoint(robot, joint);
+}
+
+
+RobotLink* Robot::getLink( const std::string& name )
+{
+  M_NameToLink::iterator it = links_.find( name );
+  if ( it == links_.end() )
+  {
+    return NULL;
+  }
+
+  return it->second;
+}
+
+RobotJoint* Robot::getJoint( const std::string& name )
+{
+  M_NameToJoint::iterator it = joints_.find( name );
+  if ( it == joints_.end() )
+  {
+    return NULL;
+  }
+
+  return it->second;
+}
+
+// recursive helper for setLinkTreeStyle() when style is *_TREE
+void Robot::addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotLink *link)
+{
+/*
+  if (styleShowLink(style))
+  {
+    link->setParentProperty(parent);
+    parent = link->getLinkProperty();
+  }
+*/
+  std::vector<std::string>::const_iterator child_joint_it = link->getChildJointNames().begin();
+  std::vector<std::string>::const_iterator child_joint_end = link->getChildJointNames().end();
+  for ( ; child_joint_it != child_joint_end ; ++child_joint_it )
+  {
+    RobotJoint* child_joint = getJoint( *child_joint_it );
+    if (child_joint)
+    {
+      addJointToLinkTree(style,/* parent, */ child_joint);
+    }
+  }
+}
+
+
+
+
+// recursive helper for setLinkTreeStyle() when style is *_TREE
+void Robot::addJointToLinkTree(LinkTreeStyle style, /* Property *parent, */ RobotJoint *joint)
+{
+/*
+  if (styleShowJoint(style))
+  {
+    joint->setParentProperty(parent);
+    parent = joint->getJointProperty();
+    joint->setJointPropertyDescription();
+  }
+*/
+  RobotLink *link = getLink( joint->getChildLinkName() );
+  if (link)
+  {
+    addLinkToLinkTree(style,/* parent, */ link);
+  }
+}
+
+
+void Robot::setAlpha(float a)
+{
+  alpha_ = a;
+
+  M_NameToLink::iterator it = links_.begin();
+  M_NameToLink::iterator end = links_.end();
+  for ( ; it != end; ++it )
+  {
+    RobotLink* link = it->second;
+
+    link->setRobotAlpha(alpha_);
+  }
 }
 
 
@@ -122,6 +211,24 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
       links_[urdf_link->name] = link;
 
   }
+
+  // Create properties for each joint.
+  // Properties are not added to display until changedLinkTreeStyle() is called (below).
+  {
+    typedef std::map<std::string, urdf::JointSharedPtr > M_NameToUrdfJoint;
+    M_NameToUrdfJoint::const_iterator joint_it = urdf.joints_.begin();
+    M_NameToUrdfJoint::const_iterator joint_end = urdf.joints_.end();
+    for( ; joint_it != joint_end; ++joint_it )
+    {
+      const urdf::JointConstSharedPtr& urdf_joint = joint_it->second;
+      RobotJoint* joint = link_factory_->createJoint( this, urdf_joint );
+
+      joints_[urdf_joint->name] = joint;
+
+      joint->setRobotAlpha( alpha_ );
+    }
+  }
+ 
 
 
 
