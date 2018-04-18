@@ -239,8 +239,12 @@ Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
 */
       qDebug()<<"will load stl file"<< resource_path.c_str();
       ogre_tools::STLLoader loader;
-      loader.load(resource_path);
-      qDebug("loadMeshFromResource will toMesh");
+ 
+      if(loader.load(resource_path) == false){
+          qDebug("load stl file failed");
+          return Ogre::MeshPtr();
+      }
+      qDebug("load stl file ok");
       return loader.toMesh(resource_path);
     }
     
