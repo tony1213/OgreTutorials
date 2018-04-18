@@ -169,7 +169,7 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
    // std::string robot_description_;   
    TiXmlDocument doc;
    doc.Parse( robot_description_.c_str() );
-   doc.Parse( robot_description_.c_str() );
+
    if( !doc.RootElement() )
    {
     //setStatus( StatusProperty::Error, "URDF", "URDF failed XML parse" );
@@ -191,6 +191,7 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
 
   for( ; link_it != link_end; ++link_it )
   {
+      qDebug("chenrui will create link ....");
       const urdf::LinkConstSharedPtr& urdf_link = link_it->second;
       std::string parent_joint_name;
 
