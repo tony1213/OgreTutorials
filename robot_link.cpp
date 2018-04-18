@@ -57,6 +57,7 @@
 #include "retriever.h"
 
 #include "stl_loader.h"
+#include <QDebug>
 
 namespace fs=boost::filesystem;
 
@@ -173,8 +174,11 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     }
 
   }
+  qDebug("createEntityForGeometryElement step 1");
+
   if ( entity )
   {
+    qDebug("createEntityForGeometryElement step 2");
     offset_node->attachObject(entity);
     offset_node->setScale(scale);
     offset_node->setPosition(offset_position);
@@ -204,28 +208,39 @@ Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
 #endif
     if (ext == ".stl" || ext == ".STL" || ext == ".stlb" || ext == ".STLB")
     {
+      qDebug("loadMeshFromResource step 1");
+/*
       resource_retriever::Retriever retriever;
       resource_retriever::MemoryResource res;
       try
       {
-        res = retriever.get(resource_path);
+        res = retriever.get(resource_path); //there is error here...chenrui
       }
       catch (resource_retriever::Exception& e)
       {
+        qDebug("loadMeshFromResource exception 1");
         return Ogre::MeshPtr();
       }
 
       if (res.size == 0)
       {
+        qDebug("loadMeshFromResource exception 2");
         return Ogre::MeshPtr();
       }
 
       ogre_tools::STLLoader loader;
+      loader.load(resource_path);
+  
       if (!loader.load(res.data.get(), res.size, resource_path))
       {
+        qDebug("loadMeshFromResource exception 3");
         return Ogre::MeshPtr();
       }
-
+*/
+      qDebug()<<"will load stl file"<< resource_path.c_str();
+      ogre_tools::STLLoader loader;
+      loader.load(resource_path);
+      qDebug("loadMeshFromResource will toMesh");
       return loader.toMesh(resource_path);
     }
     
@@ -248,6 +263,7 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
     if( visual && visual->geometry )
     {
       Ogre::Entity* visual_mesh = NULL;
+      qDebug("createVisual step 1");
       createEntityForGeometryElement( link, *visual->geometry, visual->origin, visual->material_name, visual_node_, visual_mesh );
       if( visual_mesh )
       {
@@ -261,6 +277,7 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
   if( !valid_visual_found && link->visual && link->visual->geometry )
   {
     Ogre::Entity* visual_mesh = NULL;
+    qDebug("createVisual step 2");
     createEntityForGeometryElement( link, *link->visual->geometry, link->visual->origin, link->visual->material_name, visual_node_, visual_mesh );
     if( visual_mesh )
     {
