@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot name="robotAll">
+
+
+  <link name="head">
+    <visual>
+      <geometry>
+        <mesh filename="/home/chenrui/Ogre_git/OgreTutorials/meshes/head_asm.stl"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="robot_neck">
+    <visual>
+      <geometry>
+        <mesh filename="/home/chenrui/Ogre_git/OgreTutorials/meshes/neck_asm.stl"/>
+      </geometry>
+      <origin rpy="0 1.57075 0" xyz="0 0 -0.3"/>
+    </visual>
+  </link>
+
+  <link name="robot_body">
+    <visual>
+      <geometry>
+        <mesh filename="/home/chenrui/Ogre_git/OgreTutorials/meshes/body_asm.stl"/>
+      </geometry>
+      <origin rpy="0 1.57075 0" xyz="0 0 -0.3"/>
+    </visual>
+  </link>
+
+  <joint name="head_to_neck" type="fixed">
+    <parent link="head"/>
+    <child link="robot_neck"/>
+    <origin xyz="0 -0.22 0.25"/>
+  </joint>
+
+
+  <joint name="neck_to_body" type="fixed">
+    <parent link="robot_neck"/>
+    <child link="robot_body"/>
+    <origin xyz="0 0.22 0.25"/>
+  </joint>
+
+</robot>
