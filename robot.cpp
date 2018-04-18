@@ -166,16 +166,17 @@ void Robot::setAlpha(float a)
 * robot_description_ is: urdf file name...
 ***/
 void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface &urdf, */ bool visual, bool collision ){
-   // std::string robot_description_;   
+   
    TiXmlDocument doc;
-   doc.Parse( robot_description_.c_str() );
+   doc.LoadFile(robot_description_);
 
    if( !doc.RootElement() )
    {
-    //setStatus( StatusProperty::Error, "URDF", "URDF failed XML parse" );
     qDebug("URDF failed XML parse");
     return;
   }
+  
+
   urdf::Model urdf;
   if( !urdf.initXml( doc.RootElement() ))
   {
