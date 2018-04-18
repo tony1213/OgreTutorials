@@ -72,6 +72,11 @@ public:
    */
   virtual void load(std::string robot_description_, /* const urdf::ModelInterface &urdf, */ bool visual = true, bool collision = true );
 
+   /**
+   * \brief Clears all data loaded from a URDF
+   */
+  virtual void clear();
+
   enum LinkTreeStyle {
     STYLE_LINK_LIST,         // list of all links sorted by link name
     STYLE_DEFAULT = STYLE_LINK_LIST,
@@ -80,12 +85,13 @@ public:
     STYLE_JOINT_LINK_TREE    // tree of joints with links
   };
 
-
+  
   void setAlpha(float a);
   float getAlpha() { return alpha_; }
   RobotLink* getRootLink() { return root_link_; }
   RobotLink* getLink( const std::string& name );
   RobotJoint* getJoint( const std::string& name );
+  
 
   typedef std::map< std::string, RobotLink* > M_NameToLink;
   typedef std::map< std::string, RobotJoint* > M_NameToJoint;
@@ -95,6 +101,7 @@ public:
   const std::string& getName() { return name_; }
   Ogre::SceneNode* getVisualNode() { return root_visual_node_; }
   Ogre::SceneManager* getSceneManager() { return scene_manager_; }
+  Ogre::SceneNode* getOtherNode() { return root_other_node_; }
 
   class LinkFactory
   {
@@ -119,6 +126,7 @@ protected:
       M_NameToJoint joints_;                    ///< Map of name to joint info, stores all loaded joints
       RobotLink *root_link_;
       Ogre::SceneNode* root_visual_node_;           ///< Node all our visual nodes are children of
+      Ogre::SceneNode* root_other_node_;
       Ogre::SceneManager* scene_manager_;
 
       std::string name_;

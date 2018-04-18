@@ -60,10 +60,6 @@
 
 namespace fs=boost::filesystem;
 
-#ifndef ROS_PACKAGE_NAME
-# define ROS_PACKAGE_NAME "rviz"
-#endif
-
 
 
 RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf::LinkConstSharedPtr& link,
@@ -71,12 +67,16 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
                       bool visual,
                       bool collision)
 :robot_(robot),
- robot_alpha_(1.0)
+ robot_alpha_(1.0),
+ name_( link->name ),
+ parent_joint_name_( parent_joint_name ),
+ visual_node_( NULL ),
+ trail_( NULL )
 {
 
     scene_manager_ = scenemanager; 
     visual_node_ = robot_->getVisualNode()->createChildSceneNode();
-
+    createVisual( link );
 
 }
 
@@ -86,10 +86,39 @@ RobotLink::~RobotLink()
     for( size_t i = 0; i < visual_meshes_.size(); i++ )
     {
         scene_manager_->destroyEntity( visual_meshes_[ i ]);
-    } 
-
-
+    }
+    if ( trail_ )
+    {
+        scene_manager_->destroyRibbonTrail( trail_ );
+    }
+ 
 }
+
+void RobotLink::updateTrail()
+{
+    if( !trail_ )
+    {
+      if( visual_node_ )
+      {
+        static int count = 0;
+        std::stringstream ss;
+        ss << "Trail for link " << name_ << count++;
+        trail_ = scene_manager_->createRibbonTrail( ss.str() );
+        trail_->setMaxChainElements( 100 );
+        trail_->setInitialWidth( 0, 0.01f );
+        trail_->setInitialColour( 0, 0.0f, 0.5f, 0.5f );
+        trail_->addNode( visual_node_ );
+        trail_->setTrailLength( 2.0f );
+        trail_->setVisible(true);
+        robot_->getOtherNode()->attachObject( trail_ );
+      }
+      else
+      {
+      }
+    }
+}
+
+
 
 void RobotLink::setRobotAlpha( float a )
 {

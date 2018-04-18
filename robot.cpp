@@ -47,6 +47,7 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
 {
 
     root_visual_node_ = root_node->createChildSceneNode();
+    root_other_node_ = root_node->createChildSceneNode();
     scene_manager_ = sceneManger;
     link_factory_ = new LinkFactory();
 
@@ -56,10 +57,42 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
 
 Robot::~Robot()
 {
+  clear();
   scene_manager_->destroySceneNode(root_visual_node_);
+  scene_manager_->destroySceneNode( root_other_node_->getName() );
   delete link_factory_;
   link_factory_ = NULL; 
 }
+
+void Robot::clear()
+{
+  // unparent all link and joint properties so they can be deleted in arbitrary
+  // order without being delete by their parent propeties (which vary based on
+  // style)
+
+  M_NameToLink::iterator link_it = links_.begin();
+  M_NameToLink::iterator link_end = links_.end();
+  for ( ; link_it != link_end; ++link_it )
+  {
+    RobotLink* link = link_it->second;
+    delete link;
+  }
+
+  M_NameToJoint::iterator joint_it = joints_.begin();
+  M_NameToJoint::iterator joint_end = joints_.end();
+  for ( ; joint_it != joint_end; ++joint_it )
+  {
+    RobotJoint* joint = joint_it->second;
+    delete joint;
+  }
+
+  links_.clear();
+  joints_.clear();
+  root_visual_node_->removeAndDestroyAllChildren();
+  root_other_node_->removeAndDestroyAllChildren();
+}
+
+
 
 RobotLink* Robot::LinkFactory::createLink(
     Robot* robot,
@@ -166,7 +199,7 @@ void Robot::setAlpha(float a)
 * robot_description_ is: urdf file name...
 ***/
 void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface &urdf, */ bool visual, bool collision ){
-   
+
    TiXmlDocument doc;
    doc.LoadFile(robot_description_);
 
@@ -185,6 +218,7 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
     return;
   }
   qDebug("URDF parsed OK" );
+  clear();
   //using descr ; the descr is 
   typedef std::map<std::string, urdf::LinkSharedPtr > M_NameToUrdfLink;
   M_NameToUrdfLink::const_iterator link_it = urdf.links_.begin();

@@ -96,6 +96,7 @@ private:
 
   Ogre::MeshPtr loadMeshFromResource(const std::string& resource_path);
 
+  void updateTrail();
 
 protected:
   Robot* robot_;
@@ -110,6 +111,7 @@ private:
   std::vector<Ogre::Entity*> visual_meshes_;    ///< The entities representing the visual mesh of this link (if they exist)
 
   Ogre::SceneNode* visual_node_;              ///< The scene node the visual meshes are attached to
+  Ogre::RibbonTrail* trail_;
 
   float robot_alpha_; ///< Alpha value from top-level robot alpha Property (set via setRobotAlpha())
 
