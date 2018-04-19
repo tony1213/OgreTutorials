@@ -38,7 +38,9 @@ SOURCES += \
         robot_joint.cpp \
         property.cpp \
         property_tree_model.cpp \
-        config.cpp
+        config.cpp \
+        vector_property.cpp \
+        quaternion_property.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +51,9 @@ HEADERS += \
         robot_joint.h \
         property.h \
         property_tree_model.h \
-        config.h
+        config.h \
+        vector_property.h \
+        quaternion_property.h
 
 FORMS += \
         mainwindow.ui
