@@ -93,6 +93,7 @@ private:
   void createEntityForGeometryElement( const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity );
 
   void createVisual( const urdf::LinkConstSharedPtr& link);
+  Ogre::MaterialPtr getMaterialForLink( const urdf::LinkConstSharedPtr& link, const std::string material_name = "" );
 
   Ogre::MeshPtr loadMeshFromResource(const std::string& resource_path);
 
@@ -108,11 +109,18 @@ protected:
   std::vector<std::string> child_joint_names_;
 private:
 
+  typedef std::map<Ogre::SubEntity*, Ogre::MaterialPtr> M_SubEntityToMaterial;
+  M_SubEntityToMaterial materials_;
+  Ogre::MaterialPtr default_material_;
+  std::string default_material_name_;
   std::vector<Ogre::Entity*> visual_meshes_;    ///< The entities representing the visual mesh of this link (if they exist)
 
   Ogre::SceneNode* visual_node_;              ///< The scene node the visual meshes are attached to
   Ogre::RibbonTrail* trail_;
+  Ogre::MaterialPtr color_material_;
+  bool using_color_;
 
+  float material_alpha_; ///< If material is not a texture, this saves the alpha value set in the URDF, otherwise is 1.0.
   float robot_alpha_; ///< Alpha value from top-level robot alpha Property (set via setRobotAlpha())
 
 };

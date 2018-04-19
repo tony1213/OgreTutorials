@@ -61,6 +61,9 @@
 
 namespace fs=boost::filesystem;
 
+#ifndef ROS_PACKAGE_NAME
+# define ROS_PACKAGE_NAME "rviz"
+#endif
 
 
 RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf::LinkConstSharedPtr& link,
@@ -183,14 +186,148 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     offset_node->setScale(scale);
     offset_node->setPosition(offset_position);
     offset_node->setOrientation(offset_orientation);
-    //perhaps set material 
+    //perhaps set material
+    static int count = 0;
+    if (default_material_name_.empty())
+    {
+      default_material_ = getMaterialForLink(link);
 
+      qDebug("createEntityForGeometryElement step 2X");
+      if(default_material_ == NULL)
+         qDebug(">>>>>>>>default_material_ == NULL");
+
+      std::stringstream ss;
+      ss << default_material_->getName() << count++ << "Robot";
+      std::string cloned_name = ss.str();
+      qDebug("createEntityForGeometryElement step 2Y");
+
+      default_material_ = default_material_->clone(cloned_name);
+      default_material_name_ = default_material_->getName();
+    }
+    qDebug("createEntityForGeometryElement step 3");
+    for (uint32_t i = 0; i < entity->getNumSubEntities(); ++i)
+    {
+      default_material_ = getMaterialForLink(link, material_name);
+      std::stringstream ss;
+      ss << default_material_->getName() << count++ << "Robot";
+      std::string cloned_name = ss.str();
+
+      default_material_ = default_material_->clone(cloned_name);
+      default_material_name_ = default_material_->getName();
+
+      // Assign materials only if the submesh does not have one already
+
+      Ogre::SubEntity* sub = entity->getSubEntity(i);
+      const std::string& material_name = sub->getMaterialName();
+      qDebug("createEntityForGeometryElement step 4");
+
+      if (material_name == "BaseWhite" || material_name == "BaseWhiteNoLighting")
+      {
+        //sub->setMaterialName(default_material_name_);
+          sub->setMaterialName("Sinbad/Body");
+      }
+      else
+      {
+        // Need to clone here due to how selection works.  Once selection id is done per object and not per material,
+        // this can go away
+        std::stringstream ss;
+        ss << material_name << count++ << "Robot";
+        std::string cloned_name = ss.str();
+        sub->getMaterial()->clone(cloned_name);
+        sub->setMaterialName(cloned_name);
+      }
+      qDebug("createEntityForGeometryElement step 5");
+
+      materials_[sub] = sub->getMaterial();
+  
   }
-
-
 
 }
 
+}
+
+Ogre::MaterialPtr RobotLink::getMaterialForLink( const urdf::LinkConstSharedPtr& link, const std::string material_name){
+   
+    if (!link->visual || !link->visual->material) //error ...chenrui
+    {
+        qDebug("getMaterialForLink will return default material...");
+        return Ogre::MaterialManager::getSingleton().getByName("Sinbad/Body");
+    }
+
+    static int count = 0;
+    std::stringstream ss;
+    ss << "Robot Link Material" << count++;
+
+    Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().create(ss.str(), ROS_PACKAGE_NAME);
+    mat->getTechnique(0)->setLightingEnabled(true);
+
+    urdf::VisualSharedPtr visual = link->visual;
+  std::vector<urdf::VisualSharedPtr>::const_iterator vi;
+  for( vi = link->visual_array.begin(); vi != link->visual_array.end(); vi++ )
+  {
+    if( (*vi) && material_name != "" && (*vi)->material_name  == material_name) {
+      visual = *vi;
+      break;
+    }
+  }
+  if ( vi == link->visual_array.end() ) {
+    visual = link->visual; // if link does not have material, use default oneee
+  }
+
+  if (visual->material->texture_filename.empty())
+  {
+    const urdf::Color& col = visual->material->color;
+    mat->getTechnique(0)->setAmbient(col.r * 0.5, col.g * 0.5, col.b * 0.5);
+    mat->getTechnique(0)->setDiffuse(col.r, col.g, col.b, col.a);
+
+    material_alpha_ = col.a;
+  }
+  else
+  {
+    std::string filename = visual->material->texture_filename;
+    if (!Ogre::TextureManager::getSingleton().resourceExists(filename))
+    {
+      resource_retriever::Retriever retriever;
+      resource_retriever::MemoryResource res;
+      try
+      {
+        res = retriever.get(filename);
+      }
+      catch (resource_retriever::Exception& e)
+      {
+      }
+
+      if (res.size != 0)
+      {
+        Ogre::DataStreamPtr stream(new Ogre::MemoryDataStream(res.data.get(), res.size));
+        Ogre::Image image;
+        std::string extension = fs::extension(fs::path(filename));
+
+        if (extension[0] == '.')
+        {
+          extension = extension.substr(1, extension.size() - 1);
+        }
+
+        try
+        {
+          image.load(stream, extension);
+          Ogre::TextureManager::getSingleton().loadImage(filename, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, image);
+        }
+        catch (Ogre::Exception& e)
+        {
+        }
+      }
+    }
+
+    Ogre::Pass* pass = mat->getTechnique(0)->getPass(0);
+    Ogre::TextureUnitState* tex_unit = pass->createTextureUnitState();;
+    tex_unit->setTextureName(filename);
+  }
+
+  return mat;
+
+
+}
 /** ogre load mesh file */
 Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
 
