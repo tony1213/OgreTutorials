@@ -40,7 +40,9 @@ SOURCES += \
         property_tree_model.cpp \
         config.cpp \
         vector_property.cpp \
-        quaternion_property.cpp
+        quaternion_property.cpp \
+        status_property.cpp \
+        load_resource.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -53,7 +55,10 @@ HEADERS += \
         property_tree_model.h \
         config.h \
         vector_property.h \
-        quaternion_property.h
+        quaternion_property.h \
+        link_updater.h \
+        status_property.h \
+        load_resource.h
 
 FORMS += \
         mainwindow.ui
