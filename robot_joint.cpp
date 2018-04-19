@@ -5,6 +5,8 @@
 
 #include <OgreSceneNode.h>
 
+#include "vector_property.h"
+#include "quaternion_property.h"
 
 RobotJoint::RobotJoint( Robot* robot, const urdf::JointConstSharedPtr& joint )
   : robot_( robot )
@@ -42,6 +44,17 @@ RobotJoint::~RobotJoint()
 {
 }
 
+Ogre::Vector3 RobotJoint::getPosition()
+{
+  return position_property_->getVector();
+}
+
+Ogre::Quaternion RobotJoint::getOrientation()
+{
+  return orientation_property_->getQuaternion();
+}
+
+
 
 RobotJoint* RobotJoint::getParentJoint()
 {
@@ -55,5 +68,30 @@ RobotJoint* RobotJoint::getParentJoint()
 
   return robot_->getJoint(parent_joint_name);
 }
+
+
+void RobotJoint::setTransforms( const Ogre::Vector3& parent_link_position,
+                                const Ogre::Quaternion& parent_link_orientation )
+{
+  Ogre::Vector3 position = parent_link_position + parent_link_orientation * joint_origin_pos_;
+  Ogre::Quaternion orientation = parent_link_orientation * joint_origin_rot_;
+
+  position_property_->setVector( position );
+  orientation_property_->setQuaternion( orientation );
+/*
+  if ( axes_ )
+  {
+    axes_->setPosition( position );
+    axes_->setOrientation( orientation );
+  }
+  if ( axis_ )
+  {
+    axis_->setPosition( position );
+    axis_->setOrientation( orientation );
+    axis_->setDirection( parent_link_orientation * axis_property_->getVector() );
+  }
+  */
+}
+
 
 

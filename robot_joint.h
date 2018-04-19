@@ -30,6 +30,9 @@ class RibbonTrail;
 
 class Robot;
 class RobotJoint;
+class Property;
+class QuaternionProperty;
+class VectorProperty;
 
 
 /**
@@ -53,6 +56,8 @@ public:
   const std::string& getName() const { return name_; }
   const std::string& getParentLinkName() const { return parent_link_name_; }
   const std::string& getChildLinkName() const { return child_link_name_; }
+  const Property* getJointProperty() const { return joint_property_; }
+  Property* getJointProperty() { return joint_property_; }
   RobotJoint* getParentJoint();
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
@@ -70,6 +75,10 @@ protected:
   std::string parent_link_name_;
   std::string child_link_name_;
 
+  // properties
+  Property* joint_property_;
+  VectorProperty* position_property_;
+  QuaternionProperty* orientation_property_;
 
 private:
   Ogre::Vector3 joint_origin_pos_;
