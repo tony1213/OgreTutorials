@@ -43,7 +43,8 @@ SOURCES += \
         quaternion_property.cpp \
         status_property.cpp \
         load_resource.cpp \
-        tf_link_updater.cpp
+        tf_link_updater.cpp \
+        coordinate_transform.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -60,7 +61,8 @@ HEADERS += \
         link_updater.h \
         status_property.h \
         load_resource.h \
-        tf_link_updater.h
+        tf_link_updater.h \
+        coordinate_transform.h
 
 FORMS += \
         mainwindow.ui
