@@ -48,6 +48,8 @@ public:
    * @return true on success, false on failure. */
   bool transform(const std::string& frame, QDateTime time, Ogre::Vector3& positionT,Ogre::Quaternion& orientationT,  Ogre::Vector3& position, Ogre::Quaternion& orientation);
 
+   /** @brief Return the current fixed frame name. */
+  const std::string& getFixedFrame() { return fixed_frame_; }
 
 Q_SIGNALS:
   /** @brief Emitted whenever the fixed frame changes. */
@@ -97,6 +99,8 @@ struct CacheEntry
 
    boost::mutex cache_mutex_;
    M_Cache cache_;
+
+   std::string fixed_frame_;
 
 
 };

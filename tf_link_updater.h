@@ -34,6 +34,7 @@
 
 #include <string>
 #include <boost/function.hpp>
+#include "coordinate_transform.h"
 
 namespace tf
 {
@@ -47,13 +48,14 @@ class TFLinkUpdater : public LinkUpdater
 public:
   typedef boost::function<void(StatusLevel, const std::string&, const std::string&)> StatusCallback;
 
-  TFLinkUpdater(const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
+  TFLinkUpdater(CoordinateTransform* _manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
   virtual bool getLinkTransforms(const std::string& link_name, Ogre::Vector3& visual_position, Ogre::Quaternion& visual_orientation,
                                  Ogre::Vector3& collision_position, Ogre::Quaternion& collision_orientation) const;
 
   virtual void setLinkStatus(StatusLevel level, const std::string& link_name, const std::string& text) const;
 
 private:
+  CoordinateTransform* coordinate_manager_;
   StatusCallback status_callback_;
   std::string tf_prefix_;
 };
