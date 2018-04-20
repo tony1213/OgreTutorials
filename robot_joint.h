@@ -79,6 +79,7 @@ protected:
   Property* joint_property_;
   VectorProperty* position_property_;
   QuaternionProperty* orientation_property_;
+  Property* axes_property_;
 
 private:
   Ogre::Vector3 joint_origin_pos_;

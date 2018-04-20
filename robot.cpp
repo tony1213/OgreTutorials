@@ -92,7 +92,42 @@ void Robot::clear()
   root_other_node_->removeAndDestroyAllChildren();
 }
 
+void Robot::update(const LinkUpdater& updater){
 
+    M_NameToLink::iterator link_it = links_.begin();
+    M_NameToLink::iterator link_end = links_.end();
+    for ( ; link_it != link_end; ++link_it )
+    {
+        RobotLink* link = link_it->second;
+        Ogre::Vector3 visual_position, collision_position;
+        Ogre::Quaternion visual_orientation, collision_orientation;        
+        if( updater.getLinkTransforms( link->getName(),
+                                   visual_position, visual_orientation,
+                                   collision_position, collision_orientation
+                                   ))
+
+        {
+
+            link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
+
+            std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
+            std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
+
+            for ( ; joint_it != joint_end ; ++joint_it )
+            {
+            RobotJoint *joint = getJoint(*joint_it);
+            if (joint)
+            {
+                joint->setTransforms(visual_position, visual_orientation);
+            }
+            }
+        }
+
+
+
+
+        }
+}
 
 RobotLink* Robot::LinkFactory::createLink(
     Robot* robot,

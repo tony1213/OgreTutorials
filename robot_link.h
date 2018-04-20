@@ -78,6 +78,8 @@ public:
   virtual ~RobotLink();
 
   virtual void setRobotAlpha(float a);
+  virtual void setTransforms(const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation,
+                     const Ogre::Vector3& collision_position, const Ogre::Quaternion& collision_orientation);
 
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();

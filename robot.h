@@ -40,6 +40,8 @@
 #include <urdf/model.h> // can be replaced later by urdf_model/types.h
 #include "robot_link.h"
 
+#include "link_updater.h"
+
 namespace Ogre
 {
 class SceneManager;
@@ -76,6 +78,7 @@ public:
    * \brief Clears all data loaded from a URDF
    */
   virtual void clear();
+  virtual void update(const LinkUpdater& updater);
 
   enum LinkTreeStyle {
     STYLE_LINK_LIST,         // list of all links sorted by link name
