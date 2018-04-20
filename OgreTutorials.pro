@@ -42,7 +42,8 @@ SOURCES += \
         vector_property.cpp \
         quaternion_property.cpp \
         status_property.cpp \
-        load_resource.cpp
+        load_resource.cpp \
+        tf_link_updater.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -58,7 +59,8 @@ HEADERS += \
         quaternion_property.h \
         link_updater.h \
         status_property.h \
-        load_resource.h
+        load_resource.h \
+        tf_link_updater.h
 
 FORMS += \
         mainwindow.ui
