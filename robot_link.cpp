@@ -386,10 +386,24 @@ Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
         return Ogre::MeshPtr();
       }
 */
+
+      char buf[80];   
+      getcwd(buf,sizeof(buf));
+      std::string packagePath = buf; 
+      qDebug()<<"path is:"<< packagePath.c_str();  
+      int index = packagePath.find("build");
+      packagePath.erase(index, strlen("build"));
+      
+      std::string completepath = packagePath + resource_path; 
+      qDebug()<<"complete path string is:"<< completepath.c_str();
+
+
+          
+
       qDebug()<<"will load stl file"<< resource_path.c_str();
       ogre_tools::STLLoader loader;
  
-      if(loader.load(resource_path) == false){
+      if(loader.load(completepath) == false){ //resource_path to completepath
           qDebug("load stl file failed");
           return Ogre::MeshPtr();
       }
