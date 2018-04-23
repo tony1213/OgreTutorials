@@ -2,6 +2,8 @@
 #include <QX11Info>
 #include <QDebug>
 
+#include "robot.h"
+
 OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindowsOwnDC))
 {
     mRenderWindow = NULL;
@@ -13,7 +15,7 @@ OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindo
     mZoom = 1;
 
     //TODO
-    mRoot = new Ogre::Root("/home/tony/work/ogre/tutorials/OgreTutorials/Media/plugins.cfg");
+    mRoot = new Ogre::Root("/home/chenrui/Ogre_git/OgreTutorials/Media/plugins.cfg");
     setupRenderSystem();
     mRoot->initialise(false);
     setupResources();
@@ -66,9 +68,10 @@ void OgreView::setupResources()
     qDebug("setupResources");
     Ogre::ConfigFile cf;
     //TODO
-    cf.load("/home/tony/work/ogre/tutorials/OgreTutorials/Media/resources.cfg");
+    cf.load("/home/chenrui/Ogre_git/OgreTutorials/Media/resources.cfg");
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
+
     while(seci.hasMoreElements())
     {
         secName = seci.peekNextKey();
@@ -81,8 +84,8 @@ void OgreView::setupResources()
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
         }
     }
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(secName);
 }
-
 void OgreView::setupView()
 {
     qDebug("setupView");
@@ -113,7 +116,13 @@ void OgreView::createScene()
 {
     mainEntity = mSceneManager->createEntity("Head", "Sinbad.mesh");
     mSceneNode = mSceneManager->getRootSceneNode()->createChildSceneNode();
-    mSceneNode->attachObject(mainEntity);
+    //mSceneNode->attachObject(mainEntity);
+   
+    //here, we will create node tree using  robot.h
+    robot_ = new Robot(mSceneNode, mSceneManager,  "SimulatorRobot ");
+    robot_->load("/home/chenrui/Ogre_git/OgreTutorials/H6.urdf",true,false);
+
+
 }
 
 void OgreView::createLight()

@@ -6,6 +6,9 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
+class Robot;
+
+
 class OgreView : public QWidget
 {
     Q_OBJECT
@@ -42,5 +45,8 @@ protected:
     Ogre::Vector2 mouseRightPosNew;
     Ogre::Vector2 mouseLeftPosOriginal;
     Ogre::Vector2 mouseLeftPosNew;
+
+
+    Robot* robot_;
 };
 #endif // MAINWINDOW_H
