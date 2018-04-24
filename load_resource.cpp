@@ -46,7 +46,7 @@ boost::filesystem::path getPath( QString url )
     QString package_name = url.section('/',2,2);
     QString file_name = url.section('/',3);
    // path = ros::package::getPath(package_name.toStdString());  //chenrui error
-    path = "/home/chenrui/Ogre_git/OgreTutorials"; 
+    path = "/home/tony/Ogre_git/OgreTutorials"; 
     path = path / file_name.toStdString();
   }
   else if ( url.indexOf("file://", 0, Qt::CaseInsensitive) == 0 )

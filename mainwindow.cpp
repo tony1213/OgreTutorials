@@ -15,7 +15,7 @@ OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindo
     mZoom = 1;
 
     //TODO
-    mRoot = new Ogre::Root("/home/chenrui/Ogre_git/OgreTutorials/Media/plugins.cfg");
+    mRoot = new Ogre::Root("/home/tony/work/ogre/git/OgreTutorials/Media/plugins.cfg");
     setupRenderSystem();
     mRoot->initialise(false);
     setupResources();
@@ -68,7 +68,7 @@ void OgreView::setupResources()
     qDebug("setupResources");
     Ogre::ConfigFile cf;
     //TODO
-    cf.load("/home/chenrui/Ogre_git/OgreTutorials/Media/resources.cfg");
+    cf.load("/home/tony/work/ogre/git/OgreTutorials/Media/resources.cfg");
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
 
@@ -114,13 +114,14 @@ void OgreView::setupView()
 
 void OgreView::createScene()
 {
-    mainEntity = mSceneManager->createEntity("Head", "Sinbad.mesh");
+    //mainEntity = mSceneManager->createEntity("Head", "Sinbad.mesh");
     mSceneNode = mSceneManager->getRootSceneNode()->createChildSceneNode();
     //mSceneNode->attachObject(mainEntity);
    
     //here, we will create node tree using  robot.h
     robot_ = new Robot(mSceneNode, mSceneManager,  "SimulatorRobot ");
-    robot_->load("/home/chenrui/Ogre_git/OgreTutorials/H6.urdf",true,false);
+    robot_->load("/home/tony/work/ogre/git/OgreTutorials/H6.urdf",true,false);
+
 
 
 }
