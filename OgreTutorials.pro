@@ -44,7 +44,9 @@ SOURCES += \
         status_property.cpp \
         load_resource.cpp \
         tf_link_updater.cpp \
-        coordinate_transform.cpp
+        coordinate_transform.cpp \
+        bool_property.cpp \
+        float_property.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -62,7 +64,9 @@ HEADERS += \
         status_property.h \
         load_resource.h \
         tf_link_updater.h \
-        coordinate_transform.h
+        coordinate_transform.h \
+        bool_property.h \
+        float_property.h
 
 FORMS += \
         mainwindow.ui

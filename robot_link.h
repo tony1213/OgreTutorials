@@ -61,7 +61,13 @@ class RibbonTrail;
 }
 
 
+class FloatProperty;
+class Property;
+class BoolProperty;
+class QuaternionProperty;
 class Robot;
+class VectorProperty;
+class RobotJoint;
 
 /**
  * \struct RobotLink
@@ -83,10 +89,13 @@ public:
 
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
+
+  bool hasGeometry() const;
   
   const std::string& getName() const { return name_; }
   const std::string& getParentJointName() const { return parent_joint_name_; }
   const std::vector<std::string>& getChildJointNames() const { return child_joint_names_; }
+  Property* getLinkProperty() const { return link_property_; }
   Ogre::SceneNode* getVisualNode() const { return visual_node_; }
 
 
@@ -109,6 +118,12 @@ protected:
 
   std::string parent_joint_name_;
   std::vector<std::string> child_joint_names_;
+
+  Property* link_property_;
+  Property* details_;
+  VectorProperty* position_property_;
+  QuaternionProperty* orientation_property_;
+
 private:
 
   typedef std::map<Ogre::SubEntity*, Ogre::MaterialPtr> M_SubEntityToMaterial;

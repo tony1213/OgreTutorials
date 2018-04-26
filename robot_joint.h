@@ -63,10 +63,21 @@ public:
   Ogre::Quaternion getOrientation();
   void setRobotAlpha(float a) {}
 
+  bool hasDescendentLinksWithGeometry() const { return has_decendent_links_with_geometry_; }
+   // place subproperties as children of details_ or joint_property_
+  void useDetailProperty(bool use_detail);
+
 private Q_SLOTS:
  // void updateAxes();
  // void updateAxis();
- // void updateChildVisibility();
+  void updateChildVisibility();
+
+private:
+
+    bool getEnabled() const;
+
+  // true if displaying in a tree style.  False if list style.
+    bool styleIsTree() const;
 
 
 protected:
@@ -77,6 +88,7 @@ protected:
 
   // properties
   Property* joint_property_;
+  Property* details_;
   VectorProperty* position_property_;
   QuaternionProperty* orientation_property_;
   Property* axes_property_;
