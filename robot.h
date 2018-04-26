@@ -86,6 +86,8 @@ public:
    */
   virtual void setVisible( bool visible );
 
+  void updateRobot(); //add by chenrui
+
   /**
    * \brief Set whether the visual meshes of the robot should be visible
    * @param visible Whether the visual meshes of the robot should be visible
