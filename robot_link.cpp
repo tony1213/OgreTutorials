@@ -107,6 +107,34 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
     visual_node_ = robot_->getVisualNode()->createChildSceneNode();
     createVisual( link );
 
+
+    if (link->child_joints.empty())
+  {
+    qDebug() << " has no children.";
+  }
+  else
+  {
+
+    if (link->child_joints.size() > 1)
+    {
+    }
+    else
+    {
+    }
+
+    std::vector<urdf::JointSharedPtr >::const_iterator child_it = link->child_joints.begin();
+    std::vector<urdf::JointSharedPtr >::const_iterator child_end = link->child_joints.end();
+    for ( ; child_it != child_end ; ++child_it )
+    {
+      urdf::Joint *child_joint = child_it->get();
+      if (child_joint && !child_joint->name.empty())
+      {
+        child_joint_names_.push_back(child_joint->name);
+      }
+    }
+  }
+
+
   // link_property_->setDescription(desc.str().c_str());
 /*
   if (!hasGeometry())
