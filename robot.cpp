@@ -107,7 +107,8 @@ void  Robot::updateRobot(){
         RobotLink* link = link_it->second;
         Ogre::Vector3 visual_position, collision_position;
         Ogre::Quaternion visual_orientation, collision_orientation;
-
+        visual_position = link->getPosition();
+        visual_orientation = link->getOrientation();
 
         {
 
