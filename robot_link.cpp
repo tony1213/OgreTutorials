@@ -101,6 +101,8 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
 
 
 
+
+
     scene_manager_ = scenemanager; 
     visual_node_ = robot_->getVisualNode()->createChildSceneNode();
     createVisual( link );
@@ -134,7 +136,7 @@ RobotLink::~RobotLink()
 bool RobotLink::hasGeometry() const
 {
   // return true; 
-  return visual_meshes_.size() /*  + collision_meshes_.size() */ > 0;
+ return visual_meshes_.size() /*  + collision_meshes_.size() */ > 0;
 }
 
 bool RobotLink::getEnabled() const
@@ -220,7 +222,20 @@ void RobotLink::setTransforms( const Ogre::Vector3& visual_position, const Ogre:
     visual_node_->setOrientation( visual_orientation );
   }
 
+  position_property_->setVector( visual_position );
+  orientation_property_->setQuaternion( visual_orientation );
 
+
+}
+
+Ogre::Vector3 RobotLink::getPosition()
+{
+  return position_property_->getVector();
+}
+
+Ogre::Quaternion RobotLink::getOrientation()
+{
+  return orientation_property_->getQuaternion();
 }
 
 

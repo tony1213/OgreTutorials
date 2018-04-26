@@ -46,6 +46,7 @@
 Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const std::string& name)
   : visible_( true )
   , visual_visible_( true )
+  , name_( name )
 {
 
     root_visual_node_ = root_node->createChildSceneNode();
@@ -53,6 +54,8 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
     scene_manager_ = sceneManger;
     link_factory_ = new LinkFactory();
 
+     setVisualVisible( visual_visible_ );
+     setAlpha(1.0f);
 
 }
 
