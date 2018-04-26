@@ -80,6 +80,27 @@ public:
   virtual void clear();
   virtual void update(const LinkUpdater& updater);
 
+    /**
+   * \brief Set the robot as a whole to be visible or not
+   * @param visible Should we be visible?
+   */
+  virtual void setVisible( bool visible );
+
+  /**
+   * \brief Set whether the visual meshes of the robot should be visible
+   * @param visible Whether the visual meshes of the robot should be visible
+   */
+  void setVisualVisible( bool visible );
+    /**
+   * \brief Returns whether anything is visible
+   */
+  bool isVisible();
+    /**
+   * \brief Returns whether or not the visual representation is set to be visible
+   * To be visible this and isVisible() must both be true.
+   */
+  bool isVisualVisible();
+
   enum LinkTreeStyle {
     STYLE_LINK_LIST,         // list of all links sorted by link name
     STYLE_DEFAULT = STYLE_LINK_LIST,
@@ -119,6 +140,9 @@ public:
   };
 
 protected:
+
+     /** @brief Call RobotLink::updateVisibility() on each link. */
+  void updateLinkVisibilities();
      /** used by setLinkTreeStyle() to recursively build link & joint tree. */
   void addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotLink *link);
   void addJointToLinkTree(LinkTreeStyle style,/* Property *parent,  */ RobotJoint *joint);
@@ -135,6 +159,9 @@ protected:
       std::string name_;
 
       float alpha_;
+
+      bool visible_;                                ///< Should we show anything at all? (affects visual, collision, axes, and trails)
+      bool visual_visible_;                         ///< Should we show the visual representation?
 
 
 };

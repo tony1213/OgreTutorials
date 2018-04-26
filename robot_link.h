@@ -61,9 +61,8 @@ class RibbonTrail;
 }
 
 
-class FloatProperty;
+
 class Property;
-class BoolProperty;
 class QuaternionProperty;
 class Robot;
 class VectorProperty;
@@ -98,9 +97,18 @@ public:
   Property* getLinkProperty() const { return link_property_; }
   Ogre::SceneNode* getVisualNode() const { return visual_node_; }
 
+public Q_SLOTS:
+  /** @brief Update the visibility of the link elements: visual mesh, collision mesh, trail, and axes.
+   *
+   * Called by Robot when changing visual and collision visibilities,
+   * since each link may be enabled or disabled. */
+  void updateVisibility();
+
+
 
 private:
 
+  bool getEnabled() const;
   void createEntityForGeometryElement( const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity );
 
   void createVisual( const urdf::LinkConstSharedPtr& link);

@@ -55,8 +55,7 @@
 #include "robot.h"
 #include "robot_link.h"
 #include "retriever.h"
-#include "float_property.h"
-#include "bool_property.h"
+
 #include "property.h"
 #include "quaternion_property.h"
 #include "vector_property.h"
@@ -83,6 +82,7 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
  visual_node_( NULL ),
  trail_( NULL )
 {
+
    link_property_ = new Property( link->name.c_str(), true, "", NULL, SLOT( updateVisibility() ), this );
    details_ = new Property( "Details", QVariant(), "", NULL);
 
@@ -99,19 +99,21 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
   link_property_->collapse();
 
 
+
+
     scene_manager_ = scenemanager; 
     visual_node_ = robot_->getVisualNode()->createChildSceneNode();
     createVisual( link );
 
   // link_property_->setDescription(desc.str().c_str());
-
+/*
   if (!hasGeometry())
   {
    // link_property_->setIcon( rviz::loadPixmap( "package://rviz/icons/classes/RobotLinkNoGeom.png" ) );
   //  alpha_property_->hide();
     link_property_->setValue(QVariant());
   }
-
+*/
 
 }
 
@@ -131,7 +133,18 @@ RobotLink::~RobotLink()
 
 bool RobotLink::hasGeometry() const
 {
+  // return true; 
   return visual_meshes_.size() /*  + collision_meshes_.size() */ > 0;
+}
+
+bool RobotLink::getEnabled() const
+{
+   //return true; 
+
+  if (!hasGeometry())
+    return true;
+  return link_property_->getValue().toBool();
+
 }
 
 
@@ -157,6 +170,37 @@ void RobotLink::updateTrail()
       {
       }
     }
+}
+
+void RobotLink::updateVisibility()
+{
+  bool enabled = getEnabled();
+
+ // robot_->calculateJointCheckboxes();
+
+  if( visual_node_ )
+  {
+      qDebug(" RobotLink::updateVisibility step 1");
+   // visual_node_->setVisible( enabled && robot_->isVisible() && robot_->isVisualVisible() );
+      visual_node_->setVisible(true);
+  }
+  /*
+  if( collision_node_ )
+  {
+    collision_node_->setVisible( enabled && robot_->isVisible() && robot_->isCollisionVisible() );
+  }
+  */
+  if( trail_ )
+  {
+   // trail_->setVisible( enabled && robot_->isVisible() );
+      trail_->setVisible(true);
+  }
+  /*
+  if( axes_ )
+  {
+    axes_->getSceneNode()->setVisible( enabled && robot_->isVisible() );
+  }
+  */
 }
 
 
