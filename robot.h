@@ -57,6 +57,7 @@ class SceneNode;
 class Robot;
 class RobotLink;
 class RobotJoint;
+class Property;
 
 class Robot : public QObject
 {
@@ -129,6 +130,13 @@ public:
   Ogre::SceneManager* getSceneManager() { return scene_manager_; }
   Ogre::SceneNode* getOtherNode() { return root_other_node_; }
 
+
+  virtual void setPosition( const Ogre::Vector3& position );
+  virtual void setOrientation( const Ogre::Quaternion& orientation );
+  virtual void setScale( const Ogre::Vector3& scale );
+  virtual const Ogre::Vector3& getPosition();
+  virtual const Ogre::Quaternion& getOrientation();
+
   class LinkFactory
   {
   public:
@@ -146,9 +154,13 @@ protected:
      /** @brief Call RobotLink::updateVisibility() on each link. */
   void updateLinkVisibilities();
      /** used by setLinkTreeStyle() to recursively build link & joint tree. */
-  void addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotLink *link);
-  void addJointToLinkTree(LinkTreeStyle style,/* Property *parent,  */ RobotJoint *joint);
-      
+  void addLinkToLinkTree(LinkTreeStyle style, Property *parent,  RobotLink *link);
+  void addJointToLinkTree(LinkTreeStyle style, Property *parent, RobotJoint *joint);
+ 
+  void initLinkTreeStyle(); 
+  static bool styleShowLink(LinkTreeStyle style);
+  static bool styleShowJoint(LinkTreeStyle style);
+  static bool styleIsTree(LinkTreeStyle style);    
 
       LinkFactory *link_factory_;
       M_NameToLink links_;                      ///< Map of name to link info, stores all loaded links.

@@ -96,6 +96,10 @@ public:
   const std::vector<std::string>& getChildJointNames() const { return child_joint_names_; }
   Property* getLinkProperty() const { return link_property_; }
   Ogre::SceneNode* getVisualNode() const { return visual_node_; }
+  Robot* getRobot() const { return robot_; }
+
+  // Remove link_property_ from its old parent and add to new_parent.  If new_parent==NULL then leav unparented.
+  void setParentProperty(Property* new_parent);
 
 public Q_SLOTS:
   /** @brief Update the visibility of the link elements: visual mesh, collision mesh, trail, and axes.

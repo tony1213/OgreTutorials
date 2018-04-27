@@ -57,6 +57,8 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
      setVisualVisible( visual_visible_ );
      setAlpha(1.0f);
 
+
+
 }
 
 
@@ -213,16 +215,40 @@ RobotJoint* Robot::getJoint( const std::string& name )
   return it->second;
 }
 
-// recursive helper for setLinkTreeStyle() when style is *_TREE
-void Robot::addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotLink *link)
+
+bool Robot::styleShowLink(LinkTreeStyle style)
 {
-/*
+  return
+    style == STYLE_LINK_LIST ||
+    style == STYLE_LINK_TREE ||
+    style == STYLE_JOINT_LINK_TREE;
+}
+
+bool Robot::styleShowJoint(LinkTreeStyle style)
+{
+  return
+    style == STYLE_JOINT_LIST ||
+    style == STYLE_JOINT_LINK_TREE;
+}
+
+bool Robot::styleIsTree(LinkTreeStyle style)
+{
+  return
+    style == STYLE_LINK_TREE ||
+    style == STYLE_JOINT_LINK_TREE;
+}
+
+
+// recursive helper for setLinkTreeStyle() when style is *_TREE
+void Robot::addLinkToLinkTree(LinkTreeStyle style, Property *parent,  RobotLink *link)
+{
+
   if (styleShowLink(style))
   {
     link->setParentProperty(parent);
     parent = link->getLinkProperty();
   }
-*/
+
   std::vector<std::string>::const_iterator child_joint_it = link->getChildJointNames().begin();
   std::vector<std::string>::const_iterator child_joint_end = link->getChildJointNames().end();
   for ( ; child_joint_it != child_joint_end ; ++child_joint_it )
@@ -230,7 +256,7 @@ void Robot::addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotL
     RobotJoint* child_joint = getJoint( *child_joint_it );
     if (child_joint)
     {
-      addJointToLinkTree(style,/* parent, */ child_joint);
+      addJointToLinkTree(style, parent,  child_joint);
     }
   }
 }
@@ -239,20 +265,20 @@ void Robot::addLinkToLinkTree(LinkTreeStyle style,/* Property *parent, */ RobotL
 
 
 // recursive helper for setLinkTreeStyle() when style is *_TREE
-void Robot::addJointToLinkTree(LinkTreeStyle style, /* Property *parent, */ RobotJoint *joint)
+void Robot::addJointToLinkTree(LinkTreeStyle style,  Property *parent,  RobotJoint *joint)
 {
-/*
+
   if (styleShowJoint(style))
   {
     joint->setParentProperty(parent);
     parent = joint->getJointProperty();
-    joint->setJointPropertyDescription();
+    //joint->setJointPropertyDescription();
   }
-*/
+
   RobotLink *link = getLink( joint->getChildLinkName() );
   if (link)
   {
-    addLinkToLinkTree(style,/* parent, */ link);
+    addLinkToLinkTree(style, parent,  link);
   }
 }
 
@@ -392,6 +418,31 @@ bool Robot::isVisualVisible()
   return visual_visible_;
 }
 
+
+void Robot::setPosition( const Ogre::Vector3& position )
+{
+  root_visual_node_->setPosition( position );
+}
+
+void Robot::setOrientation( const Ogre::Quaternion& orientation )
+{
+  root_visual_node_->setOrientation( orientation );
+}
+
+void Robot::setScale( const Ogre::Vector3& scale )
+{
+  root_visual_node_->setScale( scale );
+}
+
+const Ogre::Vector3& Robot::getPosition()
+{
+  return root_visual_node_->getPosition();
+}
+
+const Ogre::Quaternion& Robot::getOrientation()
+{
+  return root_visual_node_->getOrientation();
+}
 
 
 

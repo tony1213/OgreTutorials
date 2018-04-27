@@ -63,6 +63,9 @@ public:
   Ogre::Quaternion getOrientation();
   void setRobotAlpha(float a) {}
 
+    // Remove joint_property_ from its old parent and add to new_parent.  If new_parent==NULL then leav unparented.
+  void setParentProperty(Property* new_parent);
+
   bool hasDescendentLinksWithGeometry() const { return has_decendent_links_with_geometry_; }
    // place subproperties as children of details_ or joint_property_
   void useDetailProperty(bool use_detail);

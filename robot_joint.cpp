@@ -80,6 +80,16 @@ Ogre::Quaternion RobotJoint::getOrientation()
   return orientation_property_->getQuaternion();
 }
 
+void RobotJoint::setParentProperty(Property* new_parent)
+{
+  Property* old_parent = joint_property_->getParent();
+  if (old_parent)
+    old_parent->takeChild(joint_property_);
+
+  if (new_parent)
+    new_parent->addChild(joint_property_);
+}
+
 
 
 RobotJoint* RobotJoint::getParentJoint()

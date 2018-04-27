@@ -158,6 +158,7 @@ RobotLink::~RobotLink()
     {
         scene_manager_->destroyRibbonTrail( trail_ );
     }
+    delete link_property_;
  
 }
 
@@ -255,6 +256,17 @@ void RobotLink::setTransforms( const Ogre::Vector3& visual_position, const Ogre:
 
 
 }
+
+void RobotLink::setParentProperty(Property* new_parent)
+{
+  Property* old_parent = link_property_->getParent();
+  if (old_parent)
+    old_parent->takeChild(link_property_);
+
+  if (new_parent)
+    new_parent->addChild(link_property_);
+}
+
 
 Ogre::Vector3 RobotLink::getPosition()
 {
