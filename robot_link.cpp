@@ -110,7 +110,7 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
 
     if (link->child_joints.empty())
   {
-    qDebug() << " has no children.";
+  //  qDebug() << " has no children.";
   }
   else
   {
@@ -211,7 +211,6 @@ void RobotLink::updateVisibility()
 
   if( visual_node_ )
   {
-      qDebug(" RobotLink::updateVisibility step 1");
    // visual_node_->setVisible( enabled && robot_->isVisible() && robot_->isVisualVisible() );
       visual_node_->setVisible(true);
   }
@@ -325,11 +324,9 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     }
 
   }
-  qDebug("createEntityForGeometryElement step 1");
 
   if ( entity )
   {
-    qDebug("createEntityForGeometryElement step 2");
     offset_node->attachObject(entity);
     offset_node->setScale(scale);
     offset_node->setPosition(offset_position);
@@ -340,19 +337,16 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     {
       default_material_ = getMaterialForLink(link);
 
-      qDebug("createEntityForGeometryElement step 2X");
       if(default_material_ == NULL)
          qDebug(">>>>>>>>default_material_ == NULL");
 
       std::stringstream ss;
       ss << default_material_->getName() << count++ << "Robot";
       std::string cloned_name = ss.str();
-      qDebug("createEntityForGeometryElement step 2Y");
 
       default_material_ = default_material_->clone(cloned_name);
       default_material_name_ = default_material_->getName();
     }
-    qDebug("createEntityForGeometryElement step 3");
     for (uint32_t i = 0; i < entity->getNumSubEntities(); ++i)
     {
       default_material_ = getMaterialForLink(link, material_name);
@@ -367,7 +361,6 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
 
       Ogre::SubEntity* sub = entity->getSubEntity(i);
       const std::string& material_name = sub->getMaterialName();
-      qDebug("createEntityForGeometryElement step 4");
 
       if (material_name == "BaseWhite" || material_name == "BaseWhiteNoLighting")
       {
@@ -384,7 +377,6 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
         sub->getMaterial()->clone(cloned_name);
         sub->setMaterialName(cloned_name);
       }
-      qDebug("createEntityForGeometryElement step 5");
 
       materials_[sub] = sub->getMaterial();
   
@@ -398,7 +390,6 @@ Ogre::MaterialPtr RobotLink::getMaterialForLink( const urdf::LinkConstSharedPtr&
    
     if (!link->visual || !link->visual->material) //error ...chenrui
     {
-        qDebug("getMaterialForLink will return default material...");
         return Ogre::MaterialManager::getSingleton().getByName("Sinbad/Body");
     }
 
@@ -493,7 +484,6 @@ Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
 #endif
     if (ext == ".stl" || ext == ".STL" || ext == ".stlb" || ext == ".STLB")
     {
-      qDebug("loadMeshFromResource step 1");
 /*
       resource_retriever::Retriever retriever;
       resource_retriever::MemoryResource res;
@@ -526,24 +516,23 @@ Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
       char buf[80];   
       getcwd(buf,sizeof(buf));
       std::string packagePath = buf; 
-      qDebug()<<"path is:"<< packagePath.c_str();  
+    //  qDebug()<<"path is:"<< packagePath.c_str();  
       int index = packagePath.find("build");
       packagePath.erase(index, strlen("build"));
       
       std::string completepath = packagePath + resource_path; 
-      qDebug()<<"complete path string is:"<< completepath.c_str();
+    //  qDebug()<<"complete path string is:"<< completepath.c_str();
 
 
           
 
-      qDebug()<<"will load stl file"<< resource_path.c_str();
+   //   qDebug()<<"will load stl file"<< resource_path.c_str();
       ogre_tools::STLLoader loader;
  
       if(loader.load(completepath) == false){ //resource_path to completepath
-          qDebug("load stl file failed");
+        //  qDebug("load stl file failed");
           return Ogre::MeshPtr();
       }
-      qDebug("load stl file ok");
       return loader.toMesh(resource_path);
     }
     
@@ -566,7 +555,6 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
     if( visual && visual->geometry )
     {
       Ogre::Entity* visual_mesh = NULL;
-      qDebug("createVisual step 1");
       createEntityForGeometryElement( link, *visual->geometry, visual->origin, visual->material_name, visual_node_, visual_mesh );
       if( visual_mesh )
       {
@@ -580,7 +568,6 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
   if( !valid_visual_found && link->visual && link->visual->geometry )
   {
     Ogre::Entity* visual_mesh = NULL;
-    qDebug("createVisual step 2");
     createEntityForGeometryElement( link, *link->visual->geometry, link->visual->origin, link->visual->material_name, visual_node_, visual_mesh );
     if( visual_mesh )
     {

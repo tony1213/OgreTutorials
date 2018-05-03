@@ -110,13 +110,11 @@ void RobotJoint::setTransforms( const Ogre::Vector3& parent_link_position,
                                 const Ogre::Quaternion& parent_link_orientation )
 {
 
-  qDebug(">>>>>>>>RobotJoint::setTransforms");
   Ogre::Vector3 position = parent_link_position + parent_link_orientation * joint_origin_pos_;
   Ogre::Quaternion orientation = parent_link_orientation * joint_origin_rot_;
 
   position_property_->setVector( position );
   orientation_property_->setQuaternion( orientation );
-  qDebug(">>>>>>>>RobotJoint::setTransforms  OK>>>>");
 /*
   if ( axes_ )
   {

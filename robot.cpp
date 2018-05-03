@@ -106,7 +106,6 @@ void  Robot::updateRobot(){
     M_NameToLink::iterator link_end = links_.end();
     for ( ; link_it != link_end; ++link_it )
     {
-        qDebug("link cycle");
         RobotLink* link = link_it->second;
         Ogre::Vector3 visual_position, collision_position;
         Ogre::Quaternion visual_orientation, collision_orientation;
@@ -125,7 +124,6 @@ void  Robot::updateRobot(){
             RobotJoint *joint = getJoint(*joint_it);
             if (joint)
             {
-                qDebug("joint setTransforms");
                 joint->setTransforms(visual_position, visual_orientation);
             }
             }
@@ -330,7 +328,6 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
 
   for( ; link_it != link_end; ++link_it )
   {
-      qDebug("chenrui will create link ....");
       const urdf::LinkConstSharedPtr& urdf_link = link_it->second;
       std::string parent_joint_name;
 
