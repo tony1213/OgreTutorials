@@ -5,9 +5,11 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QSlider>
+#include <QLabel>
+#include "panelview.h"
 
 class Robot;
-
 
 class OgreView : public QWidget
 {
@@ -29,6 +31,8 @@ protected:
     void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
 
+
+
     Ogre::RenderWindow* mRenderWindow;
     Ogre::RenderSystem *mRenderSystem;
     Ogre::SceneManager* mSceneManager;
@@ -48,5 +52,13 @@ protected:
 
 
     Robot* robot_;
+    PanelView *mPanelView; //control panel view
+
+private:
+
+   //following is different parameter 's corresponding widgets
+
+
+
 };
 #endif // MAINWINDOW_H

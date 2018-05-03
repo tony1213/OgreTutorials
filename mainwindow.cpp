@@ -1,10 +1,16 @@
 #include "mainwindow.h"
 #include <QX11Info>
 #include <QDebug>
+#include <QSlider>
+#include <QLabel>
+
 
 #include "robot.h"
+#include "panelview.h"
 
-OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindowsOwnDC))
+OgreView::OgreView(QWidget* parent)
+ :QWidget(parent,Qt::WindowFlags(Qt::MSWindowsOwnDC)),
+ mPanelView(NULL)
 {
     mRenderWindow = NULL;
     mSceneManager = NULL;
@@ -15,10 +21,11 @@ OgreView::OgreView(QWidget* parent) : QWidget(parent,Qt::WindowFlags(Qt::MSWindo
     mZoom = 1;
 
     //TODO
-    mRoot = new Ogre::Root("/home/tony/work/ogre/git/OgreTutorials/Media/plugins.cfg");
+    mRoot = new Ogre::Root("/home/chenrui/Ogre_git/OgreTutorials/Media/plugins.cfg");
     setupRenderSystem();
     mRoot->initialise(false);
     setupResources();
+
 }
 
 OgreView::~OgreView()
@@ -68,7 +75,7 @@ void OgreView::setupResources()
     qDebug("setupResources");
     Ogre::ConfigFile cf;
     //TODO
-    cf.load("/home/tony/work/ogre/git/OgreTutorials/Media/resources.cfg");
+    cf.load("/home/chenrui/Ogre_git/OgreTutorials/Media/resources.cfg");
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
 
@@ -96,7 +103,16 @@ void OgreView::setupView()
     params["parentWindowHandle"] = Ogre::StringConverter::toString ((unsigned long)QX11Info::display()) +
             ":" + Ogre::StringConverter::toString ((unsigned int)QX11Info::appScreen()) +
             ":" + Ogre::StringConverter::toString ((unsigned long)q_parent->winId());
-    mRenderWindow = mRoot->createRenderWindow("View", width(), height(), false, &params);
+   // mRenderWindow = mRoot->createRenderWindow("View", width(), height(), false, &params);
+     mRenderWindow = mRoot->createRenderWindow("View", 1000, height(), false, &params);
+
+
+     qDebug("setupView>>>>will create PanelView");
+     mPanelView = new PanelView(q_parent);
+     mPanelView->setGeometry(1000, 0,650,height());
+     mPanelView->show();
+     qDebug("setupView>>>>after: mPanelView->show();");
+
 
     mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC);
     mCamera = mSceneManager->createCamera("PlayerCam");
@@ -120,9 +136,8 @@ void OgreView::createScene()
    
     //here, we will create node tree using  robot.h
     robot_ = new Robot(mSceneNode, mSceneManager,  "SimulatorRobot ");
-    robot_->load("/home/tony/work/ogre/git/OgreTutorials/H6.urdf",true,false);
-
-
+    robot_->load("/home/chenrui/Ogre_git/OgreTutorials/H6.urdf",true,false);
+    robot_->updateRobot();
 
 }
 
@@ -139,6 +154,7 @@ void OgreView::paintEvent(QPaintEvent *event)
     if(mRenderWindow == NULL)
         setupView();
     update();
+
 }
 
 void OgreView::update()
@@ -147,6 +163,10 @@ void OgreView::update()
     {
         mRoot->renderOneFrame();
     }
+    
+    qDebug(">>>>>>OgreView::update will show");
+    mPanelView->show();
+
 }
 
 void OgreView::mousePressEvent(QMouseEvent* event)
@@ -159,6 +179,7 @@ void OgreView::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::RightButton){
         mouseRightPosOriginal = Ogre::Vector2(event->x(), event->y());
     }
+    robot_->updateRobot();//chenrui add for test
 }
 
 void OgreView::mouseMoveEvent(QMouseEvent *event){
