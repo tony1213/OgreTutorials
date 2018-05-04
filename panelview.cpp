@@ -96,6 +96,16 @@ void PanelView::initVariablesUI(){
         slider[i]->setOrientation(Qt::Horizontal);
         slider[i]->setGeometry(QRect(360, height, 150, 20));
 
+        //here, perhaps different var has different range value
+        var[i]->setRange(0, 130);  
+        slider[i]->setRange(0, 130);  
+        //
+                 
+        QObject::connect(var[i], SIGNAL(valueChanged(int)),
+                    slider[i], SLOT(setValue(int)));  
+        QObject::connect(slider[i], SIGNAL(valueChanged(int)),
+                    var[i], SLOT(setValue(int))); 
+
 
     }
 
