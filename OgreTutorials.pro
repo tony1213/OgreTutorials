@@ -45,7 +45,8 @@ SOURCES += \
         load_resource.cpp \
         tf_link_updater.cpp \
         coordinate_transform.cpp \
-        panelview.cpp
+        panelview.cpp \
+        mycustomslider.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -64,7 +65,8 @@ HEADERS += \
         load_resource.h \
         tf_link_updater.h \
         coordinate_transform.h \
-        panelview.h
+        panelview.h \
+        mycustomslider.h
 
 FORMS += \
         mainwindow.ui
