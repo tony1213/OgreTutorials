@@ -113,23 +113,23 @@ void  Robot::updateRobot(){
         visual_orientation = link->getOrientation();
 
         {
-            if(link->getName() == "Head"){
-                link->setTransforms(Ogre::Vector3(0,10.16,-0.6),Ogre::Quaternion(1,0,0,0), collision_position, collision_orientation);
-            }else if (link->getName() == "LElbow") {
-                link->setTransforms(Ogre::Vector3(3.0,0,-0.65),visual_orientation, collision_position, collision_orientation);
-            }else if (link->getName() == "RElbow") {
-                link->setTransforms(Ogre::Vector3(-3.0,0,-0.65),visual_orientation, collision_position, collision_orientation);
-            }else if (link->getName() == "LHipYaw") {
-                link->setTransforms(Ogre::Vector3(3.6,-3.5,0),Ogre::Quaternion(1,0,0,0), collision_position, collision_orientation);
-            }else if (link->getName() == "RHipYaw") {
-                link->setTransforms(Ogre::Vector3(-3.6,-3.5,0),visual_orientation, collision_position, collision_orientation);
-            }else if (link->getName() == "LAnklePitch") {
-                link->setTransforms(Ogre::Vector3(3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
-            }else if (link->getName() == "RAnklePitch") {
-                link->setTransforms(Ogre::Vector3(-3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
-            }else {
-                link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
-            }
+//            if(link->getName() == "Head"){
+//                link->setTransforms(Ogre::Vector3(0,10.16,-0.6),Ogre::Quaternion(1,0,0,0), collision_position, collision_orientation);
+//            }else if (link->getName() == "LElbow") {
+//                link->setTransforms(Ogre::Vector3(3.0,0,-0.65),visual_orientation, collision_position, collision_orientation);
+//            }else if (link->getName() == "RElbow") {
+//                link->setTransforms(Ogre::Vector3(-3.0,0,-0.65),visual_orientation, collision_position, collision_orientation);
+//            }else if (link->getName() == "LHipYaw") {
+//                link->setTransforms(Ogre::Vector3(3.6,-3.5,0),Ogre::Quaternion(1,0,0,0), collision_position, collision_orientation);
+//            }else if (link->getName() == "RHipYaw") {
+//                link->setTransforms(Ogre::Vector3(-3.6,-3.5,0),visual_orientation, collision_position, collision_orientation);
+//            }else if (link->getName() == "LAnklePitch") {
+//                link->setTransforms(Ogre::Vector3(3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
+//            }else if (link->getName() == "RAnklePitch") {
+//                link->setTransforms(Ogre::Vector3(-3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
+//            }else {
+                link->setTransforms( visual_position, Ogre::Quaternion(1,-1,0,0), collision_position, collision_orientation );
+//            }
 
             std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
             std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();

@@ -136,7 +136,7 @@ void OgreView::createScene()
    
     //here, we will create node tree using  robot.h
     robot_ = new Robot(mSceneNode, mSceneManager,  "SimulatorRobot ");
-    robot_->load("/home/tony/work/ogre/git2/OgreTutorials/H6.urdf",true,false);
+    robot_->load("/home/tony/work/ogre/git2/OgreTutorials/urdf/H3.urdf",true,false);
     robot_->updateRobot();
 
 }
