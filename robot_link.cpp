@@ -307,7 +307,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
 
       if ( mesh.filename.empty() )
           return;
-      scale = Ogre::Vector3(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+      scale = Ogre::Vector3(mesh.scale.x*100, mesh.scale.y*100, mesh.scale.z*100);
 
       std::string model_name = mesh.filename;
       //will load mesh file and create entity
@@ -517,10 +517,10 @@ Ogre::MeshPtr RobotLink::loadMeshFromResource(const std::string& resource_path){
       getcwd(buf,sizeof(buf));
       std::string packagePath = buf; 
     //  qDebug()<<"path is:"<< packagePath.c_str();  
-      int index = packagePath.find("build");
-      packagePath.erase(index, strlen("build"));
+      int index = packagePath.find("debug");
+      packagePath.erase(index, strlen("debug"));
       
-      std::string completepath = packagePath + resource_path; 
+      std::string completepath = packagePath +"OgreTutorials/"+ resource_path;
     //  qDebug()<<"complete path string is:"<< completepath.c_str();
 
 

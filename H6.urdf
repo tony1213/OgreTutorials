@@ -1,165 +1,171 @@
 <?xml version="1.0" ?>
 <robot name="H6_robot">
+  <link name="base_link"/>
 
-  <link name="head">
-     <visual>
-      <geometry>
-        <mesh filename="meshes/Head_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 3.14" xyz="0  10 -0.006"/>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="meshes/Head_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 -0.055 -0.01"/>
-    </collision>
-  </link>
-
-  <joint name="head_to_neck" type="revolute">
-    <parent link="head"/>
-    <child link="neck"/>
-    <origin rpy="0 0 0" xyz="0  0  0"/>
-    <axis xyz="1.0 0 0"/>
-    <limit effort="1.329" lower="-0.2626" upper="0.5252" velocity="8.26797"/>
+  <joint name="torso_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="Torso"/>
+    <origin rpy="1.5757 0 0" xyz="0 0 0.35"/>
+    <axis xyz="0 0 0"/>
   </joint>
 
-  <link name="neck">
-     <visual>
+  <link name="Torso">
+    <visual>
       <geometry>
-        <mesh filename="meshes/Neck_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/Torso_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0  0  0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/Neck_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/Torso_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0  0  0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
 
-
-  <joint name="neck_to_torso" type="revolute">
-    <parent link="neck"/>
-    <child link="torso"/>
-    <origin rpy="0 0 0" xyz="0  0  0"/>
-    <axis xyz="0 1.0 0"/>
+  <joint name="neck_joint" type="revolute">
+    <parent link="Torso"/>
+    <child link="Neck"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0466 0.0053"/>
+    <axis xyz="0 1.0 0"/> 
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
 
-
-  <link name="torso">
-    <visual>
+  <link name="Neck">
+     <visual>
       <geometry>
-        <mesh filename="meshes/Torso_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/Neck_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 -0.0466 -0.0053"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/Torso_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/Neck_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 -0.0466 -0.0053"/>
     </collision>
   </link>
 
+  <joint name="head_joint" type="revolute">
+    <parent link="Neck"/>
+    <child link="Head"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0 0"/>
+    <limit effort="1.329" lower="-0.5252" upper="0.31" velocity="8.26797"/>
+  </joint>
 
-   <joint name="LShoulderPitch" type="revolute">
-    <parent link="torso"/>
-    <child link="LShoulder"/>
-    <origin rpy="0 0 0" xyz="0.05 0.0 0.006"/>
+  <link name="Head">
+     <visual>
+      <geometry>
+        <mesh filename="meshes/Head_0.10.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 -3.1415" xyz="0 0.055 -0.0125"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="meshes/Head_0.10.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 -3.1415" xyz="0 -0.055 -0.0125"/>
+    </collision>
+  </link>
+  
+   <joint name="LShoulderPitch_joint" type="revolute">
+    <parent link="Torso"/>
+    <child link="LShoulderPitch"/>
+    <origin rpy="0 0 0" xyz="0.05 0.0 0.005"/>
     <axis xyz="1.0 0 0"/>
     <limit effort="1.329" lower="-3.1415" upper="1.0471" velocity="8.26797"/>
   </joint>
 
-  <link name="LShoulder">
+  <link name="LShoulderPitch">
      <visual>
       <geometry>
-        <mesh filename="meshes/LShoulderPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LShoulderPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.05 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="-0.05 0 -0.005"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LShoulderPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LShoulderPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.05 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="-0.05 0 -0.005"/>
     </collision>
   </link>
 
-  <joint name="LShoulderRoll" type="revolute">
-    <parent link="LShoulder"/>
-    <child link="LBicep"/>
-    <origin rpy="0 0 0" xyz="0.04 0.0 0.0"/>
+  <joint name="LShoulderRoll_joint" type="revolute">
+    <parent link="LShoulderPitch"/>
+    <child link="LShoulderRoll"/>
+    <origin rpy="0 0 0" xyz="0.041 0.0 0.0"/>
     <axis xyz="0 0 1.0"/>
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
 
-  <link name="LBicep">
+  <link name="LShoulderRoll">
      <visual>
       <geometry>
-        <mesh filename="meshes/LShoulderRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LShoulderRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.09 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="-0.091 0 -0.005"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LShoulderRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LShoulderRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.09 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="-0.091 0 -0.005"/>
     </collision>
   </link>
 
-  <joint name="LElbowYaw" type="revolute">
-    <parent link="LBicep"/>
+  <joint name="LElbow_joint" type="revolute">
+    <parent link="LShoulderRoll"/>
     <child link="LElbow"/>
-    <origin rpy="0 0 0" xyz="0 0.0 0.0"/>
-    <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
+    <origin rpy="0 0 0" xyz="0.0745 0.0 0.0"/>
+    <axis xyz="0 1.0 0"/>
+    <limit effort="1.329" lower="-1.5757" upper="0.31415" velocity="8.26797"/>
   </joint>
 
   <link name="LElbow">
      <visual>
       <geometry>
-        <mesh filename="meshes/LElbow_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LElbow_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 -1.57 0" xyz="0 0 0"/>
+      <origin rpy="0 -1.5757 0" xyz="-0.135 0.0 -0.012"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LElbow_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LElbow_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 -1.57 0" xyz="0 0 0"/>
+      <origin rpy="0 -1.5757 0" xyz="-0.012 0.0 0.135"/>
     </collision>
   </link>
 
-  <joint name="LHipYaw" type="revolute">
-    <parent link="torso"/>
+  <joint name="LHipYaw_joint" type="revolute">
+    <parent link="Torso"/>
     <child link="LHipYaw"/>
-    <origin rpy="-1.5757 0.0 3.14159" xyz="0.035 -0.035 0.0"/>
-    <axis xyz="0 0 1.0"/>
+    <origin rpy="0.0 0.0 0" xyz="0.036 -0.055 0.0"/>
+    <axis xyz="0 1.0 0"/>
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
 
   <link name="LHipYaw">
      <visual>
       <geometry>
-        <mesh filename="meshes/LHipYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LHipYaw_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="1.57 3.14 0" xyz="4 -4 0"/>
+      <origin rpy="1.5757 3.1415 0" xyz="0.0 0.02 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LHipYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LHipYaw_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <origin rpy="1.5757 3.1415 0" xyz="0.0 0.02 0.0"/>
     </collision>
   </link>
-
-  <joint name="LHipRoll" type="revolute">
+ 
+  <joint name="LHipRoll_joint" type="revolute">
     <parent link="LHipYaw"/>
     <child link="LHipRoll"/>
-    <origin rpy="1.5757 3.14159 0.0" xyz="0.0 0.0 0.09"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0705 0.0"/>
     <axis xyz="0 0 1.0"/>
     <limit effort="1.329" lower="-0.45" upper="1.5757" velocity="8.26797"/>
   </joint>
@@ -167,23 +173,22 @@
   <link name="LHipRoll">
      <visual>
       <geometry>
-        <mesh filename="meshes/LHipRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LHipRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0.1255 0.0"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.1255 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LHipRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LHipRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="-0.036 0.1255 0.0"/>
     </collision>
   </link>
 
- 
-  <joint name="LHipPitch" type="revolute">
+  <joint name="LHipPitch_joint" type="revolute">
     <parent link="LHipRoll"/>
     <child link="LHipPitch"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.044 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0426 0.0"/>
     <axis xyz="1.0 0 0"/>
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
@@ -191,45 +196,46 @@
   <link name="LHipPitch">
      <visual>
       <geometry>
-        <mesh filename="meshes/LHipPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LHipPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.035 0.168 0.0"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.1681 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LHipPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LHipPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.035 0.168 0.0"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.1681 0.0"/>
     </collision>
   </link>
 
-  <joint name="LKnee" type="revolute">
+  <joint name="LKnee_joint" type="revolute">
     <parent link="LHipPitch"/>
     <child link="LKnee"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.06 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.065 -0.003"/>
     <axis xyz="1.0 0 0"/>
-    <limit effort="1.329" lower="0.0" upper="1.5757" velocity="8.26797"/>
+    <limit effort="1.329" lower="0.0" upper="2.05" velocity="8.26797"/>
   </joint>
 
   <link name="LKnee">
      <visual>
       <geometry>
-        <mesh filename="meshes/LKnee_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LKnee_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.035 0.228 0.0"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.233 0.003"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LKnee_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LKnee_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.035 0.228 0.0"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.233 0.003"/>
     </collision>
   </link>
 
-  <joint name="LAnklePitch" type="revolute">
+
+  <joint name="LAnklePitch_joint" type="revolute">
     <parent link="LKnee"/>
     <child link="LAnklePitch"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.065 -0.003"/>
     <axis xyz="1.0 0 0"/>
     <limit effort="1.329" lower="-1.0" upper="1.0" velocity="8.26797"/>
   </joint>
@@ -237,22 +243,22 @@
   <link name="LAnklePitch">
      <visual>
       <geometry>
-        <mesh filename="meshes/LAnklePitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LAnklePitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="1.5757 0 1.5757" xyz="3 -31 0.0"/>
+      <origin rpy="1.5757 0 1.5757" xyz="0.0 -0.0135 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LAnklePitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LAnklePitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="1.5757 0 1.5757" xyz="0.0 -0.014 0.0"/>
+      <origin rpy="1.5757 0 1.5757" xyz="0.0 -0.0135 0.0"/>
     </collision>
   </link>
  
-  <joint name="LAnkleRoll" type="revolute">
+  <joint name="LAnkleRoll_joint" type="revolute">
     <parent link="LAnklePitch"/>
     <child link="LAnkleRoll"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.035 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.036 0.0"/>
     <axis xyz="0 0 1.0"/>
     <limit effort="1.329" lower="-0.85" upper="0.45" velocity="8.26797"/>
   </joint>
@@ -260,116 +266,115 @@
   <link name="LAnkleRoll">
      <visual>
       <geometry>
-        <mesh filename="meshes/LAnkleRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LAnkleRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0.0 0 0.0" xyz="-0.035 0.33 0.008"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.33 0.008"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/LAnkleRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/LAnkleRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.035 0.33 0.008"/>
+      <origin rpy="0 0 0" xyz="-0.036 0.33 0.008"/>
     </collision>
   </link>
 
 
-  <joint name="RShoulderPitch" type="revolute">
-    <parent link="torso"/>
-    <child link="RShoulder"/>
-    <origin rpy="0 0 0" xyz="-0.05 0.0 0.006"/>
+  <joint name="RShoulderPitch_joint" type="revolute">
+    <parent link="Torso"/>
+    <child link="RShoulderPitch"/>
+    <origin rpy="0 0 0" xyz="-0.05 0.0 0.005"/>
     <axis xyz="1.0 0 0"/>
     <limit effort="1.329" lower="-3.1415" upper="1.0471" velocity="8.26797"/>
   </joint>
 
-  <link name="RShoulder">
+  <link name="RShoulderPitch">
      <visual>
       <geometry>
-        <mesh filename="meshes/RShoulderPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RShoulderPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.05 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="0.05 0 -0.005"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RShoulderPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RShoulderPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.05 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="0.05 0 -0.005"/>
     </collision>
   </link>
 
-
-  <joint name="RShoulderRoll" type="revolute">
-    <parent link="RShoulder"/>
-    <child link="RBicep"/>
-    <origin rpy="0 0 0" xyz="-0.04 0.0 0.0"/>
+  <joint name="RShoulderRoll_joint" type="revolute">
+    <parent link="RShoulderPitch"/>
+    <child link="RShoulderRoll"/>
+    <origin rpy="0 0 0" xyz="-0.041 0.0 0.0"/>
     <axis xyz="0 0 1.0"/>
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
 
-  <link name="RBicep">
+  <link name="RShoulderRoll">
      <visual>
       <geometry>
-        <mesh filename="meshes/RShoulderRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RShoulderRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.09 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="0.091 0 -0.005"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RShoulderRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RShoulderRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.09 0 -0.006"/>
+      <origin rpy="0 0 0" xyz="0.091 0 -0.005"/>
     </collision>
   </link>
 
- <joint name="RElbowYaw" type="revolute">
-    <parent link="RBicep"/>
+ <joint name="RElbow_joint" type="revolute">
+    <parent link="RShoulderRoll"/>
     <child link="RElbow"/>
-    <origin rpy="0 -1.575 3.14159" xyz="-0.075 0.0 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.0745 0.0 0.0"/>
     <axis xyz="0 1.0 0"/>
-    <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
+    <limit effort="1.329" lower="-0.31415" upper="1.5757" velocity="8.26797"/>
   </joint>
 
   <link name="RElbow">
      <visual>
       <geometry>
-        <mesh filename="meshes/RElbow_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RElbow_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 1.57 0" xyz="-5 0.0 0.135"/>
+      <origin rpy="0 -1.5757 3.1415" xyz="0.135 0.0 -0.012"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RElbow_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RElbow_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.0125 0.0 0.135"/>
+      <origin rpy="0 -1.5757 3.1415" xyz="0.135 0.0 -0.012"/>
     </collision>
   </link> 
 
-  <joint name="RHipYaw" type="revolute">
-    <parent link="torso"/>
+  <joint name="RHipYaw_joint" type="revolute">
+    <parent link="Torso"/>
     <child link="RHipYaw"/>
-    <origin rpy="-1.5757 0.0 3.14159" xyz="-0.035 -0.035 0.0"/>
-    <axis xyz="0 0 1.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.036 -0.055 0.0"/>
+    <axis xyz="0 1.0 0"/>
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
 
   <link name="RHipYaw">
      <visual>
       <geometry>
-        <mesh filename="meshes/RHipYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RHipYaw_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="1.57 3.14 0" xyz="-4 -4 0"/>
+      <origin rpy="1.5757 3.1415 0" xyz="0.0 0.02 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RHipYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RHipYaw_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <origin rpy="1.5757 3.1415 0" xyz="0.0 0.02 0.0"/>
     </collision>
   </link>
 
-  <joint name="RHipRoll" type="revolute">
+  <joint name="RHipRoll_joint" type="revolute">
     <parent link="RHipYaw"/>
     <child link="RHipRoll"/>
-    <origin rpy="1.5757 3.14159 0.0" xyz="0.0 0.0 0.09"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0705 0.0"/>
     <axis xyz="0 0 1.0"/>
     <limit effort="1.329" lower="-1.5757" upper="0.45" velocity="8.26797"/>
   </joint>
@@ -377,22 +382,22 @@
   <link name="RHipRoll">
      <visual>
       <geometry>
-        <mesh filename="meshes/RHipRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RHipRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.036 0.1255 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RHipRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RHipRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.036 0.1255 0.0"/>
+      <origin rpy="0 0 0" xyz="0.036 0.1255 0.0"/>
     </collision>
   </link>
  
-  <joint name="RHipPitch" type="revolute">
+  <joint name="RHipPitch_joint" type="revolute">
     <parent link="RHipRoll"/>
     <child link="RHipPitch"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.044 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.0426 0.0"/>
     <axis xyz="1.0 0 0"/>
     <limit effort="1.329" lower="-1.5757" upper="1.5757" velocity="8.26797"/>
   </joint>
@@ -400,45 +405,45 @@
   <link name="RHipPitch">
      <visual>
       <geometry>
-        <mesh filename="meshes/RHipPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RHipPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.035 0.168 0.0"/>
+      <origin rpy="0 0 0" xyz="0.036 0.1681 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RHipPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RHipPitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.035 0.168 0.0"/>
+      <origin rpy="0 0 0" xyz="0.036 0.1681 0.0"/>
     </collision>
   </link>
 
-  <joint name="RKnee" type="revolute">
+  <joint name="RKnee_joint" type="revolute">
     <parent link="RHipPitch"/>
     <child link="RKnee"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.06 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.065 -0.003"/>
     <axis xyz="1.0 0 0"/>
-    <limit effort="1.329" lower="0.0" upper="1.5757" velocity="8.26797"/>
+    <limit effort="1.329" lower="0.0" upper="2.05" velocity="8.26797"/>
   </joint>
 
   <link name="RKnee">
      <visual>
       <geometry>
-        <mesh filename="meshes/RKnee_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RKnee_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.035 0.228 0.0"/>
+      <origin rpy="0 0 0" xyz="0.036 0.233 0.003"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RKnee_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RKnee_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.035 0.228 0.0"/>
+      <origin rpy="0 0 0" xyz="0.036 0.233 0.003"/>
     </collision>
   </link>
 
-  <joint name="RAnklePitch" type="revolute">
+  <joint name="RAnklePitch_joint" type="revolute">
     <parent link="RKnee"/>
     <child link="RAnklePitch"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.065 -0.008"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.065 -0.003"/>
     <axis xyz="1.0 0 0"/>
     <limit effort="1.329" lower="-1.0" upper="1.0" velocity="8.26797"/>
   </joint>
@@ -446,38 +451,38 @@
   <link name="RAnklePitch">
      <visual>
       <geometry>
-        <mesh filename="meshes/RAnklePitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RAnklePitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="1.5757 0 1.5757" xyz="-3 -31 0.0"/>
+      <origin rpy="1.5757 0 1.5757" xyz="0.0 -0.0135 0.0"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RAnklePitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RAnklePitch_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="1.5757 0 1.5757" xyz="0.0 -0.014 0.0"/>
+      <origin rpy="1.5757 0 1.5757" xyz="0.0 -0.0135 0.0"/>
     </collision>
   </link>
  
-  <joint name="RAnkleRoll" type="revolute">
+  <joint name="RAnkleRoll_joint" type="revolute">
     <parent link="RAnklePitch"/>
     <child link="RAnkleRoll"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.035 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.036 0.0"/>
     <axis xyz="0 0 1.0"/>
-    <limit effort="1.329" lower="-0.85" upper="0.45" velocity="8.26797"/>
+    <limit effort="1.329" lower="-0.45" upper="0.85" velocity="8.26797"/>
   </joint>
 
   <link name="RAnkleRoll">
      <visual>
       <geometry>
-        <mesh filename="meshes/RAnkleRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RAnkleRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0.0 0 0.0" xyz="0.035 0.33 0.008"/>
+      <origin rpy="0 0 0" xyz="0.036 0.33 0.008"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/RAnkleRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <mesh filename="meshes/RAnkleRoll_0.10.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0.035 0.33 0.008"/>
+      <origin rpy="0 0 0" xyz="0.036 0.33 0.008"/>
     </collision>
   </link>  
 
