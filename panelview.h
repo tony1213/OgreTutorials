@@ -13,6 +13,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QString>
+#include "mycustomslider.h"
 
 class PanelView;
 
@@ -37,6 +38,40 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
 
+
+private Q_SLOTS:
+ 
+   void updateRobotAngle0(int value);
+   void updateRobotAngle1(int value);
+   void updateRobotAngle2(int value);
+   void updateRobotAngle3(int value);
+   void updateRobotAngle4(int value);
+   void updateRobotAngle5(int value);
+   void updateRobotAngle6(int value);
+   void updateRobotAngle7(int value);
+   void updateRobotAngle8(int value);
+   void updateRobotAngle9(int value);
+   void updateRobotAngle10(int value);
+   void updateRobotAngle11(int value);
+   void updateRobotAngle12(int value);
+   void updateRobotAngle13(int value);
+
+   //modify parameter...
+   void modifyParameterVar0(int value);
+   void modifyParameterVar1(int value);
+   void modifyParameterVar2(int value);
+   void modifyParameterVar3(int value);
+   void modifyParameterVar4(int value);
+   void modifyParameterVar5(int value);
+   void modifyParameterVar6(int value);
+   void modifyParameterVar7(int value);
+   void modifyParameterVar8(int value);
+   void modifyParameterVar9(int value);
+   void modifyParameterVar10(int value);
+   void modifyParameterVar11(int value);
+   void modifyParameterVar12(int value);
+   void modifyParameterVar13(int value);
+
 private:
    QWidget* mParent; 
 
@@ -46,9 +81,13 @@ private:
 
    QLabel *label[14];
    QSpinBox *var[14];
-   QSlider *slider[14];
+  // QSlider *slider[14];
+   MyCustomSlider *slider[14];
+
+   QString linkNames[21];
 
    void initVariablesUI();
+   void UpdateRobot(QString linkname, int valuH);
   // QString num2str(int i);
 
 };
