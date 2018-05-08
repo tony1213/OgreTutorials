@@ -16,7 +16,7 @@
 #include "mycustomslider.h"
 
 class PanelView;
-
+class Robot;
 #define INDEX_WIDTH 50
 #define VAR_WIDTH   100
 #define SLIDER_WIDTH  150
@@ -32,6 +32,7 @@ public:
     PanelView(QWidget* parent );
     ~PanelView();
     void update();
+    void setRobot(Robot* robot);
 protected:
 
     void paintEvent(QPaintEvent* event);
@@ -73,6 +74,7 @@ private Q_SLOTS:
    void modifyParameterVar13(int value);
 
 private:
+   Robot* robot_;
    QWidget* mParent; 
 
    QLabel *idLabel;
@@ -87,7 +89,7 @@ private:
    QString linkNames[21];
 
    void initVariablesUI();
-   void UpdateRobot(QString linkname, int valuH);
+   void UpdateRobot(const std::string& linkname, int valuH);
   // QString num2str(int i);
 
 };

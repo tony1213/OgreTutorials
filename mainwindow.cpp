@@ -21,7 +21,7 @@ OgreView::OgreView(QWidget* parent)
     mZoom = 1;
 
     //TODO
-    mRoot = new Ogre::Root("/home/tony/work/ogre/git2/OgreTutorials/Media/plugins.cfg");
+    mRoot = new Ogre::Root("/home/chenrui/new_Ogre_git/OgreTutorials/Media/plugins.cfg");
     setupRenderSystem();
     mRoot->initialise(false);
     setupResources();
@@ -75,7 +75,7 @@ void OgreView::setupResources()
     qDebug("setupResources");
     Ogre::ConfigFile cf;
     //TODO
-    cf.load("/home/tony/work/ogre/git2/OgreTutorials/Media/resources.cfg");
+    cf.load("/home/chenrui/new_Ogre_git/OgreTutorials/Media/resources.cfg");
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
     Ogre::String secName, typeName, archName;
 
@@ -136,9 +136,9 @@ void OgreView::createScene()
    
     //here, we will create node tree using  robot.h
     robot_ = new Robot(mSceneNode, mSceneManager,  "SimulatorRobot ");
-    robot_->load("/home/tony/work/ogre/git2/OgreTutorials/urdf/H3.urdf",true,false);
+    robot_->load("/home/chenrui/new_Ogre_git/OgreTutorials/urdf/H3.urdf",true,false);
     robot_->updateRobot();
-
+    mPanelView->setRobot(robot_);
 }
 
 void OgreView::createLight()
@@ -164,7 +164,6 @@ void OgreView::update()
         mRoot->renderOneFrame();
     }
     
-    qDebug(">>>>>>OgreView::update will show");
     mPanelView->show();
 
 }

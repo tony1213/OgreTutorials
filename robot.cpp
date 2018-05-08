@@ -187,6 +187,40 @@ void Robot::update(const LinkUpdater& updater){
         }
 }
 
+/** update the link position according to panel view*/
+void Robot::updateRobot(const std::string& linkname, int value){
+
+    qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>begin");
+    RobotLink* link = getLink(linkname);
+    if(link != NULL){
+        qDebug(">>>>>Robot::updateRobot>>>>>>>>>get corresponding link>>>>"); 
+
+        Ogre::Vector3 visual_position, collision_position;
+        Ogre::Quaternion visual_orientation, collision_orientation;
+        visual_position = link->getPosition();
+        visual_orientation = link->getOrientation();
+
+        std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
+        std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
+
+        for ( ; joint_it != joint_end ; ++joint_it )
+        {
+            RobotJoint *joint = getJoint(*joint_it);
+            if (joint)
+            {
+                qDebug(">>>>>Robot::updateRobot>>>>>>>>>get corresponding jonit>>>>");
+                joint->setTransforms(visual_position, visual_orientation);
+            }
+       }
+
+
+
+    }
+
+
+
+
+}
 RobotLink* Robot::LinkFactory::createLink(
     Robot* robot,
     Ogre::SceneManager* sceneManger ,
@@ -211,6 +245,7 @@ RobotLink* Robot::getLink( const std::string& name )
   M_NameToLink::iterator it = links_.find( name );
   if ( it == links_.end() )
   {
+    qDebug(">>>>>Robot::getLink failed");
     return NULL;
   }
 

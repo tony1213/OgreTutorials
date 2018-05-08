@@ -88,7 +88,7 @@ public:
   virtual void setVisible( bool visible );
 
   void updateRobot(); //add by chenrui
-
+  void updateRobot(const std::string& linkname, int value);
   /**
    * \brief Set whether the visual meshes of the robot should be visible
    * @param visible Whether the visual meshes of the robot should be visible

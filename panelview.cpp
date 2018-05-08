@@ -8,6 +8,7 @@
 #include <QDoubleSpinBox>
 #include <QString>
 #include <sstream>
+#include "robot.h"
 
 PanelView::PanelView(QWidget* parent)
  :QWidget(parent),
@@ -15,6 +16,7 @@ PanelView::PanelView(QWidget* parent)
  varLabel(NULL),
  angleLabel(NULL)
 {
+    robot_ = NULL; 
     initVariablesUI();
 }
 
@@ -36,6 +38,13 @@ PanelView::~PanelView()
         var[i] = NULL; 
         slider[i] = NULL; 
     }
+}
+
+
+void PanelView::setRobot(Robot* robot){
+
+    robot_ = robot; 
+
 }
 /*
 string PanelView::num2str(int i){
@@ -192,72 +201,86 @@ void PanelView::initVariablesUI(){
 
 void PanelView::updateRobotAngle0(int value){
 
+    UpdateRobot("Torso", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle0");
 
 }
 
 void PanelView::updateRobotAngle1(int value){
 
+    UpdateRobot("Torso", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle1");
 
 }
 void PanelView::updateRobotAngle2(int value){
 
+    UpdateRobot("Torso", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle2");
 
 }
 void PanelView::updateRobotAngle3(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle3");
 
 }
 void PanelView::updateRobotAngle4(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle4");
 
 }
 void PanelView::updateRobotAngle5(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle5");
 
 }
 void PanelView::updateRobotAngle6(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle6");
 
 }
 void PanelView::updateRobotAngle7(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle7");
 
 }
 void PanelView::updateRobotAngle8(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle8");
 
 }
 void PanelView::updateRobotAngle9(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle9");
 
 }
 void PanelView::updateRobotAngle10(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle10");
 
 }
 void PanelView::updateRobotAngle11(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle11");
 
 }
 void PanelView::updateRobotAngle12(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle12");
 
 }
 void PanelView::updateRobotAngle13(int value){
 
+    UpdateRobot("Head", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle13");
 
 }
@@ -336,13 +359,13 @@ void PanelView::modifyParameterVar13( int value){
 }
 
 
-void PanelView::UpdateRobot(QString linkname, int valuH){
+void PanelView::UpdateRobot(const std::string& linkname, int valuH){
 
+    if(NULL != robot_){
 
+        robot_->updateRobot(linkname, valuH);
 
-
-
-
+    }
 
 }
 void PanelView::update(){
