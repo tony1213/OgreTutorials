@@ -62,7 +62,9 @@ bool TFLinkUpdater::getLinkTransforms(const std::string& _link_name, Ogre::Vecto
   {
     link_name = tf::resolve(tf_prefix_, link_name);
   }
-  
+ 
+  qDebug("TFLinkUpdater::getLinkTransforms");
+  qDebug(link_name.c_str()); 
 
   Ogre::Vector3 position;
   Ogre::Quaternion orientation;

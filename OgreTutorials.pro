@@ -29,6 +29,7 @@ LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge  -lroscpp  -lrostime
 LIBS += -lboost_filesystem -lboost_system  -ltinyxml -lcurl 
 INCLUDEPATH += /opt/ros/kinetic/include
 
+ ROS_MASTER_URI=http://localhost:11311
 
 SOURCES += \
         main.cpp \

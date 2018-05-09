@@ -38,6 +38,8 @@
 
 FrameManager::FrameManager(boost::shared_ptr<tf::TransformListener> tf)
 {
+  int argc ; 
+  ros::init(argc,NULL,"FrameManager");
   if (!tf) tf_.reset(new tf::TransformListener(ros::NodeHandle(), ros::Duration(10*60), true));
   else tf_ = tf;
 

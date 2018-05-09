@@ -42,6 +42,9 @@
 #include <OgreResourceGroupManager.h>
 #include <tinyxml.h>
 
+#include "frame_manager.h"
+#include "tf_link_updater.h"
+
 
 Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const std::string& name)
   : visible_( true )
@@ -158,8 +161,12 @@ void Robot::update(const LinkUpdater& updater){
     {
         RobotLink* link = link_it->second;
         Ogre::Vector3 visual_position, collision_position;
-        Ogre::Quaternion visual_orientation, collision_orientation;        
-        if( updater.getLinkTransforms( link->getName(),
+        Ogre::Quaternion visual_orientation, collision_orientation; 
+        if(link != NULL){
+            qDebug(">>>update one link");
+            qDebug(link->getName().c_str()) ; //chenrui
+        }
+        if(link != NULL  && updater.getLinkTransforms( link->getName(),
                                    visual_position, visual_orientation,
                                    collision_position, collision_orientation
                                    ))
@@ -174,8 +181,11 @@ void Robot::update(const LinkUpdater& updater){
             for ( ; joint_it != joint_end ; ++joint_it )
             {
             RobotJoint *joint = getJoint(*joint_it);
+            //qDebug("jonit name is: " + joint->getName()) ; //chenrui
             if (joint)
             {
+                qDebug(">>>update one jonit");
+                qDebug(joint->getName().c_str()) ; //chenrui
                 joint->setTransforms(visual_position, visual_orientation);
             }
             }
@@ -191,6 +201,7 @@ void Robot::update(const LinkUpdater& updater){
 void Robot::updateRobot(const std::string& linkname, int value){
 
     qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>begin");
+    /*
     RobotLink* link = getLink(linkname);
     if(link != NULL){
         qDebug(">>>>>Robot::updateRobot>>>>>>>>>get corresponding link>>>>"); 
@@ -216,6 +227,15 @@ void Robot::updateRobot(const std::string& linkname, int value){
 
 
     }
+
+  */
+
+   // boost::shared_ptr<tf::TransformListener> tf = boost::shared_ptr<tf::TransformListener>();
+   // qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>step 1");
+    FrameManager *frame_manager_ = new FrameManager(NULL);
+    qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>step 2");
+    update( TFLinkUpdater(frame_manager_, NULL, "" ));
+    qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>step 3");
 
 
 
