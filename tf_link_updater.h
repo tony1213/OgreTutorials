@@ -27,14 +27,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef RVIZ_ROBOT_TF_LINK_UPDATER_H
-#define RVIZ_ROBOT_TF_LINK_UPDATER_H
+#ifndef ROBOT_TF_LINK_UPDATER_H
+#define ROBOT_TF_LINK_UPDATER_H
 
 #include "link_updater.h"
 
 #include <string>
 #include <boost/function.hpp>
 #include "coordinate_transform.h"
+#include "frame_manager.h"
 
 namespace tf
 {
@@ -42,13 +43,15 @@ class Transformer;
 }
 
 
+class FrameManager;
 
 class TFLinkUpdater : public LinkUpdater
 {
 public:
   typedef boost::function<void(StatusLevel, const std::string&, const std::string&)> StatusCallback;
 
-  TFLinkUpdater(CoordinateTransform* _manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
+ // TFLinkUpdater(CoordinateTransform* _manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
+  TFLinkUpdater(FrameManager* frame_manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
   virtual bool getLinkTransforms(const std::string& link_name, Ogre::Vector3& visual_position, Ogre::Quaternion& visual_orientation,
                                  Ogre::Vector3& collision_position, Ogre::Quaternion& collision_orientation) const;
 
@@ -56,6 +59,7 @@ public:
 
 private:
   CoordinateTransform* coordinate_manager_;
+  FrameManager* frame_manager_;
   StatusCallback status_callback_;
   std::string tf_prefix_;
 };

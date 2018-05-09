@@ -28,7 +28,7 @@
  */
 
 #include "tf_link_updater.h"
-//#include "frame_manager.h"
+#include "frame_manager.h"
 
 #include <tf/tf.h>
 
@@ -36,6 +36,7 @@
 #include <OgreQuaternion.h>
 #include <QDateTime>
 
+/*
 TFLinkUpdater::TFLinkUpdater(CoordinateTransform* _manager,  const StatusCallback& status_cb, const std::string& tf_prefix)
  : status_callback_(status_cb),
  coordinate_manager_(_manager),
@@ -43,25 +44,35 @@ TFLinkUpdater::TFLinkUpdater(CoordinateTransform* _manager,  const StatusCallbac
 {
 }
 
+*/
+TFLinkUpdater::TFLinkUpdater(FrameManager* frame_manager, const StatusCallback& status_cb, const std::string& tf_prefix)
+: status_callback_(status_cb)
+, tf_prefix_(tf_prefix)
+{
+    frame_manager_ = frame_manager;
+}
+
+
 bool TFLinkUpdater::getLinkTransforms(const std::string& _link_name, Ogre::Vector3& visual_position, Ogre::Quaternion& visual_orientation,
                                       Ogre::Vector3& collision_position, Ogre::Quaternion& collision_orientation) const
 {
   std::string link_name = _link_name;
-  /*
+  
   if (!tf_prefix_.empty())
   {
     link_name = tf::resolve(tf_prefix_, link_name);
   }
-  */
+  
 
   Ogre::Vector3 position;
   Ogre::Quaternion orientation;
   //will deal with pose transfom...lacking tf class to deal with data transform, we will not use ros tf and we will implment it by ourselves.
 
-  if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))
+ // if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))
+  if (!frame_manager_->getTransform(link_name, ros::Time(), position, orientation))
   {
     std::stringstream ss;
-    ss << "No transform from [" << link_name << "] to [" << coordinate_manager_->getFixedFrame() << "]";
+    //ss << "No transform from [" << link_name << "] to [" << frame_manager_->getFixedFrame() << "]";
     setLinkStatus(StatusProperty::Error, link_name, ss.str());
     return false;
   }

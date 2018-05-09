@@ -21,8 +21,10 @@ unix {
 
 workdir=$(cd $(dirname $0); pwd)
 
-LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge
+LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge  -lroscpp  -lrostime  -ltf
 #LIBS += -L"/usr/lib/x86_64-linux-gnu" -lcurl
+
+#-lroscpp  -lrostime  -ltf  these are for tf function...
 
 LIBS += -lboost_filesystem -lboost_system  -ltinyxml -lcurl 
 INCLUDEPATH += /opt/ros/kinetic/include
@@ -46,7 +48,8 @@ SOURCES += \
         tf_link_updater.cpp \
         coordinate_transform.cpp \
         panelview.cpp \
-        mycustomslider.cpp
+        mycustomslider.cpp \
+        frame_manager.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -66,7 +69,8 @@ HEADERS += \
         tf_link_updater.h \
         coordinate_transform.h \
         panelview.h \
-        mycustomslider.h
+        mycustomslider.h \
+        frame_manager.h
 
 FORMS += \
         mainwindow.ui
