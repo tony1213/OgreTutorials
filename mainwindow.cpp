@@ -178,7 +178,7 @@ void OgreView::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::RightButton){
         mouseRightPosOriginal = Ogre::Vector2(event->x(), event->y());
     }
-    robot_->updateRobot();//chenrui add for test
+  //  robot_->updateRobot();//chenrui add for test
 }
 
 void OgreView::mouseMoveEvent(QMouseEvent *event){

@@ -186,6 +186,7 @@ bool FrameManager::getTransform(const std::string& frame, ros::Time time, Ogre::
 {
   if ( !adjustTime(frame, time) )
   {
+    qDebug("return false 1");
     return false;
   }
 
@@ -196,6 +197,7 @@ bool FrameManager::getTransform(const std::string& frame, ros::Time time, Ogre::
 
   if (fixed_frame_.empty())
   {
+    qDebug("return false 2");
     return false;
   }
 
@@ -212,6 +214,7 @@ bool FrameManager::getTransform(const std::string& frame, ros::Time time, Ogre::
 
   if (!transform(frame, time, pose, position, orientation))
   {
+    qDebug("return false 3");
     return false;
   }
 
@@ -224,6 +227,7 @@ bool FrameManager::transform(const std::string& frame, ros::Time time, const geo
 {
   if ( !adjustTime(frame, time) )
   {
+    qDebug("return false 4");
     return false;
   }
 
@@ -249,6 +253,8 @@ bool FrameManager::transform(const std::string& frame, ros::Time time, const geo
   }
   catch(std::runtime_error& e)
   {
+    qDebug("return false 5");
+    
     return false;
   }
 

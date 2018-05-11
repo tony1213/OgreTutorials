@@ -42,7 +42,7 @@
 #include <OgreResourceGroupManager.h>
 #include <tinyxml.h>
 
-#include "frame_manager.h"
+//#include "frame_manager.h"
 #include "tf_link_updater.h"
 
 
@@ -59,7 +59,6 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
 
      setVisualVisible( visual_visible_ );
      setAlpha(1.0f);
-
 
 
 }
@@ -153,7 +152,7 @@ void  Robot::updateRobot(){
 
 }
 
-void Robot::update(const LinkUpdater& updater){
+void Robot::update(const LinkUpdater& updater, const std::string& linkname, int value){
 
     M_NameToLink::iterator link_it = links_.begin();
     M_NameToLink::iterator link_end = links_.end();
@@ -161,10 +160,23 @@ void Robot::update(const LinkUpdater& updater){
     {
         RobotLink* link = link_it->second;
         Ogre::Vector3 visual_position, collision_position;
-        Ogre::Quaternion visual_orientation, collision_orientation; 
+        Ogre::Quaternion visual_orientation, collision_orientation;
+
+        visual_position = link->getPosition();
+        visual_orientation = link->getOrientation(); 
         if(link != NULL){
-            qDebug(">>>update one link");
-            qDebug(link->getName().c_str()) ; //chenrui
+           // qDebug("will >>>>>>update one link");
+          //  qDebug(link->getName().c_str()) ; //chenrui
+            
+            if(link->getName() == linkname){
+                qDebug("************************************chenrui****************************");
+                qDebug(link->getName().c_str()) ;
+
+                visual_position.x = visual_position.x + 200;
+                visual_position.y = visual_position.y + 100;
+                visual_position.z = visual_position.z + 0;
+            }
+            
         }
         if(link != NULL  && updater.getLinkTransforms( link->getName(),
                                    visual_position, visual_orientation,
@@ -173,6 +185,8 @@ void Robot::update(const LinkUpdater& updater){
 
         {
 
+         
+            qDebug("-----link setTransforms ");   
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
             std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
@@ -184,7 +198,7 @@ void Robot::update(const LinkUpdater& updater){
             //qDebug("jonit name is: " + joint->getName()) ; //chenrui
             if (joint)
             {
-                qDebug(">>>update one jonit");
+                qDebug("-----jonit name is: ");
                 qDebug(joint->getName().c_str()) ; //chenrui
                 joint->setTransforms(visual_position, visual_orientation);
             }
@@ -200,45 +214,7 @@ void Robot::update(const LinkUpdater& updater){
 /** update the link position according to panel view*/
 void Robot::updateRobot(const std::string& linkname, int value){
 
-    qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>begin");
-    /*
-    RobotLink* link = getLink(linkname);
-    if(link != NULL){
-        qDebug(">>>>>Robot::updateRobot>>>>>>>>>get corresponding link>>>>"); 
-
-        Ogre::Vector3 visual_position, collision_position;
-        Ogre::Quaternion visual_orientation, collision_orientation;
-        visual_position = link->getPosition();
-        visual_orientation = link->getOrientation();
-
-        std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
-        std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
-
-        for ( ; joint_it != joint_end ; ++joint_it )
-        {
-            RobotJoint *joint = getJoint(*joint_it);
-            if (joint)
-            {
-                qDebug(">>>>>Robot::updateRobot>>>>>>>>>get corresponding jonit>>>>");
-                joint->setTransforms(visual_position, visual_orientation);
-            }
-       }
-
-
-
-    }
-
-  */
-
-   // boost::shared_ptr<tf::TransformListener> tf = boost::shared_ptr<tf::TransformListener>();
-   // qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>step 1");
-    FrameManager *frame_manager_ = new FrameManager(NULL);
-    qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>step 2");
-    update( TFLinkUpdater(frame_manager_, NULL, "" ));
-    qDebug(">>>>>Robot::updateRobot>>>>>>>>>>>>>step 3");
-
-
-
+    update( TFLinkUpdater(frame_manager_, NULL, "" ), linkname, value);
 
 }
 RobotLink* Robot::LinkFactory::createLink(
@@ -434,8 +410,10 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
       joint->setRobotAlpha( alpha_ );
     }
   }
- 
 
+     frame_manager_ = new FrameManager(NULL);
+    // frame_manager_->setFixedFrame("/Torso"); 
+     frame_manager_->setFixedFrame("/base_link");
 }
 
 

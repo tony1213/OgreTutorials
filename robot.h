@@ -40,6 +40,7 @@
 #include <urdf/model.h> // can be replaced later by urdf_model/types.h
 #include "robot_link.h"
 
+#include "frame_manager.h"
 #include "link_updater.h"
 
 namespace Ogre
@@ -79,7 +80,7 @@ public:
    * \brief Clears all data loaded from a URDF
    */
   virtual void clear();
-  virtual void update(const LinkUpdater& updater);
+  virtual void update(const LinkUpdater& updater, const std::string& linkname, int value);
 
     /**
    * \brief Set the robot as a whole to be visible or not
@@ -177,6 +178,7 @@ protected:
       bool visible_;                                ///< Should we show anything at all? (affects visual, collision, axes, and trails)
       bool visual_visible_;                         ///< Should we show the visual representation?
 
+      FrameManager *frame_manager_; 
 
 };
 
