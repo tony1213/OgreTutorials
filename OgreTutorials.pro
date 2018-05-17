@@ -13,8 +13,9 @@ TEMPLATE = app
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+# INCLUDEPATH += /usr/local/include/OGRE
 unix {
-    INCLUDEPATH += /usr/local/include/OGRE
+    INCLUDEPATH  += /usr/include/OGRE
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
 }
@@ -22,6 +23,8 @@ unix {
 workdir=$(cd $(dirname $0); pwd)
 
 LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge  -lroscpp  -lrostime  -ltf
+#LIBS += -L"/usr/lib/x86_64-linux-gnu"  -lOgreProperty
+LIBS+=/usr/lib/x86_64-linux-gnu/libOgreMain.so
 #LIBS += -L"/usr/lib/x86_64-linux-gnu" -lcurl
 
 #-lroscpp  -lrostime  -ltf  these are for tf function...

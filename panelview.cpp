@@ -173,35 +173,36 @@ void PanelView::initVariablesUI(){
                     this, SLOT(modifyParameterVar13(int)));
 
         //init linkNames which reprensent every robot link
-        linkNames[0]= "Torso";
-        linkNames[1]= "Neck";
-        linkNames[2]= "Head";
-        linkNames[3]= "LShoulderPitch";
-        linkNames[4]= "LShoulderRoll";
-        linkNames[5]= "LElbow";
-        linkNames[6]= "LHipYaw";
-        linkNames[7]= "LHipRoll";
+        linkNames[0]= "base_link"; 
+        linkNames[1]= "Torso";
+        linkNames[2]= "Neck";
+        linkNames[3]= "Head";
+        linkNames[4]= "LShoulderPitch";
+        linkNames[5]= "LShoulderRoll";
+        linkNames[6]= "LElbow";
+        linkNames[7]= "LHipYaw";
+        linkNames[8]= "LHipRoll";
 
-        linkNames[8]= "LHipPitch";
-        linkNames[9]= "LKnee";
-        linkNames[10]= "LAnklePitch";
-        linkNames[11]= "LAnkleRoll";
-        linkNames[12]= "RShoulderPitch";
-        linkNames[13]= "RShoulderRoll";
-        linkNames[14]= "RElbow";
-        linkNames[15]= "RHipYaw";
-        linkNames[16]= "RHipRoll";
-        linkNames[17]= "RHipPitch";
-        linkNames[18]= "RKnee";
-        linkNames[19]= "RAnklePitch";
-        linkNames[20]= "RAnkleRoll";
+        linkNames[9]= "LHipPitch";
+        linkNames[10]= "LKnee";
+        linkNames[11]= "LAnklePitch";
+        linkNames[12]= "LAnkleRoll";
+        linkNames[13]= "RShoulderPitch";
+        linkNames[14]= "RShoulderRoll";
+        linkNames[15]= "RElbow";
+        linkNames[16]= "RHipYaw";
+        linkNames[17]= "RHipRoll";
+        linkNames[18]= "RHipPitch";
+        linkNames[19]= "RKnee";
+        linkNames[20]= "RAnklePitch";
+       // linkNames[20]= "RAnkleRoll";
 
 }
 
 
 void PanelView::updateRobotAngle0(int value){
 
-    UpdateRobot("Torso", value);
+    UpdateRobot("base_link", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle0");
 
 }
@@ -214,7 +215,7 @@ void PanelView::updateRobotAngle1(int value){
 }
 void PanelView::updateRobotAngle2(int value){
 
-    UpdateRobot("Torso", value);
+    UpdateRobot("Neck", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle2");
 
 }
@@ -226,7 +227,7 @@ void PanelView::updateRobotAngle3(int value){
 }
 void PanelView::updateRobotAngle4(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("LShoulderPitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle4");
 
 }

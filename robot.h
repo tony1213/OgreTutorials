@@ -33,6 +33,7 @@
 #include <string>
 #include <map>
 
+#include <OGRE/Ogre.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 #include <OgreAny.h>
@@ -90,6 +91,7 @@ public:
 
   void updateRobot(); //add by chenrui
   void updateRobot(const std::string& linkname, int value);
+  void setOgreRoot(Ogre::Root* root);
   /**
    * \brief Set whether the visual meshes of the robot should be visible
    * @param visible Whether the visual meshes of the robot should be visible
@@ -115,6 +117,7 @@ public:
 
   
   void setAlpha(float a);
+
   float getAlpha() { return alpha_; }
   RobotLink* getRootLink() { return root_link_; }
   RobotLink* getLink( const std::string& name );
@@ -179,7 +182,7 @@ protected:
       bool visual_visible_;                         ///< Should we show the visual representation?
 
       FrameManager *frame_manager_; 
-
+      Ogre::Root* mRoot;
 };
 
 #endif /*ROBOT_H_ */

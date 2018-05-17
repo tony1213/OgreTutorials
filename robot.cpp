@@ -172,9 +172,9 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
                 qDebug("************************************chenrui****************************");
                 qDebug(link->getName().c_str()) ;
 
-                visual_position.x = visual_position.x + 200;
-                visual_position.y = visual_position.y + 100;
-                visual_position.z = visual_position.z + 0;
+            //    visual_position.x = visual_position.x + 200;
+            //    visual_position.y = visual_position.y + 100;
+            //    visual_position.z = visual_position.z + 0;
             }
             
         }
@@ -186,7 +186,11 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
         {
 
          
-            qDebug("-----link setTransforms ");   
+            qDebug("-----link setTransforms ");
+            visual_position.x = visual_position.x + 20;
+            visual_position.y = visual_position.y + 20;
+            visual_position.z = visual_position.z + 20;
+   
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
             std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
@@ -206,9 +210,10 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
         }
 
 
-
-
         }
+       mRoot->renderOneFrame();
+
+       //need to call: ogre_root_->renderOneFrame();
 }
 
 /** update the link position according to panel view*/
@@ -326,6 +331,10 @@ void Robot::addJointToLinkTree(LinkTreeStyle style,  Property *parent,  RobotJoi
   }
 }
 
+void Robot::setOgreRoot(Ogre::Root* root)
+{
+    mRoot = root; 
+}
 
 void Robot::setAlpha(float a)
 {
@@ -414,6 +423,7 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
      frame_manager_ = new FrameManager(NULL);
     // frame_manager_->setFixedFrame("/Torso"); 
      frame_manager_->setFixedFrame("/base_link");
+     //frame_manager_->setFixedFrame("/world");
 }
 
 

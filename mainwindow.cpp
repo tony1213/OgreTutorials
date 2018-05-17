@@ -5,6 +5,7 @@
 #include <QLabel>
 
 
+#include <OgreConfigFile.h>
 #include "robot.h"
 #include "panelview.h"
 
@@ -138,6 +139,7 @@ void OgreView::createScene()
     robot_ = new Robot(mSceneNode, mSceneManager,  "SimulatorRobot ");
     robot_->load("/home/chenrui/new_Ogre_git/OgreTutorials/urdf/H3.urdf",true,false);
     robot_->updateRobot();
+    robot_->setOgreRoot(mRoot);
     mPanelView->setRobot(robot_);
 }
 

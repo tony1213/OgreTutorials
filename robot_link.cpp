@@ -337,8 +337,8 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     {
       default_material_ = getMaterialForLink(link);
 
-      if(default_material_ == NULL)
-         qDebug(">>>>>>>>default_material_ == NULL");
+      //if(default_material_ == NULL)
+        // qDebug(">>>>>>>>default_material_ == NULL");
 
       std::stringstream ss;
       ss << default_material_->getName() << count++ << "Robot";

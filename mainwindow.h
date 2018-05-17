@@ -1,7 +1,7 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
 
-#include <OGRE/Ogre.h>
+
+#include <Ogre.h>
+
 #include <QWidget>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -61,4 +61,4 @@ private:
 
 
 };
-#endif // MAINWINDOW_H
+
