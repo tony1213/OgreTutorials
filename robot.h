@@ -117,6 +117,7 @@ public:
 
   
   void setAlpha(float a);
+  void initFrameManager();
 
   float getAlpha() { return alpha_; }
   RobotLink* getRootLink() { return root_link_; }

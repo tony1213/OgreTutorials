@@ -70,6 +70,8 @@ Robot::~Robot()
   scene_manager_->destroySceneNode(root_visual_node_);
   scene_manager_->destroySceneNode( root_other_node_->getName() );
   delete link_factory_;
+  delete frame_manager_;
+  frame_manager_ = NULL; 
   link_factory_ = NULL; 
 }
 
@@ -102,6 +104,15 @@ void Robot::clear()
 }
 
 
+void Robot::initFrameManager(){
+    // sleep(10);
+     qDebug(">>>>initFrameManager 1");
+     frame_manager_ = new FrameManager(NULL);
+     qDebug(">>>>initFrameManager 2");
+     frame_manager_->setFixedFrame("/base_link");
+     qDebug(">>>>initFrameManager 3");
+
+}
 void  Robot::updateRobot(){
 
     M_NameToLink::iterator link_it = links_.begin();
@@ -381,6 +392,8 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
   M_NameToUrdfLink::const_iterator link_it = urdf.links_.begin();
   M_NameToUrdfLink::const_iterator link_end = urdf.links_.end();
 
+  initFrameManager();
+
   for( ; link_it != link_end; ++link_it )
   {
       const urdf::LinkConstSharedPtr& urdf_link = link_it->second;
@@ -419,11 +432,13 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
       joint->setRobotAlpha( alpha_ );
     }
   }
-
+   //  initFrameManager();
+/*
+     qDebug(">>>>>create frame manager>>>>");
      frame_manager_ = new FrameManager(NULL);
-    // frame_manager_->setFixedFrame("/Torso"); 
      frame_manager_->setFixedFrame("/base_link");
-     //frame_manager_->setFixedFrame("/world");
+     qDebug(">>>>>setFixedFrame ok");
+   */  
 }
 
 

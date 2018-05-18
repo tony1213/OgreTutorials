@@ -2,6 +2,7 @@
 #include <QWidget>
 #include "mainwindow.h"
 #include <QVBoxLayout>
+#include <ros/ros.h>
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,8 @@ int main(int argc, char *argv[])
 
     window.resize(1600, 1200);
     window.setWindowTitle("Simple example");
+
+    ros::init(argc, argv, "test");
 
     OgreView* ogreWidget = new OgreView(&window);
 

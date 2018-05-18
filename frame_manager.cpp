@@ -38,10 +38,14 @@
 
 FrameManager::FrameManager(boost::shared_ptr<tf::TransformListener> tf)
 {
-  int argc ; 
-  ros::init(argc,NULL,"FrameManager");
+  int argc ;
+  qDebug("before ros::init"); 
+  
+ // ros::init(argc,NULL,"FrameManager");
+  qDebug("FrameManager constructed");
   if (!tf) tf_.reset(new tf::TransformListener(ros::NodeHandle(), ros::Duration(10*60), true));
   else tf_ = tf;
+  qDebug("FrameManager constructed 2");
 
   setSyncMode( SyncOff );
   setPause(false);
@@ -245,16 +249,24 @@ bool FrameManager::transform(const std::string& frame, ros::Time time, const geo
 
   tf::Stamped<tf::Pose> pose_in(tf::Transform(bt_orientation,bt_position), time, frame);
   tf::Stamped<tf::Pose> pose_out;
+  pose_in.setIdentity();
 
   // convert pose into new frame
   try
   {
+   // ros::Duration(0.5).sleep();
     tf_->transformPose( fixed_frame_, pose_in, pose_out );
   }
   catch(std::runtime_error& e)
   {
-    qDebug("return false 5");
-    
+      qDebug("transform error**************************************");
+      std::cout << fixed_frame_.c_str() << std::endl;
+      std::cout << frame.c_str() << std::endl;
+      std::cout << e.what() << std::endl;
+     // ros::Duration(0.5).sleep();
+     // ROS_DEBUG("Error transforming from frame '%s' to frame '%s': %s", frame.c_str(), fixed_frame_.c_str(), e.what());   
+
+ 
     return false;
   }
 
