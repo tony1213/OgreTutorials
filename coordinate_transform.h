@@ -29,6 +29,8 @@ public:
   ~CoordinateTransform();
 
 
+  void setFixedFrame(const std::string& frame);
+
 
   /** @brief Return the pose for a frame relative to the fixed frame, in Ogre classes, at a given time.
    * @param[in] frame The frame to find the pose of.

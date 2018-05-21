@@ -143,6 +143,9 @@ void OgreView::createScene()
     qDebug(">>>>>createScene 3");
     robot_->updateRobot();
     robot_->setOgreRoot(mRoot);
+    Ogre::Vector3  robotPos(0,0,0);
+    robot_->setPosition(robotPos);
+
     mPanelView->setRobot(robot_);
 }
 

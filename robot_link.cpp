@@ -89,12 +89,12 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
     position_property_ = new VectorProperty( "Position", Ogre::Vector3::ZERO,
                                            "Position of this link, in the current Fixed Frame.  (Not editable)",
                                            link_property_ );
-  position_property_->setReadOnly( true );
+ // position_property_->setReadOnly( true );
 
   orientation_property_ = new QuaternionProperty( "Orientation", Ogre::Quaternion::IDENTITY,
                                                   "Orientation of this link, in the current Fixed Frame.  (Not editable)",
                                                   link_property_ );
-  orientation_property_->setReadOnly( true );
+ // orientation_property_->setReadOnly( true );
 
   link_property_->collapse();
 
@@ -135,15 +135,6 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
   }
 
 
-  // link_property_->setDescription(desc.str().c_str());
-/*
-  if (!hasGeometry())
-  {
-   // link_property_->setIcon( rviz::loadPixmap( "package://rviz/icons/classes/RobotLinkNoGeom.png" ) );
-  //  alpha_property_->hide();
-    link_property_->setValue(QVariant());
-  }
-*/
 
 }
 
@@ -307,7 +298,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
 
       if ( mesh.filename.empty() )
           return;
-      scale = Ogre::Vector3(mesh.scale.x*100, mesh.scale.y*100, mesh.scale.z*100);
+      scale = Ogre::Vector3(mesh.scale.x*90, mesh.scale.y*90, mesh.scale.z*90);
 
       std::string model_name = mesh.filename;
       //will load mesh file and create entity
@@ -330,6 +321,12 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     offset_node->attachObject(entity);
     offset_node->setScale(scale);
     offset_node->setPosition(offset_position);
+    //set position and orientation  to link, chenrui
+
+    position_property_->setVector(offset_position );
+    orientation_property_->setQuaternion(offset_orientation );
+
+
     offset_node->setOrientation(offset_orientation);
     //perhaps set material
     static int count = 0;
@@ -337,8 +334,6 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     {
       default_material_ = getMaterialForLink(link);
 
-      //if(default_material_ == NULL)
-        // qDebug(">>>>>>>>default_material_ == NULL");
 
       std::stringstream ss;
       ss << default_material_->getName() << count++ << "Robot";
@@ -564,9 +559,10 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
     }
   }
 
-
+/*
   if( !valid_visual_found && link->visual && link->visual->geometry )
   {
+    qDebug(">>>>>RobotLink::createVisual>>>>>the second condistion");
     Ogre::Entity* visual_mesh = NULL;
     createEntityForGeometryElement( link, *link->visual->geometry, link->visual->origin, link->visual->material_name, visual_node_, visual_mesh );
     if( visual_mesh )
@@ -574,7 +570,7 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
       visual_meshes_.push_back( visual_mesh );
     }
   }
-
+*/
   visual_node_->setVisible(true);
 
 

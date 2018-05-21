@@ -63,6 +63,10 @@ RobotJoint::RobotJoint( Robot* robot, const urdf::JointConstSharedPtr& joint )
   joint_origin_rot_ = Ogre::Quaternion(rot.w, rot.x, rot.y, rot.z);
 
 
+  //following two lines is added by chenrui
+  position_property_->setVector(joint_origin_pos_);
+  orientation_property_->setQuaternion(joint_origin_rot_ );
+
 }
 
 RobotJoint::~RobotJoint()

@@ -36,7 +36,7 @@
 #include <OgreQuaternion.h>
 #include <QDateTime>
 
-/*
+
 TFLinkUpdater::TFLinkUpdater(CoordinateTransform* _manager,  const StatusCallback& status_cb, const std::string& tf_prefix)
  : status_callback_(status_cb),
  coordinate_manager_(_manager),
@@ -44,7 +44,7 @@ TFLinkUpdater::TFLinkUpdater(CoordinateTransform* _manager,  const StatusCallbac
 {
 }
 
-*/
+
 TFLinkUpdater::TFLinkUpdater(FrameManager* frame_manager, const StatusCallback& status_cb, const std::string& tf_prefix)
 : status_callback_(status_cb)
 , tf_prefix_(tf_prefix)
@@ -70,9 +70,10 @@ bool TFLinkUpdater::getLinkTransforms(const std::string& _link_name, Ogre::Vecto
   Ogre::Quaternion orientation;
   //will deal with pose transfom...lacking tf class to deal with data transform, we will not use ros tf and we will implment it by ourselves.
 
- // if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))
-  if (!frame_manager_->getTransform(link_name, ros::Time(), position, orientation))
+  if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))
+ // if (!frame_manager_->getTransform(link_name, ros::Time(), position, orientation))
   {
+    qDebug("coordinate_manager_->getTransform  error....");
     std::stringstream ss;
     //ss << "No transform from [" << link_name << "] to [" << frame_manager_->getFixedFrame() << "]";
     setLinkStatus(StatusProperty::Error, link_name, ss.str());

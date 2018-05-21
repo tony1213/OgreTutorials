@@ -282,4 +282,4 @@ private:
 };
 
 
-#endif // RVIZ_FRAME_MANAGER_H
+#endif 

@@ -45,6 +45,16 @@
 //#include "frame_manager.h"
 #include "tf_link_updater.h"
 
+/*
+void linkUpdaterStatusFunction( StatusProperty::Level level,
+                                const std::string& link_name,
+                                const std::string& text,
+                                Robot* display )
+{
+  display->setStatus( level, QString::fromStdString( link_name ), QString::fromStdString( text ));
+}
+
+*/
 
 Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const std::string& name)
   : visible_( true )
@@ -108,8 +118,11 @@ void Robot::initFrameManager(){
     // sleep(10);
      qDebug(">>>>initFrameManager 1");
      frame_manager_ = new FrameManager(NULL);
+     pointtf_ = new CoordinateTransform();
      qDebug(">>>>initFrameManager 2");
      frame_manager_->setFixedFrame("/base_link");
+     pointtf_->setFixedFrame("/base_link");
+
      qDebug(">>>>initFrameManager 3");
 
 }
@@ -127,17 +140,6 @@ void  Robot::updateRobot(){
 
         {
 //            if(link->getName() == "Head"){
-//                link->setTransforms(Ogre::Vector3(0,10.16,-0.6),Ogre::Quaternion(1,0,0,0), collision_position, collision_orientation);
-//            }else if (link->getName() == "LElbow") {
-//                link->setTransforms(Ogre::Vector3(3.0,0,-0.65),visual_orientation, collision_position, collision_orientation);
-//            }else if (link->getName() == "RElbow") {
-//                link->setTransforms(Ogre::Vector3(-3.0,0,-0.65),visual_orientation, collision_position, collision_orientation);
-//            }else if (link->getName() == "LHipYaw") {
-//                link->setTransforms(Ogre::Vector3(3.6,-3.5,0),Ogre::Quaternion(1,0,0,0), collision_position, collision_orientation);
-//            }else if (link->getName() == "RHipYaw") {
-//                link->setTransforms(Ogre::Vector3(-3.6,-3.5,0),visual_orientation, collision_position, collision_orientation);
-//            }else if (link->getName() == "LAnklePitch") {
-//                link->setTransforms(Ogre::Vector3(3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
 //            }else if (link->getName() == "RAnklePitch") {
 //                link->setTransforms(Ogre::Vector3(-3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
 //            }else {
@@ -174,33 +176,34 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
         Ogre::Quaternion visual_orientation, collision_orientation;
 
         visual_position = link->getPosition();
-        visual_orientation = link->getOrientation(); 
+        visual_orientation = link->getOrientation();
+
+        qDebug("link name: %s, position: (%f,%f,%f)",link->getName().c_str(),visual_position.x,visual_position.y,visual_position.z); 
         if(link != NULL){
-           // qDebug("will >>>>>>update one link");
-          //  qDebug(link->getName().c_str()) ; //chenrui
             
             if(link->getName() == linkname){
                 qDebug("************************************chenrui****************************");
                 qDebug(link->getName().c_str()) ;
 
-            //    visual_position.x = visual_position.x + 200;
-            //    visual_position.y = visual_position.y + 100;
-            //    visual_position.z = visual_position.z + 0;
+                std::string parentJonitName = link->getParentJointName();
+               // RobotJoint *joint = getJoint(*joint_it);
+                
+
+               // visual_position.x = visual_position.x + 0.02;
+               // visual_position.y = visual_position.y + 0.02;
+               // visual_position.z = visual_position.z + 0.01;
             }
             
         }
-        if(link != NULL  && updater.getLinkTransforms( link->getName(),
+        if(link != NULL /*   && updater.getLinkTransforms( link->getName(),
                                    visual_position, visual_orientation,
                                    collision_position, collision_orientation
-                                   ))
+                                   )  */ )
 
         {
 
          
             qDebug("-----link setTransforms ");
-            visual_position.x = visual_position.x + 20;
-            visual_position.y = visual_position.y + 20;
-            visual_position.z = visual_position.z + 20;
    
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
@@ -230,7 +233,9 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
 /** update the link position according to panel view*/
 void Robot::updateRobot(const std::string& linkname, int value){
 
-    update( TFLinkUpdater(frame_manager_, NULL, "" ), linkname, value);
+   // update( TFLinkUpdater(frame_manager_, NULL, "" ), linkname, value);  //chenrui
+    update( TFLinkUpdater(pointtf_, NULL, "" ), linkname, value);  //chenrui
+   
 
 }
 RobotLink* Robot::LinkFactory::createLink(
@@ -432,13 +437,6 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
       joint->setRobotAlpha( alpha_ );
     }
   }
-   //  initFrameManager();
-/*
-     qDebug(">>>>>create frame manager>>>>");
-     frame_manager_ = new FrameManager(NULL);
-     frame_manager_->setFixedFrame("/base_link");
-     qDebug(">>>>>setFixedFrame ok");
-   */  
 }
 
 

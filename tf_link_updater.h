@@ -50,7 +50,7 @@ class TFLinkUpdater : public LinkUpdater
 public:
   typedef boost::function<void(StatusLevel, const std::string&, const std::string&)> StatusCallback;
 
- // TFLinkUpdater(CoordinateTransform* _manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
+  TFLinkUpdater(CoordinateTransform* _manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
   TFLinkUpdater(FrameManager* frame_manager, const StatusCallback& status_cb = StatusCallback(), const std::string& tf_prefix = std::string());
   virtual bool getLinkTransforms(const std::string& link_name, Ogre::Vector3& visual_position, Ogre::Quaternion& visual_orientation,
                                  Ogre::Vector3& collision_position, Ogre::Quaternion& collision_orientation) const;

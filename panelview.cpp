@@ -101,7 +101,6 @@ void PanelView::initVariablesUI(){
         var[i] = new QSpinBox(this);
         var[i]->setGeometry(QRect(250, height, 100, 20));
 
-       // slider[i] = new QSlider(this);
         slider[i] = new MyCustomSlider(this);
         slider[i]->setOrientation(Qt::Horizontal);
         slider[i]->setGeometry(QRect(360, height, 150, 20));

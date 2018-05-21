@@ -43,6 +43,7 @@
 
 #include "frame_manager.h"
 #include "link_updater.h"
+#include "coordinate_transform.h"
 
 namespace Ogre
 {
@@ -182,7 +183,8 @@ protected:
       bool visible_;                                ///< Should we show anything at all? (affects visual, collision, axes, and trails)
       bool visual_visible_;                         ///< Should we show the visual representation?
 
-      FrameManager *frame_manager_; 
+      FrameManager *frame_manager_;
+      CoordinateTransform  *pointtf_;  
       Ogre::Root* mRoot;
 };
 

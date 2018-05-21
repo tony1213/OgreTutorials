@@ -109,7 +109,7 @@ MemoryResource Retriever::get(const std::string& url)
     std::string package = mod_url.substr(0, pos);
     mod_url.erase(0, pos);
    // std::string package_path = ros::package::getPath(package);
-    std::string package_path = "/home/tony/Ogre_git/OgreTutorials";
+    std::string package_path = "/home/chenrui/Ogre_git/OgreTutorials";
     if (package_path.empty())
     {
       throw Exception(url, "Package [" + package + "] does not exist");
