@@ -42,8 +42,8 @@ bool CoordinateTransform::getTransform(const std::string& frame, QDateTime time,
     }
     boost::mutex::scoped_lock lock(cache_mutex_);
 
-    position = Ogre::Vector3(9999999, 9999999, 9999999);
-    orientation = Ogre::Quaternion::IDENTITY;
+  //  position = Ogre::Vector3(9999999, 9999999, 9999999);
+  //  orientation = Ogre::Quaternion::IDENTITY;
 
     if (fixed_frame_.empty())
     {
@@ -79,7 +79,7 @@ bool CoordinateTransform::getTransform(const std::string& frame, QDateTime time,
 
 bool CoordinateTransform::transform(const std::string& frame, QDateTime time, Ogre::Vector3& positionT,Ogre::Quaternion& orientationT,  Ogre::Vector3& position, Ogre::Quaternion& orientation){
 
-
+/*
     position = Ogre::Vector3::ZERO;
     orientation = Ogre::Quaternion::IDENTITY;
 
@@ -116,7 +116,7 @@ bool CoordinateTransform::transform(const std::string& frame, QDateTime time, Og
     orientation.w = outputOrientation.w;
 
 
-
+*/
 
     return true;
 }

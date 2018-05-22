@@ -66,9 +66,9 @@ bool TFLinkUpdater::getLinkTransforms(const std::string& _link_name, Ogre::Vecto
   qDebug("TFLinkUpdater::getLinkTransforms");
   qDebug(link_name.c_str()); 
 
-  Ogre::Vector3 position;
-  Ogre::Quaternion orientation;
-  //will deal with pose transfom...lacking tf class to deal with data transform, we will not use ros tf and we will implment it by ourselves.
+  Ogre::Vector3 position = visual_position;
+  Ogre::Quaternion orientation = visual_orientation;
+
 
   if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))
  // if (!frame_manager_->getTransform(link_name, ros::Time(), position, orientation))

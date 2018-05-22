@@ -172,115 +172,119 @@ void PanelView::initVariablesUI(){
                     this, SLOT(modifyParameterVar13(int)));
 
         //init linkNames which reprensent every robot link
-        linkNames[0]= "base_link"; 
-        linkNames[1]= "Torso";
-        linkNames[2]= "Neck";
-        linkNames[3]= "Head";
-        linkNames[4]= "LShoulderPitch";
-        linkNames[5]= "LShoulderRoll";
-        linkNames[6]= "LElbow";
-        linkNames[7]= "LHipYaw";
-        linkNames[8]= "LHipRoll";
+        linkNames[0]= "LShoulderRoll";
+        linkNames[1]= "LShoulderPitch"; //LShoulderPitch
+        linkNames[2]= "LElbow";
+        linkNames[3]= "LHipRoll";
+        linkNames[4]= "LHipPitch";
+        linkNames[5]= "LKnee";
+        linkNames[6]= "LAnklePitch";
+        linkNames[7]= "LAnkleRoll";
 
-        linkNames[9]= "LHipPitch";
-        linkNames[10]= "LKnee";
-        linkNames[11]= "LAnklePitch";
-        linkNames[12]= "LAnkleRoll";
-        linkNames[13]= "RShoulderPitch";
-        linkNames[14]= "RShoulderRoll";
-        linkNames[15]= "RElbow";
-        linkNames[16]= "RHipYaw";
-        linkNames[17]= "RHipRoll";
-        linkNames[18]= "RHipPitch";
-        linkNames[19]= "RKnee";
-        linkNames[20]= "RAnklePitch";
-       // linkNames[20]= "RAnkleRoll";
+        linkNames[8]= "RShoulderPitch";//RShoulderRoll
+        linkNames[9]= "RShoulderPitch";
+        linkNames[10]= "RElbow";
+        linkNames[11]= "RHipRoll";
+        linkNames[12]= "RHipPitch";
+        linkNames[13]= "RKnee";
+        linkNames[14]= "RAnklePitch";
+        linkNames[15]= "RAnkleRoll";
 
 }
 
 
 void PanelView::updateRobotAngle0(int value){
 
-    UpdateRobot("base_link", value);
+    UpdateRobot("LShoulderRoll", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle0");
 
 }
 
 void PanelView::updateRobotAngle1(int value){
 
-    UpdateRobot("Torso", value);
+    UpdateRobot("LShoulderPitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle1");
 
 }
 void PanelView::updateRobotAngle2(int value){
 
-    UpdateRobot("Neck", value);
+    UpdateRobot("LElbow", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle2");
 
 }
 void PanelView::updateRobotAngle3(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("LHipRoll", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle3");
 
 }
 void PanelView::updateRobotAngle4(int value){
 
-    UpdateRobot("LShoulderPitch", value);
+    UpdateRobot("LHipPitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle4");
 
 }
 void PanelView::updateRobotAngle5(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("LKnee", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle5");
 
 }
 void PanelView::updateRobotAngle6(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("LAnklePitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle6");
 
 }
 void PanelView::updateRobotAngle7(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("LAnkleRoll", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle7");
 
 }
+/*
+       linkNames[8]= "RShoulderPitch";//RShoulderRoll
+        linkNames[9]= "RShoulderPitch";
+        linkNames[10]= "RElbow";
+        linkNames[11]= "RHipRoll";
+        linkNames[12]= "RHipPitch";
+        linkNames[13]= "RKnee";
+        linkNames[14]= "RAnklePitch";
+        linkNames[15]= "RAnkleRoll";
+*/
 void PanelView::updateRobotAngle8(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("RShoulderPitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle8");
 
 }
 void PanelView::updateRobotAngle9(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("RShoulderPitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle9");
 
 }
 void PanelView::updateRobotAngle10(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("RElbow", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle10");
 
 }
 void PanelView::updateRobotAngle11(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("RElbow", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle11");
 
 }
 void PanelView::updateRobotAngle12(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("RHipRoll", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle12");
 
 }
 void PanelView::updateRobotAngle13(int value){
 
-    UpdateRobot("Head", value);
+    UpdateRobot("RHipPitch", value);
     qDebug(">>>>>chenrui>>>>updateRobotAngle13");
 
 }
@@ -288,6 +292,7 @@ void PanelView::updateRobotAngle13(int value){
 
 void PanelView::modifyParameterVar0( int value){
 
+    UpdateRobot("RKnee", value);
     qDebug(">>>>>chenrui>>>modifyParameterVar0");
 
 }

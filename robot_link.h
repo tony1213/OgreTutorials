@@ -89,6 +89,12 @@ public:
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
 
+  Ogre::Vector3 getOriginalPosition(){return originPos;}
+  Ogre::Quaternion getOriginalOrientation(){return originOrientation;}
+
+  void setOriginalPosition(Ogre::Vector3  position){ originPos = position; }
+  void setOriginalOrientation(Ogre::Quaternion  quaternion){originOrientation = quaternion; }
+
   bool hasGeometry() const;
   
   const std::string& getName() const { return name_; }
@@ -148,6 +154,9 @@ private:
   Ogre::RibbonTrail* trail_;
   Ogre::MaterialPtr color_material_;
   bool using_color_;
+
+  Ogre::Vector3  originPos; 
+  Ogre::Quaternion  originOrientation; 
 
   float material_alpha_; ///< If material is not a texture, this saves the alpha value set in the URDF, otherwise is 1.0.
   float robot_alpha_; ///< Alpha value from top-level robot alpha Property (set via setRobotAlpha())

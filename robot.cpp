@@ -144,6 +144,8 @@ void  Robot::updateRobot(){
 //                link->setTransforms(Ogre::Vector3(-3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
 //            }else {
                 link->setTransforms( visual_position, Ogre::Quaternion(1,-1,0,0), collision_position, collision_orientation );
+                link->setOriginalPosition(visual_position);
+                link->setOriginalOrientation(Ogre::Quaternion(1,-1,0,0));
 //            }
 
             std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
@@ -175,23 +177,83 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
         Ogre::Vector3 visual_position, collision_position;
         Ogre::Quaternion visual_orientation, collision_orientation;
 
-        visual_position = link->getPosition();
-        visual_orientation = link->getOrientation();
+        //visual_position = link->getPosition();
+        //visual_orientation = link->getOrientation();
 
-        qDebug("link name: %s, position: (%f,%f,%f)",link->getName().c_str(),visual_position.x,visual_position.y,visual_position.z); 
+      // qDebug("link name: %s, orientation is:: (%f,%f,%f)",link->getName().c_str(),visual_orientation.x,visual_orientation.y,visual_orientation.z);
+         visual_position = link->getOriginalPosition();
+         visual_orientation = link->getOriginalOrientation();
+
+        qDebug("link name: %s, position: (%f,%f,%f)",link->getName().c_str(),visual_position.x,visual_position.y,visual_position.z);
+     //   qDebug("link name: %s, orientation is:: (%f,%f,%f)",link->getName().c_str(),visual_orientation.x,visual_orientation.y,visual_orientation.z);
+     //   qDebug(">>>>>value is: %d", value); 
+
         if(link != NULL){
             
             if(link->getName() == linkname){
                 qDebug("************************************chenrui****************************");
                 qDebug(link->getName().c_str()) ;
 
-                std::string parentJonitName = link->getParentJointName();
+               // std::string parentJonitName = link->getParentJointName();
                // RobotJoint *joint = getJoint(*joint_it);
                 
+               if("LShoulderRoll" == linkname){
+                  double percent = (double)value/130; 
+               
+                   // visual_orientation.x = visual_orientation.x + percent * 3.14 ;
+                   // visual_orientation.y = visual_orientation.y + percent;
+                    visual_orientation.z = visual_orientation.z + percent;    
 
-               // visual_position.x = visual_position.x + 0.02;
-               // visual_position.y = visual_position.y + 0.02;
-               // visual_position.z = visual_position.z + 0.01;
+               }else if("LShoulderPitch" == linkname){
+
+                  double percent = (double)value/130;
+
+                  visual_position.x = visual_position.x + percent ;
+                  visual_position.y = visual_position.y + percent;
+                  visual_position.z = visual_position.z + percent;
+
+               }else if("LElbow" == linkname){
+                  double percent = (double)value/130;
+
+                  visual_position.x = visual_position.x + percent ;
+                  visual_position.y = visual_position.y + percent;
+                  visual_position.z = visual_position.z + percent;
+
+               }else if("LHipRoll" == linkname){
+                  double percent = (double)value/130;
+
+                  visual_position.x = visual_position.x + percent ;
+                  visual_position.y = visual_position.y + percent;
+                  visual_position.z = visual_position.z + percent; 
+
+               }else if("LHipPitch" == linkname){
+
+                 double percent = (double)value/130;
+
+                  visual_position.x = visual_position.x + percent ;
+                  visual_position.y = visual_position.y + percent;
+                  visual_position.z = visual_position.z + percent;
+
+
+              }else if("LKnee" == linkname){
+                  double percent = (double)value/130;
+
+                  visual_position.x = visual_position.x + percent ;
+                  visual_position.y = visual_position.y + percent;
+                  visual_position.z = visual_position.z + percent;
+
+              }else {
+
+                  double percent = (double)value/130;
+
+                  visual_position.x = visual_position.x + percent ;
+                  visual_position.y = visual_position.y + percent;
+                  visual_position.z = visual_position.z + percent;
+
+
+              }
+
+
             }
             
         }
@@ -213,7 +275,6 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
             for ( ; joint_it != joint_end ; ++joint_it )
             {
             RobotJoint *joint = getJoint(*joint_it);
-            //qDebug("jonit name is: " + joint->getName()) ; //chenrui
             if (joint)
             {
                 qDebug("-----jonit name is: ");
@@ -227,7 +288,6 @@ void Robot::update(const LinkUpdater& updater, const std::string& linkname, int 
         }
        mRoot->renderOneFrame();
 
-       //need to call: ogre_root_->renderOneFrame();
 }
 
 /** update the link position according to panel view*/

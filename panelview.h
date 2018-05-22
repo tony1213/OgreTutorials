@@ -83,14 +83,12 @@ private:
 
    QLabel *label[14];
    QSpinBox *var[14];
-  // QSlider *slider[14];
    MyCustomSlider *slider[14];
 
    QString linkNames[21];
 
    void initVariablesUI();
    void UpdateRobot(const std::string& linkname, int valuH);
-  // QString num2str(int i);
 
 };
 #endif

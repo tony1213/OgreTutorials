@@ -326,6 +326,10 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     position_property_->setVector(offset_position );
     orientation_property_->setQuaternion(offset_orientation );
 
+    qDebug("offset_orientation is:: (%f,%f,%f)",offset_orientation.x,offset_orientation.y,offset_orientation.z);
+
+
+    qDebug("originOrientation is:: (%f,%f,%f)",originOrientation.x,originOrientation.y,originOrientation.z); 
 
     offset_node->setOrientation(offset_orientation);
     //perhaps set material
