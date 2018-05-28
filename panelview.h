@@ -56,6 +56,8 @@ private Q_SLOTS:
    void updateRobotAngle11(int value);
    void updateRobotAngle12(int value);
    void updateRobotAngle13(int value);
+   void updateRobotAngle14(int value);
+   void updateRobotAngle15(int value);
 
    //modify parameter...
    void modifyParameterVar0(int value);
@@ -72,6 +74,8 @@ private Q_SLOTS:
    void modifyParameterVar11(int value);
    void modifyParameterVar12(int value);
    void modifyParameterVar13(int value);
+   void modifyParameterVar14(int value);
+   void modifyParameterVar15(int value);
 
 private:
    Robot* robot_;
@@ -81,9 +85,9 @@ private:
    QLabel *varLabel;
    QLabel *angleLabel;
 
-   QLabel *label[14];
-   QSpinBox *var[14];
-   MyCustomSlider *slider[14];
+   QLabel *label[16];
+   QSpinBox *var[16];
+   MyCustomSlider *slider[16];
 
    QString linkNames[21];
 

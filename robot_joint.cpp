@@ -84,6 +84,20 @@ Ogre::Quaternion RobotJoint::getOrientation()
   return orientation_property_->getQuaternion();
 }
 
+void RobotJoint::setPosition(Ogre::Vector3 pos){
+
+    joint_origin_pos_ = pos; 
+    position_property_->setVector(pos);
+
+
+}
+void RobotJoint::setOrientation(Ogre::Quaternion orientation){
+
+    joint_origin_rot_ = orientation; 
+    orientation_property_->setQuaternion(orientation);
+
+
+}
 void RobotJoint::setParentProperty(Property* new_parent)
 {
   Property* old_parent = joint_property_->getParent();
@@ -95,7 +109,15 @@ void RobotJoint::setParentProperty(Property* new_parent)
 }
 
 
+RobotLink*  RobotJoint::getParentLink(){
 
+    RobotLink* parent_link = robot_->getLink(parent_link_name_);
+    if (!parent_link)
+        return NULL;
+    else
+        return parent_link; 
+
+}
 RobotJoint* RobotJoint::getParentJoint()
 {
   RobotLink* parent_link = robot_->getLink(parent_link_name_);

@@ -224,6 +224,21 @@ void RobotLink::updateVisibility()
   */
 }
 
+  
+  void RobotLink::setPosition(Ogre::Vector3  position){
+     
+    visual_node_->setPosition(position );
+    position_property_->setVector( position );
+
+  }
+  void RobotLink::setOrientation(Ogre::Quaternion  quaternion){
+
+  visual_node_->setOrientation( quaternion );
+  orientation_property_->setQuaternion(quaternion );
+
+
+ }
+
 
 
 void RobotLink::setRobotAlpha( float a )
@@ -235,7 +250,7 @@ void RobotLink::setRobotAlpha( float a )
 void RobotLink::setTransforms( const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation,
                                const Ogre::Vector3& collision_position, const Ogre::Quaternion& collision_orientation )
 {
-  if ( visual_node_ )
+ // if ( visual_node_ )
   {
     visual_node_->setPosition( visual_position );
     visual_node_->setOrientation( visual_orientation );
@@ -247,6 +262,31 @@ void RobotLink::setTransforms( const Ogre::Vector3& visual_position, const Ogre:
 
 }
 
+void RobotLink::setNewTransforms(const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation){
+
+    //need to transform the pos and orientation
+
+    Ogre::Vector3 position = visual_position + visual_orientation * getPosition();
+    Ogre::Quaternion orientation = visual_orientation * getOrientation();
+     
+    visual_node_->setPosition(position );
+    visual_node_->setOrientation(orientation);
+  
+
+    position_property_->setVector( position);
+    orientation_property_->setQuaternion( orientation );
+
+
+
+
+}
+/*
+void RobotLink::setAngle(float angle){
+
+     // visual_node_->setPosition(1,0,0);
+     // visual_node_->yaw(Ogre::Degree(90.0f));
+}
+*/
 void RobotLink::setParentProperty(Property* new_parent)
 {
   Property* old_parent = link_property_->getParent();
@@ -257,18 +297,30 @@ void RobotLink::setParentProperty(Property* new_parent)
     new_parent->addChild(link_property_);
 }
 
+void RobotLink::rotate( Ogre::Quaternion q){
 
+    visual_node_->rotate(q);
+
+}
 Ogre::Vector3 RobotLink::getPosition()
 {
-  return position_property_->getVector();
+    return position_property_->getVector();
 }
 
 Ogre::Quaternion RobotLink::getOrientation()
 {
-  return orientation_property_->getQuaternion();
+    return orientation_property_->getQuaternion();
 }
 
+Ogre::Vector3 RobotLink::getWorldPosition(){
 
+    return visual_node_->convertLocalToWorldPosition(getPosition());
+}
+
+Ogre::Quaternion RobotLink::getWorldOrientation(){
+
+    return visual_node_->convertLocalToWorldOrientation(getOrientation());
+}
 void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity)
 {
 
@@ -329,7 +381,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     qDebug("offset_orientation is:: (%f,%f,%f)",offset_orientation.x,offset_orientation.y,offset_orientation.z);
 
 
-    qDebug("originOrientation is:: (%f,%f,%f)",originOrientation.x,originOrientation.y,originOrientation.z); 
+    qDebug("***************originOrientation is:: (%f,%f,%f)",originOrientation.x,originOrientation.y,originOrientation.z); 
 
     offset_node->setOrientation(offset_orientation);
     //perhaps set material

@@ -86,14 +86,22 @@ public:
   virtual void setTransforms(const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation,
                      const Ogre::Vector3& collision_position, const Ogre::Quaternion& collision_orientation);
 
+  void setNewTransforms(const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation);
+
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
 
   Ogre::Vector3 getOriginalPosition(){return originPos;}
   Ogre::Quaternion getOriginalOrientation(){return originOrientation;}
 
+  void setPosition(Ogre::Vector3  position);
+  void setOrientation(Ogre::Quaternion  quaternion);
+
   void setOriginalPosition(Ogre::Vector3  position){ originPos = position; }
   void setOriginalOrientation(Ogre::Quaternion  quaternion){originOrientation = quaternion; }
+
+  Ogre::Vector3 getWorldPosition();
+  Ogre::Quaternion getWorldOrientation();
 
   bool hasGeometry() const;
   
@@ -107,6 +115,7 @@ public:
   // Remove link_property_ from its old parent and add to new_parent.  If new_parent==NULL then leav unparented.
   void setParentProperty(Property* new_parent);
 
+  void rotate( Ogre::Quaternion q);
 public Q_SLOTS:
   /** @brief Update the visibility of the link elements: visual mesh, collision mesh, trail, and axes.
    *

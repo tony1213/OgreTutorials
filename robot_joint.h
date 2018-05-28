@@ -30,10 +30,11 @@ class RibbonTrail;
 
 class Robot;
 class RobotJoint;
+class RobotLink;
 class Property;
 class QuaternionProperty;
 class VectorProperty;
-
+//class Axes;
 
 /**
  * \struct RobotJoint
@@ -59,8 +60,14 @@ public:
   const Property* getJointProperty() const { return joint_property_; }
   Property* getJointProperty() { return joint_property_; }
   RobotJoint* getParentJoint();
+  RobotLink*  getParentLink();
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
+
+  void setPosition(Ogre::Vector3 pos);
+  void setOrientation(Ogre::Quaternion orientation);
+
+
   void setRobotAlpha(float a) {}
 
     // Remove joint_property_ from its old parent and add to new_parent.  If new_parent==NULL then leav unparented.
@@ -103,7 +110,7 @@ private:
 
   bool doing_set_checkbox_;   // prevents updateChildVisibility() from  touching children
 
- // Axes* axes_;
+//  Axes* axes_;
 
 };
 

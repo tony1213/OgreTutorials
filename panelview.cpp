@@ -29,7 +29,7 @@ PanelView::~PanelView()
     delete angleLabel; 
     angleLabel = NULL; 
 
-    for(int i = 0; i< 14; i++){
+    for(int i = 0; i< 16; i++){
         delete label[i];
         delete var[i]; 
         delete slider[i]; 
@@ -87,7 +87,7 @@ void PanelView::initVariablesUI(){
 
     int height = 30;
     QString number;  
-    for(int i = 0; i< 14; i++){
+    for(int i = 0; i< 16; i++){
         height = height + LINE_HEIGHT + LINE_MARGIN;
         
         label[i] = new QLabel(this);
@@ -140,7 +140,10 @@ void PanelView::initVariablesUI(){
                     this, SLOT(updateRobotAngle12(int)));
         QObject::connect(slider[13], SIGNAL(valueChanged(int)),
                     this, SLOT(updateRobotAngle13(int)));
-
+        QObject::connect(slider[14], SIGNAL(valueChanged(int)),
+                    this, SLOT(updateRobotAngle14(int)));
+        QObject::connect(slider[15], SIGNAL(valueChanged(int)),
+                    this, SLOT(updateRobotAngle15(int)));
 
         QObject::connect(var[0], SIGNAL(valueChanged(int)),
                     this, SLOT(modifyParameterVar0(int)));
@@ -170,122 +173,130 @@ void PanelView::initVariablesUI(){
                     this, SLOT(modifyParameterVar12(int)));
         QObject::connect(var[13], SIGNAL(valueChanged(int)),
                     this, SLOT(modifyParameterVar13(int)));
+        QObject::connect(var[14], SIGNAL(valueChanged(int)),
+                    this, SLOT(modifyParameterVar14(int)));
+        QObject::connect(var[15], SIGNAL(valueChanged(int)),
+                    this, SLOT(modifyParameterVar15(int)));
+
+
 
         //init linkNames which reprensent every robot link
-        linkNames[0]= "LShoulderRoll";
-        linkNames[1]= "LShoulderPitch"; //LShoulderPitch
-        linkNames[2]= "LElbow";
-        linkNames[3]= "LHipRoll";
-        linkNames[4]= "LHipPitch";
-        linkNames[5]= "LKnee";
-        linkNames[6]= "LAnklePitch";
-        linkNames[7]= "LAnkleRoll";
+        linkNames[0]= "LShoulderRoll_joint";
+        linkNames[1]= "LShoulderPitch_joint"; //LShoulderPitch
+        linkNames[2]= "LElbow_joint";
+        linkNames[3]= "LHipRoll_joint";
+        linkNames[4]= "LHipPitch_joint";
+        linkNames[5]= "LKnee_joint";
+        linkNames[6]= "LAnklePitch_joint";
+        linkNames[7]= "LAnkleRoll_joint";
 
-        linkNames[8]= "RShoulderPitch";//RShoulderRoll
-        linkNames[9]= "RShoulderPitch";
-        linkNames[10]= "RElbow";
-        linkNames[11]= "RHipRoll";
-        linkNames[12]= "RHipPitch";
-        linkNames[13]= "RKnee";
-        linkNames[14]= "RAnklePitch";
-        linkNames[15]= "RAnkleRoll";
+        linkNames[8]= "RShoulderRoll_joint";
+        linkNames[9]= "RShoulderPitch_joint";
+        linkNames[10]= "RElbow_joint";
+        linkNames[11]= "RHipRoll_joint";
+        linkNames[12]= "RHipPitch_joint";
+        linkNames[13]= "RKnee_joint";
+        linkNames[14]= "RAnklePitch_joint";
+        linkNames[15]= "RAnkleRoll_joint";
 
 }
 
 
 void PanelView::updateRobotAngle0(int value){
 
-    UpdateRobot("LShoulderRoll", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle0");
+    UpdateRobot("LShoulderRoll_joint", value);
 
 }
 
 void PanelView::updateRobotAngle1(int value){
 
-    UpdateRobot("LShoulderPitch", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle1");
+    UpdateRobot("LShoulderPitch_joint", value);
 
 }
 void PanelView::updateRobotAngle2(int value){
 
-    UpdateRobot("LElbow", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle2");
+    UpdateRobot("LElbow_joint", value);
 
 }
 void PanelView::updateRobotAngle3(int value){
 
-    UpdateRobot("LHipRoll", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle3");
+    UpdateRobot("LHipRoll_joint", value);
 
 }
 void PanelView::updateRobotAngle4(int value){
 
-    UpdateRobot("LHipPitch", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle4");
+    UpdateRobot("LHipPitch_joint", value);
 
 }
 void PanelView::updateRobotAngle5(int value){
 
-    UpdateRobot("LKnee", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle5");
+    UpdateRobot("LKnee_joint", value);
 
 }
 void PanelView::updateRobotAngle6(int value){
 
-    UpdateRobot("LAnklePitch", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle6");
+    UpdateRobot("LAnklePitch_joint", value);
 
 }
 void PanelView::updateRobotAngle7(int value){
 
-    UpdateRobot("LAnkleRoll", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle7");
+    UpdateRobot("LAnkleRoll_joint", value);
 
 }
+
 /*
-       linkNames[8]= "RShoulderPitch";//RShoulderRoll
-        linkNames[9]= "RShoulderPitch";
-        linkNames[10]= "RElbow";
-        linkNames[11]= "RHipRoll";
-        linkNames[12]= "RHipPitch";
-        linkNames[13]= "RKnee";
-        linkNames[14]= "RAnklePitch";
-        linkNames[15]= "RAnkleRoll";
+        linkNames[8]= "RShoulderRoll_joint";
+        linkNames[9]= "RShoulderPitch_joint";
+        linkNames[10]= "RElbow_joint";
+        linkNames[11]= "RHipRoll_joint";
+        linkNames[12]= "RHipPitch_joint";
+        linkNames[13]= "RKnee_joint";
+        linkNames[14]= "RAnklePitch_joint";
+        linkNames[15]= "RAnkleRoll_joint";
+
 */
+
 void PanelView::updateRobotAngle8(int value){
 
-    UpdateRobot("RShoulderPitch", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle8");
+    UpdateRobot("RShoulderRoll_joint", value);
 
 }
 void PanelView::updateRobotAngle9(int value){
 
-    UpdateRobot("RShoulderPitch", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle9");
+    UpdateRobot("RShoulderPitch_joint", value);
 
 }
 void PanelView::updateRobotAngle10(int value){
 
-    UpdateRobot("RElbow", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle10");
+    UpdateRobot("RElbow_joint", value);
 
 }
 void PanelView::updateRobotAngle11(int value){
 
-    UpdateRobot("RElbow", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle11");
+    UpdateRobot("RHipRoll_joint", value);
 
 }
 void PanelView::updateRobotAngle12(int value){
 
-    UpdateRobot("RHipRoll", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle12");
+    UpdateRobot("RHipPitch_joint", value);
 
 }
 void PanelView::updateRobotAngle13(int value){
 
-    UpdateRobot("RHipPitch", value);
-    qDebug(">>>>>chenrui>>>>updateRobotAngle13");
+    UpdateRobot("RKnee_joint", value);
+
+}
+
+void PanelView::updateRobotAngle14(int value){
+
+    UpdateRobot("RAnklePitch_joint", value);
+
+}
+
+
+void PanelView::updateRobotAngle15(int value){
+
+    UpdateRobot("RAnkleRoll_joint", value);
 
 }
 
@@ -293,75 +304,73 @@ void PanelView::updateRobotAngle13(int value){
 void PanelView::modifyParameterVar0( int value){
 
     UpdateRobot("RKnee", value);
-    qDebug(">>>>>chenrui>>>modifyParameterVar0");
 
 }
 
 void PanelView::modifyParameterVar1( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar1");
 
 }
 void PanelView::modifyParameterVar2( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar2");
 
 }
 void PanelView::modifyParameterVar3( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar3");
 
 }
 void PanelView::modifyParameterVar4( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar4");
 
 }
 void PanelView::modifyParameterVar5( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar5");
 
 }
 void PanelView::modifyParameterVar6( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar6");
 
 }
 void PanelView::modifyParameterVar7( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar7");
 
 }
 void PanelView::modifyParameterVar8( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar8");
 
 }
 void PanelView::modifyParameterVar9( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar9");
 
 }
 void PanelView::modifyParameterVar10( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar10");
 
 }
 void PanelView::modifyParameterVar11( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar11");
 
 }
 void PanelView::modifyParameterVar12( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar12");
 
 }
 void PanelView::modifyParameterVar13( int value){
 
-    qDebug(">>>>>chenrui>>>modifyParameterVar13");
 
 }
+
+void PanelView::modifyParameterVar14( int value){
+
+
+}
+
+
+void PanelView::modifyParameterVar15( int value){
+
+
+}
+
 
 
 void PanelView::UpdateRobot(const std::string& linkname, int valuH){

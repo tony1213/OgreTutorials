@@ -82,7 +82,7 @@ public:
    * \brief Clears all data loaded from a URDF
    */
   virtual void clear();
-  virtual void update(const LinkUpdater& updater, const std::string& linkname, int value);
+  virtual void update(const LinkUpdater& updater, const std::string& jonitname, int value);
 
     /**
    * \brief Set the robot as a whole to be visible or not
@@ -143,6 +143,10 @@ public:
   virtual const Ogre::Vector3& getPosition();
   virtual const Ogre::Quaternion& getOrientation();
 
+  //following function is to transform orodinate
+  Ogre::Quaternion quaternion_from_euler(float roll, float pitch, float yaw);
+  void local2World(Ogre::Vector3 locP, Ogre::Vector3 &worldP, Ogre::SceneNode * node); 
+
   class LinkFactory
   {
   public:
@@ -175,6 +179,7 @@ protected:
       Ogre::SceneNode* root_visual_node_;           ///< Node all our visual nodes are children of
       Ogre::SceneNode* root_other_node_;
       Ogre::SceneManager* scene_manager_;
+      Ogre::Camera* mCamera;
 
       std::string name_;
 
