@@ -9,6 +9,8 @@
 #include "robot.h"
 #include "panelview.h"
 
+int value = 0; 
+
 OgreView::OgreView(QWidget* parent)
  :QWidget(parent,Qt::WindowFlags(Qt::MSWindowsOwnDC)),
  mPanelView(NULL)
@@ -143,8 +145,10 @@ void OgreView::createScene()
     qDebug(">>>>>createScene 3");
     robot_->updateRobot();
     robot_->setOgreRoot(mRoot);
+    
     Ogre::Vector3  robotPos(0,0,0);
     robot_->setPosition(robotPos);
+    robot_->setCameraAndWindow(mCamera, mRenderWindow);
 
     mPanelView->setRobot(robot_);
 }
@@ -178,7 +182,12 @@ void OgreView::update()
 
 void OgreView::mousePressEvent(QMouseEvent* event)
 {
+
+
     qDebug("mousePressEvent");
+    // value = value + 20; 
+    // mSceneNode->setPosition(0,value,0);
+
     if(event->button() == Qt::LeftButton)
     {
         mouseLeftPosOriginal = Ogre::Vector2(event->x(), event->y());
@@ -186,7 +195,7 @@ void OgreView::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::RightButton){
         mouseRightPosOriginal = Ogre::Vector2(event->x(), event->y());
     }
-  //  robot_->updateRobot();//chenrui add for test
+  
 }
 
 void OgreView::mouseMoveEvent(QMouseEvent *event){
@@ -201,7 +210,7 @@ void OgreView::mouseMoveEvent(QMouseEvent *event){
         Ogre::Real yawValue = mouseLeftPosNew.x-mouseLeftPosOriginal.x;
         mSceneNode->yaw(Ogre::Degree(yawValue));
         mouseLeftPosOriginal = mouseLeftPosNew;
-    }
+    }  
     update();
 }
 

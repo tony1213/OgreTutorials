@@ -8,6 +8,8 @@
 #include "vector_property.h"
 #include "quaternion_property.h"
 
+#include <tf/transform_broadcaster.h>
+
 RobotJoint::RobotJoint( Robot* robot, const urdf::JointConstSharedPtr& joint )
   : robot_( robot )
   , name_( joint->name )
@@ -66,6 +68,22 @@ RobotJoint::RobotJoint( Robot* robot, const urdf::JointConstSharedPtr& joint )
   //following two lines is added by chenrui
   position_property_->setVector(joint_origin_pos_);
   orientation_property_->setQuaternion(joint_origin_rot_ );
+  _origin_pos_ = joint_origin_pos_;
+  _origin_rot_ = joint_origin_rot_;
+
+/*
+   static tf::TransformBroadcaster br;
+   tf::Transform transform;
+   transform.setOrigin( tf::Vector3(joint_origin_pos_.x, joint_origin_pos_.y,joint_origin_pos_.z) );
+   tf::Quaternion q;
+   q.setW(joint_origin_rot_.w);
+   q.setX(joint_origin_rot_.x);
+   q.setY(joint_origin_rot_.y);
+   q.setZ(joint_origin_rot_.z);
+
+   transform.setRotation(q);
+   br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), parent_link_name_, getName()));
+ */
 
 }
 
@@ -74,6 +92,16 @@ RobotJoint::~RobotJoint()
     delete joint_property_;
 }
 
+Ogre::Vector3 RobotJoint::getOrginalPosition(){
+
+    return _origin_pos_;
+
+}
+
+Ogre::Quaternion RobotJoint::getOrginalOrientation(){
+
+    return _origin_rot_; 
+}
 Ogre::Vector3 RobotJoint::getPosition()
 {
   return position_property_->getVector();
@@ -84,17 +112,15 @@ Ogre::Quaternion RobotJoint::getOrientation()
   return orientation_property_->getQuaternion();
 }
 
-void RobotJoint::setPosition(Ogre::Vector3 pos){
+void RobotJoint::setOrginalPosition(Ogre::Vector3 pos){
 
     joint_origin_pos_ = pos; 
-    position_property_->setVector(pos);
 
 
 }
-void RobotJoint::setOrientation(Ogre::Quaternion orientation){
+void RobotJoint::setOrginalOrientation(Ogre::Quaternion orientation){
 
     joint_origin_rot_ = orientation; 
-    orientation_property_->setQuaternion(orientation);
 
 
 }

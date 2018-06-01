@@ -64,8 +64,11 @@ public:
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
 
-  void setPosition(Ogre::Vector3 pos);
-  void setOrientation(Ogre::Quaternion orientation);
+  Ogre::Vector3 getOrginalPosition();
+  Ogre::Quaternion getOrginalOrientation();
+
+  void setOrginalPosition(Ogre::Vector3 pos);
+  void setOrginalOrientation(Ogre::Quaternion orientation);
 
 
   void setRobotAlpha(float a) {}
@@ -106,6 +109,11 @@ protected:
 private:
   Ogre::Vector3 joint_origin_pos_;
   Ogre::Quaternion joint_origin_rot_;
+
+
+  Ogre::Vector3  _origin_pos_;
+  Ogre::Quaternion  _origin_rot_;
+
   bool has_decendent_links_with_geometry_;
 
   bool doing_set_checkbox_;   // prevents updateChildVisibility() from  touching children

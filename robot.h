@@ -44,6 +44,8 @@
 #include "frame_manager.h"
 #include "link_updater.h"
 #include "coordinate_transform.h"
+#include <tf/transform_broadcaster.h>
+//#include <tf2_ros/transform_broadcaster.h>
 
 namespace Ogre
 {
@@ -147,6 +149,10 @@ public:
   Ogre::Quaternion quaternion_from_euler(float roll, float pitch, float yaw);
   void local2World(Ogre::Vector3 locP, Ogre::Vector3 &worldP, Ogre::SceneNode * node); 
 
+  void setCameraAndWindow(Ogre::Camera* camera, Ogre::RenderWindow* window);
+  bool world2Screen(Ogre::Vector3 objPos, Ogre::Vector2& screenPos);
+
+  void updateTfSystem();
   class LinkFactory
   {
   public:
@@ -179,7 +185,6 @@ protected:
       Ogre::SceneNode* root_visual_node_;           ///< Node all our visual nodes are children of
       Ogre::SceneNode* root_other_node_;
       Ogre::SceneManager* scene_manager_;
-      Ogre::Camera* mCamera;
 
       std::string name_;
 
@@ -191,6 +196,10 @@ protected:
       FrameManager *frame_manager_;
       CoordinateTransform  *pointtf_;  
       Ogre::Root* mRoot;
+      Ogre::Camera* pCamera;
+      Ogre::RenderWindow* pWindow;
+      bool updateTf; 
+    //  tf2_ros::TransformBroadcaster tf_broadcaster_;
 };
 
 #endif /*ROBOT_H_ */

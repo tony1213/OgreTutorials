@@ -45,6 +45,9 @@ FrameManager::FrameManager(boost::shared_ptr<tf::TransformListener> tf)
   qDebug("FrameManager constructed");
   if (!tf) tf_.reset(new tf::TransformListener(ros::NodeHandle(), ros::Duration(10*60), true));
   else tf_ = tf;
+
+
+
   qDebug("FrameManager constructed 2");
 
   setSyncMode( SyncOff );
@@ -216,6 +219,7 @@ bool FrameManager::getTransform(const std::string& frame, ros::Time time, Ogre::
   geometry_msgs::Pose pose;
   pose.orientation.w = 1.0f;
 
+  
   if (!transform(frame, time, pose, position, orientation))
   {
     qDebug("return false 3");
@@ -249,12 +253,11 @@ bool FrameManager::transform(const std::string& frame, ros::Time time, const geo
 
   tf::Stamped<tf::Pose> pose_in(tf::Transform(bt_orientation,bt_position), time, frame);
   tf::Stamped<tf::Pose> pose_out;
-  pose_in.setIdentity();
 
   // convert pose into new frame
   try
   {
-   // ros::Duration(0.5).sleep();
+   // tf_->waitForTransform(fixed_frame_, frame, ros::Time(0), ros::Duration(3.0));
     tf_->transformPose( fixed_frame_, pose_in, pose_out );
   }
   catch(std::runtime_error& e)
@@ -263,6 +266,7 @@ bool FrameManager::transform(const std::string& frame, ros::Time time, const geo
       std::cout << fixed_frame_.c_str() << std::endl;
       std::cout << frame.c_str() << std::endl;
       std::cout << e.what() << std::endl;
+     // ros::Duration(1.0).sleep();
      // ros::Duration(0.5).sleep();
      // ROS_DEBUG("Error transforming from frame '%s' to frame '%s': %s", frame.c_str(), fixed_frame_.c_str(), e.what());   
 

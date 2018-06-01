@@ -64,6 +64,9 @@
 #include "stl_loader.h"
 #include <QDebug>
 
+//#include <tf/transform_broadcaster.h>
+#include "robot_joint.h"
+
 namespace fs=boost::filesystem;
 
 #ifndef ROS_PACKAGE_NAME
@@ -98,14 +101,9 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
 
   link_property_->collapse();
 
-
-
-
-
-
-    scene_manager_ = scenemanager; 
-    visual_node_ = robot_->getVisualNode()->createChildSceneNode();
-    createVisual( link );
+  scene_manager_ = scenemanager; 
+  visual_node_ = robot_->getVisualNode()->createChildSceneNode();
+  createVisual( link );
 
 
     if (link->child_joints.empty())
@@ -134,7 +132,32 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
     }
   }
 
+    //add transform broadcast command
+/*
+    RobotJoint *parjoint = robot_->getJoint(parent_joint_name_);
+    if(NULL != parjoint){
+    std::string ppLinkName  = parjoint->getParentLinkName();
 
+
+    static tf::TransformBroadcaster br;
+    tf::Transform transform;
+    transform.setOrigin( tf::Vector3(getPosition().x, getPosition().y,getPosition().z) );
+    tf::Quaternion q;
+    q.setW(getOrientation().w);
+    q.setX(getOrientation().x);
+    q.setY(getOrientation().y);
+    q.setZ(getOrientation().z);
+
+    transform.setRotation(q);
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), ppLinkName, getName()));
+
+    qDebug(">>>>>>will send transform point to tf...chenrui");
+    }
+    else {
+        qDebug("NULL and current link's parent joint is: %s  ", parent_joint_name_.c_str());
+    }
+
+*/
 
 }
 
@@ -336,6 +359,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
   Ogre::Vector3 offset_position(Ogre::Vector3::ZERO);
   Ogre::Quaternion offset_orientation(Ogre::Quaternion::IDENTITY);
 
+  rOrigin = origin; 
 
   {
     Ogre::Vector3 position( origin.position.x, origin.position.y, origin.position.z );
@@ -350,8 +374,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
 
       if ( mesh.filename.empty() )
           return;
-      scale = Ogre::Vector3(mesh.scale.x*90, mesh.scale.y*90, mesh.scale.z*90);
-
+      scale = Ogre::Vector3(mesh.scale.x*100, mesh.scale.y*100, mesh.scale.z*100);
       std::string model_name = mesh.filename;
       //will load mesh file and create entity
       try
@@ -378,13 +401,27 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     position_property_->setVector(offset_position );
     orientation_property_->setQuaternion(offset_orientation );
 
-    qDebug("offset_orientation is:: (%f,%f,%f)",offset_orientation.x,offset_orientation.y,offset_orientation.z);
-
-
-    qDebug("***************originOrientation is:: (%f,%f,%f)",originOrientation.x,originOrientation.y,originOrientation.z); 
+    //qDebug("link offset_orientation is:: (%f,%f,%f)",offset_orientation.x,offset_orientation.y,offset_orientation.z);
+    qDebug("link name and pos is:: %s,  (%f,%f,%f)",getName().c_str(),offset_position.x,offset_position.y,offset_position.z);
 
     offset_node->setOrientation(offset_orientation);
-    //perhaps set material
+
+    //transform broadcast pos and orientation....
+   /*
+    static tf::TransformBroadcaster br;
+    tf::Transform transform;
+    transform.setOrigin( tf::Vector3(offset_position.x, offset_position.y,offset_position.z) );
+    tf::Quaternion q;
+    q.setW(offset_orientation.w);
+    q.setX(offset_orientation.x);
+    q.setY(offset_orientation.y);
+    q.setZ(offset_orientation.z);
+
+    transform.setRotation(q);
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), parent_joint_name_, getName()));
+
+*/
+
     static int count = 0;
     if (default_material_name_.empty())
     {
