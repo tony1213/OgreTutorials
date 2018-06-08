@@ -81,8 +81,6 @@ public:
   void useDetailProperty(bool use_detail);
 
 private Q_SLOTS:
- // void updateAxes();
- // void updateAxis();
   void updateChildVisibility();
 
 private:
@@ -118,7 +116,6 @@ private:
 
   bool doing_set_checkbox_;   // prevents updateChildVisibility() from  touching children
 
-//  Axes* axes_;
 
 };
 

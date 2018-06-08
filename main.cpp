@@ -6,14 +6,15 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
 
+    QApplication app(argc, argv);
+    ros::init(argc, argv, "robotEdit");
+ 
     QWidget window;
 
     window.resize(1600, 1200);
     window.setWindowTitle("Simple example");
 
-    ros::init(argc, argv, "test");
 
     OgreView* ogreWidget = new OgreView(&window);
 

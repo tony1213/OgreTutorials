@@ -45,7 +45,8 @@
 #include "link_updater.h"
 #include "coordinate_transform.h"
 #include <tf/transform_broadcaster.h>
-//#include <tf2_ros/transform_broadcaster.h>
+
+class QTimer;
 
 namespace Ogre
 {
@@ -78,7 +79,7 @@ public:
    * @param visual Whether or not to load the visual representation
    * @param collision Whether or not to load the collision representation
    */
-  virtual void load(std::string robot_description_, /* const urdf::ModelInterface &urdf, */ bool visual = true, bool collision = true );
+  virtual void load(std::string robot_file, /* const urdf::ModelInterface &urdf, */ bool visual = true, bool collision = true );
 
    /**
    * \brief Clears all data loaded from a URDF
@@ -134,6 +135,8 @@ public:
   const M_NameToJoint& getJoints() const { return joints_; }
 
   const std::string& getName() { return name_; }
+  const std::string& getRobotFile(){return urdfpath;  }
+  urdf::Model getUrdfModel(){return pUrdf; }
   Ogre::SceneNode* getVisualNode() { return root_visual_node_; }
   Ogre::SceneManager* getSceneManager() { return scene_manager_; }
   Ogre::SceneNode* getOtherNode() { return root_other_node_; }
@@ -152,7 +155,8 @@ public:
   void setCameraAndWindow(Ogre::Camera* camera, Ogre::RenderWindow* window);
   bool world2Screen(Ogre::Vector3 objPos, Ogre::Vector2& screenPos);
 
-  void updateTfSystem();
+  void startTfSystem();
+
   class LinkFactory
   {
   public:
@@ -164,6 +168,7 @@ public:
                                    bool collision);
     virtual RobotJoint* createJoint( Robot* robot, const urdf::JointConstSharedPtr& joint);
   };
+
 
 protected:
 
@@ -187,6 +192,7 @@ protected:
       Ogre::SceneManager* scene_manager_;
 
       std::string name_;
+      std::string urdfpath; 
 
       float alpha_;
 
@@ -198,8 +204,10 @@ protected:
       Ogre::Root* mRoot;
       Ogre::Camera* pCamera;
       Ogre::RenderWindow* pWindow;
-      bool updateTf; 
-    //  tf2_ros::TransformBroadcaster tf_broadcaster_;
+      bool updateTf;
+
+      urdf::Model pUrdf;
+
 };
 
 #endif /*ROBOT_H_ */

@@ -14,6 +14,12 @@
 #include <QDoubleSpinBox>
 #include <QString>
 #include "mycustomslider.h"
+#include <urdf/model.h> // can be replaced later by urdf_model/types.h
+#include <vector>
+#include <map>
+#include <sensor_msgs/JointState.h>
+#include <ros/ros.h>
+ #include <ros/console.h>
 
 class PanelView;
 class Robot;
@@ -22,6 +28,22 @@ class Robot;
 #define SLIDER_WIDTH  150
 #define LINE_MARGIN  10
 #define LINE_HEIGHT  20
+
+
+struct Joint
+{
+ // std::string name;   
+  float min;
+  float max;
+  float position;
+  float zero;
+
+  float effort;
+  float lower;
+  float upper;
+  float velocity;
+
+};
 
 
 class PanelView : public QWidget
@@ -33,6 +55,8 @@ public:
     ~PanelView();
     void update();
     void setRobot(Robot* robot);
+    void initJointStates();
+    void sendJointStatesToTf(); // to send joint state
 protected:
 
     void paintEvent(QPaintEvent* event);
@@ -89,10 +113,21 @@ private:
    QSpinBox *var[16];
    MyCustomSlider *slider[16];
 
-   QString linkNames[21];
+   std::string jointNames[16];
+
+   std::vector<std::string> joint_list;//describe the joint names
+   std::map<std::string, Joint> free_joints;
+
+   ros::NodeHandle _privateHandle;
+   ros::Publisher jointstate_pub;
+
 
    void initVariablesUI();
-   void UpdateRobot(const std::string& linkname, int valuH);
+   void UpdateRobot(const std::string& jointname, int valuH);
+
+   
+
+
 
 };
 #endif

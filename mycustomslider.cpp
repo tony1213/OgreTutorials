@@ -4,7 +4,7 @@
 MyCustomSlider::MyCustomSlider(QWidget *parent):QSlider(parent)  
 {  
    m_displayLabel=new QLabel(this);  
-   m_displayLabel->setFixedSize(QSize(20,20));  
+   m_displayLabel->setFixedSize(QSize(30,25));  
    //设置游标背景为白色  
    m_displayLabel->setAutoFillBackground(true);  
    QPalette palette;  

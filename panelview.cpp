@@ -9,6 +9,10 @@
 #include <QString>
 #include <sstream>
 #include "robot.h"
+#include <tinyxml.h>
+#include <urdf_model/model.h>
+
+#define RANGE  10000
 
 PanelView::PanelView(QWidget* parent)
  :QWidget(parent),
@@ -18,6 +22,8 @@ PanelView::PanelView(QWidget* parent)
 {
     robot_ = NULL; 
     initVariablesUI();
+
+    jointstate_pub = _privateHandle.advertise<sensor_msgs::JointState>("joint_states", 10);
 }
 
 PanelView::~PanelView()
@@ -43,16 +49,103 @@ PanelView::~PanelView()
 
 void PanelView::setRobot(Robot* robot){
 
-    robot_ = robot; 
+    robot_ = robot;
+    initJointStates();
+    sendJointStatesToTf(); 
 
 }
-/*
-string PanelView::num2str(int i){
-    stringstream ss;
-    ss<<i;
-    return ss.str();
+
+/** init JointStates for all joints*/
+void PanelView::initJointStates(){
+
+    if(NULL == robot_){
+        qDebug("error! robot_ is NULL");
+    }
+    urdf::Model urdf = robot_->getUrdfModel();
+
+    typedef std::map<std::string, urdf::JointSharedPtr > M_NameToUrdfJoint;
+    M_NameToUrdfJoint::const_iterator joint_it = urdf.joints_.begin();
+    M_NameToUrdfJoint::const_iterator joint_end = urdf.joints_.end();
+    for( ; joint_it != joint_end; ++joint_it )
+    {
+      const urdf::JointConstSharedPtr&  urdf_joint = joint_it->second;
+
+
+      if(urdf_joint->type == urdf::Joint::FLOATING || urdf_joint->type == urdf::Joint::FIXED)
+          continue;
+
+      const urdf::JointLimitsConstSharedPtr& limits = urdf_joint->limits;
+
+      Joint joint;
+      joint.effort   = limits->effort;
+      joint.lower    = limits->lower;
+      joint.upper    = limits->upper;
+      joint.velocity = limits->velocity;
+
+      joint.max  = limits->upper;
+      joint.min  =  limits->lower;
+      joint.position = 0;
+     // qDebug("joint.lower is: %f", joint.lower);
+      
+      /*
+      if self.zeros and name in self.zeros:
+                    zeroval = self.zeros[name]
+                elif minval > 0 or maxval < 0:
+                    zeroval = (maxval + minval)/2
+                else:
+                    zeroval = 0
+      */ 
+      if(joint.min > 0 || joint.max < 0)
+          joint.zero = (joint.max + joint.min)/2; 
+      else
+          joint.zero = 0; 
+
+      joint_list.push_back(urdf_joint->name);
+      free_joints[urdf_joint->name] = joint; 
+
+    }
+     
 }
-*/
+
+/**loop to send Joinstates to tf system*/
+void PanelView::sendJointStatesToTf(){
+   
+         
+    sensor_msgs::JointState msg;
+    msg.header.stamp = ros::Time::now();
+    int  number = free_joints.size();
+    int factor = 1; 
+    int offset = 0; 
+
+
+    for(int i = 0; i< number; i++){
+        std::string  name = joint_list.at(i);
+        Joint joint = free_joints[name];
+        msg.name.push_back(name);
+        msg.position.push_back(joint.position * factor + offset) ; 
+        msg.velocity.push_back(joint.velocity * factor);
+        msg.effort.push_back(joint.effort) ;  
+    }
+    
+    jointstate_pub.publish(msg);
+
+   // sleep(1); //delay for 1s
+}
+
+
+void PanelView::UpdateRobot(const std::string& jointname, int valuH){
+    Joint joint = free_joints[jointname];
+    float pctvalue = valuH / float(RANGE); 
+   // joint['min'] + (joint['max']-joint['min']) * pctvalue
+    double radiant = joint.min + (joint.max - joint.min) * pctvalue;  
+    free_joints[jointname].position = radiant ; 
+
+
+}
+
+
+
+
 /**init panel board UI*/
 void PanelView::initVariablesUI(){
 
@@ -106,8 +199,9 @@ void PanelView::initVariablesUI(){
         slider[i]->setGeometry(QRect(360, height, 150, 20));
 
         //here, perhaps different var has different range value
-        var[i]->setRange(0, 130);  
-        slider[i]->setRange(0, 130);  
+        var[i]->setRange(0, RANGE);  
+        slider[i]->setRange(0, RANGE);
+        slider[i]->setValue(RANGE/2);  
                  
 
     }
@@ -180,130 +274,108 @@ void PanelView::initVariablesUI(){
 
 
 
-        //init linkNames which reprensent every robot link
-        linkNames[0]= "LShoulderRoll_joint";
-        linkNames[1]= "LShoulderPitch_joint"; //LShoulderPitch
-        linkNames[2]= "LElbow_joint";
-        linkNames[3]= "LHipRoll_joint";
-        linkNames[4]= "LHipPitch_joint";
-        linkNames[5]= "LKnee_joint";
-        linkNames[6]= "LAnklePitch_joint";
-        linkNames[7]= "LAnkleRoll_joint";
+        //init jointNames which reprensent every robot revolute jonit
+        jointNames[0]= "LShoulderRoll_joint";
+        jointNames[1]= "LShoulderPitch_joint"; //LShoulderPitch
+        jointNames[2]= "LElbow_joint";
+        jointNames[3]= "LHipRoll_joint";
+        jointNames[4]= "LHipPitch_joint";
+        jointNames[5]= "LKnee_joint";
+        jointNames[6]= "LAnklePitch_joint";
+        jointNames[7]= "LAnkleRoll_joint";
 
-        linkNames[8]= "RShoulderRoll_joint";
-        linkNames[9]= "RShoulderPitch_joint";
-        linkNames[10]= "RElbow_joint";
-        linkNames[11]= "RHipRoll_joint";
-        linkNames[12]= "RHipPitch_joint";
-        linkNames[13]= "RKnee_joint";
-        linkNames[14]= "RAnklePitch_joint";
-        linkNames[15]= "RAnkleRoll_joint";
+        jointNames[8]= "RShoulderRoll_joint";
+        jointNames[9]= "RShoulderPitch_joint";
+        jointNames[10]= "RElbow_joint";
+        jointNames[11]= "RHipRoll_joint";
+        jointNames[12]= "RHipPitch_joint";
+        jointNames[13]= "RKnee_joint";
+        jointNames[14]= "RAnklePitch_joint";
+        jointNames[15]= "RAnkleRoll_joint";
 
 }
 
 
 void PanelView::updateRobotAngle0(int value){
 
-    UpdateRobot("LShoulderRoll_joint", value);
+    UpdateRobot(jointNames[0], value);
 
 }
 
 void PanelView::updateRobotAngle1(int value){
-
-    UpdateRobot("LShoulderPitch_joint", value);
-
+    UpdateRobot(jointNames[1], value);
 }
 void PanelView::updateRobotAngle2(int value){
 
-    UpdateRobot("LElbow_joint", value);
+    UpdateRobot(jointNames[2], value);
 
 }
 void PanelView::updateRobotAngle3(int value){
 
-    UpdateRobot("LHipRoll_joint", value);
-
+    UpdateRobot(jointNames[3], value);  
 }
 void PanelView::updateRobotAngle4(int value){
 
-    UpdateRobot("LHipPitch_joint", value);
-
+    UpdateRobot(jointNames[4], value);
 }
 void PanelView::updateRobotAngle5(int value){
 
-    UpdateRobot("LKnee_joint", value);
+    UpdateRobot(jointNames[5], value);
 
 }
 void PanelView::updateRobotAngle6(int value){
 
-    UpdateRobot("LAnklePitch_joint", value);
-
+    UpdateRobot(jointNames[6], value);
 }
 void PanelView::updateRobotAngle7(int value){
-
-    UpdateRobot("LAnkleRoll_joint", value);
+    UpdateRobot(jointNames[7], value);
 
 }
 
-/*
-        linkNames[8]= "RShoulderRoll_joint";
-        linkNames[9]= "RShoulderPitch_joint";
-        linkNames[10]= "RElbow_joint";
-        linkNames[11]= "RHipRoll_joint";
-        linkNames[12]= "RHipPitch_joint";
-        linkNames[13]= "RKnee_joint";
-        linkNames[14]= "RAnklePitch_joint";
-        linkNames[15]= "RAnkleRoll_joint";
-
-*/
 
 void PanelView::updateRobotAngle8(int value){
-
-    UpdateRobot("RShoulderRoll_joint", value);
+    UpdateRobot(jointNames[8], value);
 
 }
 void PanelView::updateRobotAngle9(int value){
-
-    UpdateRobot("RShoulderPitch_joint", value);
+   UpdateRobot(jointNames[9], value);
 
 }
 void PanelView::updateRobotAngle10(int value){
-
-    UpdateRobot("RElbow_joint", value);
+    UpdateRobot(jointNames[10], value);
 
 }
 void PanelView::updateRobotAngle11(int value){
-
-    UpdateRobot("RHipRoll_joint", value);
+    UpdateRobot(jointNames[11], value);
 
 }
 void PanelView::updateRobotAngle12(int value){
-
-    UpdateRobot("RHipPitch_joint", value);
+    UpdateRobot(jointNames[12], value);
 
 }
 void PanelView::updateRobotAngle13(int value){
-
-    UpdateRobot("RKnee_joint", value);
+    UpdateRobot(jointNames[13], value);
 
 }
 
 void PanelView::updateRobotAngle14(int value){
-
-    UpdateRobot("RAnklePitch_joint", value);
+    UpdateRobot(jointNames[14], value);
 
 }
 
 
 void PanelView::updateRobotAngle15(int value){
 
-    UpdateRobot("RAnkleRoll_joint", value);
-
+    UpdateRobot(jointNames[15], value);
 }
+
+
+
+//*********************************************************following is to change according to var 
 
 
 void PanelView::modifyParameterVar0( int value){
 
-    UpdateRobot("RKnee", value);
 
 }
 
@@ -372,16 +444,6 @@ void PanelView::modifyParameterVar15( int value){
 }
 
 
-
-void PanelView::UpdateRobot(const std::string& linkname, int valuH){
-
-    if(NULL != robot_){
-
-        robot_->updateRobot(linkname, valuH);
-
-    }
-
-}
 void PanelView::update(){
 
     QPainter p(this);

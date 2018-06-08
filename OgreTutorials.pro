@@ -13,7 +13,6 @@ TEMPLATE = app
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-# INCLUDEPATH += /usr/local/include/OGRE
 unix {
     INCLUDEPATH  += /usr/include/OGRE
     CONFIG += link_pkgconfig
@@ -22,12 +21,9 @@ unix {
 
 workdir=$(cd $(dirname $0); pwd)
 
-LIBS += -L"/opt/ros/kinetic/lib" -lurdf -lrosconsole_bridge  -lroscpp  -lrostime  -ltf
-#LIBS += -L"/usr/lib/x86_64-linux-gnu"  -lOgreProperty
-LIBS+=/usr/lib/x86_64-linux-gnu/libOgreMain.so
-#LIBS += -L"/usr/lib/x86_64-linux-gnu" -lcurl
-
-#-lroscpp  -lrostime  -ltf  these are for tf function...
+LIBS += -L"/opt/ros/kinetic/lib" -lurdf  -lroscpp  -lrostime  -ltf -lroscpp_serialization  -lrosconsole_log4cxx 
+LIBS+=/opt/ros/kinetic/lib/librosconsole.so
+LIBS+=/usr/lib/x86_64-linux-gnu/libOgreMain.so 
 
 LIBS += -lboost_filesystem -lboost_system  -ltinyxml -lcurl 
 INCLUDEPATH += /opt/ros/kinetic/include
@@ -53,7 +49,7 @@ SOURCES += \
         coordinate_transform.cpp \
         panelview.cpp \
         mycustomslider.cpp \
-        frame_manager.cpp
+        frame_manager.cpp 
 
 HEADERS += \
         mainwindow.h \
@@ -74,7 +70,7 @@ HEADERS += \
         coordinate_transform.h \
         panelview.h \
         mycustomslider.h \
-        frame_manager.h
+        frame_manager.h 
 
 FORMS += \
         mainwindow.ui

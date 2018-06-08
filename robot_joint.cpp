@@ -71,19 +71,6 @@ RobotJoint::RobotJoint( Robot* robot, const urdf::JointConstSharedPtr& joint )
   _origin_pos_ = joint_origin_pos_;
   _origin_rot_ = joint_origin_rot_;
 
-/*
-   static tf::TransformBroadcaster br;
-   tf::Transform transform;
-   transform.setOrigin( tf::Vector3(joint_origin_pos_.x, joint_origin_pos_.y,joint_origin_pos_.z) );
-   tf::Quaternion q;
-   q.setW(joint_origin_rot_.w);
-   q.setX(joint_origin_rot_.x);
-   q.setY(joint_origin_rot_.y);
-   q.setZ(joint_origin_rot_.z);
-
-   transform.setRotation(q);
-   br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), parent_link_name_, getName()));
- */
 
 }
 

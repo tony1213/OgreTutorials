@@ -406,21 +406,6 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
 
     offset_node->setOrientation(offset_orientation);
 
-    //transform broadcast pos and orientation....
-   /*
-    static tf::TransformBroadcaster br;
-    tf::Transform transform;
-    transform.setOrigin( tf::Vector3(offset_position.x, offset_position.y,offset_position.z) );
-    tf::Quaternion q;
-    q.setW(offset_orientation.w);
-    q.setX(offset_orientation.x);
-    q.setY(offset_orientation.y);
-    q.setZ(offset_orientation.z);
-
-    transform.setRotation(q);
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), parent_joint_name_, getName()));
-
-*/
 
     static int count = 0;
     if (default_material_name_.empty())

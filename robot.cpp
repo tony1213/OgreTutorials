@@ -44,6 +44,7 @@
 #include <tinyxml.h>
 #include <OgreVector4.h>
 #include <pthread.h>
+#include <QTimer>
 
 //#include "frame_manager.h"
 #include "tf_link_updater.h"
@@ -71,6 +72,8 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
   , name_( name )
 {
 
+    ros::NodeHandle n_tilde("~");
+
     updateTf = false; 
     root_visual_node_ = root_node->createChildSceneNode();
     root_other_node_ = root_node->createChildSceneNode();
@@ -82,6 +85,8 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
 
 
 }
+
+
 
 
 Robot::~Robot()
@@ -125,24 +130,21 @@ void Robot::clear()
 
 
 void Robot::initFrameManager(){
-    // sleep(10);
-     frame_manager_ = new FrameManager(NULL);
-     pointtf_ = new CoordinateTransform();
-     frame_manager_->setFixedFrame("/base_link");
-     pointtf_->setFixedFrame("/base_link");
-/*
-     static tf::TransformBroadcaster br;
-    tf::Transform transform;
-    transform.setOrigin( tf::Vector3(0, 0, 0.2475) );
-    tf::Quaternion q;// = offset_orientation;
-    q.setW(0);
-    q.setX(0);
-    q.setY(0);
-    q.setZ(0);
 
-    transform.setRotation(q);
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/base_link", "/torso_joint"));
-*/
+
+    startTfSystem(); 
+
+    boost::shared_ptr<tf::TransformListener> tf ;
+    tf.reset(new tf::TransformListener(ros::NodeHandle(), ros::Duration(10*60), true));
+
+    qDebug(">>>>>step 4");
+     frame_manager_ = new FrameManager(tf);
+    qDebug(">>>>>step 5");
+     pointtf_ = new CoordinateTransform();
+     qDebug(">>>>>step 6");
+     frame_manager_->setFixedFrame("/base_link");
+    // pointtf_->setFixedFrame("/base_link");
+
 
 }
 void  Robot::updateRobot(){
@@ -264,7 +266,6 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
     RobotJoint *joint = getJoint(jonitname);
     std::string linkname = joint->getChildLinkName(); 
 
-    updateTfSystem();   
  
 
     M_NameToLink::iterator link_it = links_.begin();
@@ -321,6 +322,22 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
                 //roll 1,57, pitch 0, yaw -1.57;
 
 
+               // float roll  = 0;
+               // float pitch = 1.57;
+               // float yaw   = 0;
+
+                Ogre::Vector3 linkPos(32, 20, 0);
+               // visual_position.x = 32;
+               // visual_position.y = 20;
+               // visual_position.z = 0; 
+
+               // Ogre::Quaternion  transform_orientation = quaternion_from_euler(roll,pitch, yaw);
+               // visual_position = linkPos +  transform_orientation * visual_position;
+               // visual_orientation = visual_orientation * transform_orientation;
+    
+      
+               // updater.getLinkTransforms( link->getName(), visual_position, visual_orientation, collision_position, collision_orientation );
+
                }
 
           }
@@ -333,7 +350,8 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
 
         {
 
-   
+  
+             
               
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
@@ -348,7 +366,7 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
             {
                 joint->setTransforms(visual_position, visual_orientation);
                 if(joint->getName() == "LShoulderPitch_joint"){ 
-                    
+                    /*
                     
                     Ogre::Vector3 position = joint->getPosition();
                     Ogre::Quaternion orientation = joint->getOrientation(); 
@@ -364,7 +382,7 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
                     RobotLink *childLink2 = getLink("LElbow");
                     childLink2->setOrientation(orientation2);
                     childLink2->setPosition(position2);
-                                       
+                   */                    
                     
                 } 
             }
@@ -378,47 +396,28 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
 }
 
 
-void Robot::updateTfSystem(){
-
-    
-    static tf::TransformBroadcaster br;
-
-   // ros::Rate r(100);
+void Robot::startTfSystem(){
 
 
-    M_NameToLink::iterator link_it = links_.begin();
-    M_NameToLink::iterator link_end = links_.end();
-    for ( ; link_it != link_end; ++link_it )
-    {
-  
-       // r.sleep();
-        RobotLink* link = link_it->second;
-        std::string parJointName  = link->getParentJointName();
-        RobotJoint * parJoint = getJoint(parJointName); 
-        if(NULL!= parJoint){
-            std::string ppLinkName  = parJoint->getParentLinkName();
-            RobotLink* pplink = getLink(ppLinkName);
-            if(NULL != pplink){
-                    tf::Transform transform;
-                    transform.setOrigin( tf::Vector3(link->getPosition().x, link->getPosition().y,link->getPosition().z) );
-                    tf::Quaternion q;
-                    q.setW(link->getOrientation().w);
-                    q.setX(link->getOrientation().x);
-                    q.setY(link->getOrientation().y);
-                    q.setZ(link->getOrientation().z);
+    //we first start joint_state_publisher py file
+/*
+    pid_t pid;
 
-                    transform.setRotation(q);
-                    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), ppLinkName, link->getName()));
-                    qDebug(">>>>>>parent link and current link is: %s, %s",  ppLinkName.c_str(), link->getName().c_str());
-
-                }
-
-
-            }
-
+    pid=fork();
+    if (pid < 0)
+        printf("error in fork!");
+    else if (pid == 0) {
+        printf("pid=%d\n",getpid());
+        printf("son\n");
+        qDebug(">>>>>>.create child process ok>>>chenrui>>>");
+        system("roslaunch bcas robotstate.launch");
     }
-    
+    else {
+        printf("pid=%d\n",getpid());
+        printf("father\n");
+    }
 
+*/
 
 
 }
@@ -563,10 +562,12 @@ void Robot::setAlpha(float a)
 /** void RobotModelDisplay::load() **
 * robot_description_ is: urdf file name...
 ***/
-void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface &urdf, */ bool visual, bool collision ){
+void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, */ bool visual, bool collision ){
 
    TiXmlDocument doc;
-   doc.LoadFile(robot_description_);
+   doc.LoadFile(robot_file);
+
+   urdfpath = robot_file; 
 
    if( !doc.RootElement() )
    {
@@ -582,13 +583,18 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
     qDebug("URDF failed Model parse");
     return;
   }
+
+  pUrdf = urdf; 
+
   qDebug("URDF parsed OK" );
   clear();
   //using descr ; the descr is 
   typedef std::map<std::string, urdf::LinkSharedPtr > M_NameToUrdfLink;
+  qDebug(">>>>>step 1");
   M_NameToUrdfLink::const_iterator link_it = urdf.links_.begin();
+  qDebug(">>>>>step 2");
   M_NameToUrdfLink::const_iterator link_end = urdf.links_.end();
-
+  qDebug(">>>>>step 3");
   initFrameManager();
 
   for( ; link_it != link_end; ++link_it )
@@ -627,8 +633,8 @@ void Robot::load( std::string robot_description_ ,/* const urdf::ModelInterface 
       joint->setRobotAlpha( alpha_ );
     }
   }
+
  
-    updateTfSystem(); 
     
 }
 
