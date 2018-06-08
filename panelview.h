@@ -57,6 +57,7 @@ public:
     void setRobot(Robot* robot);
     void initJointStates();
     void sendJointStatesToTf(); // to send joint state
+    void loopSending(); //loop to send tf data to tf
 protected:
 
     void paintEvent(QPaintEvent* event);

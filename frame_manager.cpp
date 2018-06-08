@@ -39,7 +39,6 @@
 FrameManager::FrameManager(boost::shared_ptr<tf::TransformListener> tf)
 {
   int argc ;
-  qDebug("before ros::init"); 
   
  // ros::init(argc,NULL,"FrameManager");
   qDebug("FrameManager constructed");

@@ -155,7 +155,6 @@ public:
   void setCameraAndWindow(Ogre::Camera* camera, Ogre::RenderWindow* window);
   bool world2Screen(Ogre::Vector3 objPos, Ogre::Vector2& screenPos);
 
-  void startTfSystem();
 
   class LinkFactory
   {

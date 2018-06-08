@@ -51,8 +51,8 @@ void PanelView::setRobot(Robot* robot){
 
     robot_ = robot;
     initJointStates();
-    sendJointStatesToTf(); 
 
+    loopSending();
 }
 
 /** init JointStates for all joints*/
@@ -85,16 +85,7 @@ void PanelView::initJointStates(){
       joint.max  = limits->upper;
       joint.min  =  limits->lower;
       joint.position = 0;
-     // qDebug("joint.lower is: %f", joint.lower);
       
-      /*
-      if self.zeros and name in self.zeros:
-                    zeroval = self.zeros[name]
-                elif minval > 0 or maxval < 0:
-                    zeroval = (maxval + minval)/2
-                else:
-                    zeroval = 0
-      */ 
       if(joint.min > 0 || joint.max < 0)
           joint.zero = (joint.max + joint.min)/2; 
       else
@@ -129,16 +120,29 @@ void PanelView::sendJointStatesToTf(){
     
     jointstate_pub.publish(msg);
 
-   // sleep(1); //delay for 1s
 }
 
 
+void PanelView::loopSending(){
+    ros::Duration two_seconds(2); 
+    while (ros::ok())
+    {
+        sendJointStatesToTf();
+        two_seconds.sleep();
+    } 
+
+
+}
 void PanelView::UpdateRobot(const std::string& jointname, int valuH){
     Joint joint = free_joints[jointname];
     float pctvalue = valuH / float(RANGE); 
    // joint['min'] + (joint['max']-joint['min']) * pctvalue
     double radiant = joint.min + (joint.max - joint.min) * pctvalue;  
     free_joints[jointname].position = radiant ; 
+
+   // sendJointStatesToTf();
+   
+   // robot_->updateRobot(jointname, valuH); 
 
 
 }

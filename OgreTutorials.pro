@@ -23,6 +23,7 @@ workdir=$(cd $(dirname $0); pwd)
 
 LIBS += -L"/opt/ros/kinetic/lib" -lurdf  -lroscpp  -lrostime  -ltf -lroscpp_serialization  -lrosconsole_log4cxx 
 LIBS+=/opt/ros/kinetic/lib/librosconsole.so
+LIBS+=/opt/ros/kinetic/lib/libtf2_ros.so
 LIBS+=/usr/lib/x86_64-linux-gnu/libOgreMain.so 
 
 LIBS += -lboost_filesystem -lboost_system  -ltinyxml -lcurl 

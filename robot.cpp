@@ -132,16 +132,14 @@ void Robot::clear()
 void Robot::initFrameManager(){
 
 
-    startTfSystem(); 
 
+    qDebug(">>>>>initFrameManager begin");
     boost::shared_ptr<tf::TransformListener> tf ;
     tf.reset(new tf::TransformListener(ros::NodeHandle(), ros::Duration(10*60), true));
 
-    qDebug(">>>>>step 4");
+    qDebug(">>>>>>initFrameManager after create tf::TransformListener:");
      frame_manager_ = new FrameManager(tf);
-    qDebug(">>>>>step 5");
      pointtf_ = new CoordinateTransform();
-     qDebug(">>>>>step 6");
      frame_manager_->setFixedFrame("/base_link");
     // pointtf_->setFixedFrame("/base_link");
 
@@ -396,31 +394,6 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
 }
 
 
-void Robot::startTfSystem(){
-
-
-    //we first start joint_state_publisher py file
-/*
-    pid_t pid;
-
-    pid=fork();
-    if (pid < 0)
-        printf("error in fork!");
-    else if (pid == 0) {
-        printf("pid=%d\n",getpid());
-        printf("son\n");
-        qDebug(">>>>>>.create child process ok>>>chenrui>>>");
-        system("roslaunch bcas robotstate.launch");
-    }
-    else {
-        printf("pid=%d\n",getpid());
-        printf("father\n");
-    }
-
-*/
-
-
-}
 /** update the link position according to panel view*/
 void Robot::updateRobot(const std::string& linkname, int value){
 
