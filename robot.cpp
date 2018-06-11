@@ -80,9 +80,12 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
     scene_manager_ = sceneManger;
     link_factory_ = new LinkFactory();
 
-     setVisualVisible( visual_visible_ );
-     setAlpha(1.0f);
+    setVisualVisible( visual_visible_ );
+    setAlpha(1.0f);
 
+
+    update_timer_ = new QTimer;
+    connect( update_timer_, SIGNAL( timeout() ), this, SLOT( onUpdate() ));
 
 }
 
@@ -97,7 +100,10 @@ Robot::~Robot()
   delete link_factory_;
   delete frame_manager_;
   frame_manager_ = NULL; 
-  link_factory_ = NULL; 
+  link_factory_ = NULL;
+  
+  update_timer_->stop();
+  delete update_timer_; 
 }
 
 void Robot::clear()
@@ -128,6 +134,11 @@ void Robot::clear()
   root_other_node_->removeAndDestroyAllChildren();
 }
 
+void Robot::onUpdate(){
+    qDebug(">>>>>Robot::onUpdate");
+    cycleUpdate(TFLinkUpdater(frame_manager_, NULL, "" ));
+
+}
 
 void Robot::initFrameManager(){
 
@@ -145,7 +156,7 @@ void Robot::initFrameManager(){
 
 
 }
-void  Robot::updateRobot(){
+void  Robot::firstUpdateRobot(){
 
     M_NameToLink::iterator link_it = links_.begin();
     M_NameToLink::iterator link_end = links_.end();
@@ -257,7 +268,53 @@ bool Robot::world2Screen(Ogre::Vector3 objPos, Ogre::Vector2& screenPos){
 }
 
 
+/**timer to cycle updating the robot*/
+void Robot::cycleUpdate(const LinkUpdater& updater){
 
+
+    M_NameToLink::iterator link_it = links_.begin();
+    M_NameToLink::iterator link_end = links_.end();
+
+    for ( ; link_it != link_end; ++link_it )
+    {
+        RobotLink* link = link_it->second;
+        Ogre::Vector3 visual_position, collision_position, curPos;
+        Ogre::Quaternion visual_orientation, collision_orientation, curOrientation;
+
+
+         visual_position = link->getOriginalPosition();
+         visual_orientation = link->getOriginalOrientation();
+
+         if(link != NULL    && updater.getLinkTransforms( link->getName(),
+                                   visual_position, visual_orientation,
+                                   collision_position, collision_orientation
+                                   )  )  //now, chenrui to open the tf function
+
+         {
+
+
+
+
+            link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
+
+
+            std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
+            std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
+
+            for ( ; joint_it != joint_end ; ++joint_it )
+            {
+                RobotJoint *joint = getJoint(*joint_it);
+                if (joint)
+                {
+                    joint->setTransforms(visual_position, visual_orientation);
+                }
+            }
+        }
+
+
+
+     } 
+}
 void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int value){
 
 
@@ -398,7 +455,6 @@ void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int
 void Robot::updateRobot(const std::string& linkname, int value){
 
     update( TFLinkUpdater(frame_manager_, NULL, "" ), linkname, value);  //chenrui
-   // update( TFLinkUpdater(pointtf_, NULL, "" ), linkname, value);  //chenrui
    
 
 }
@@ -537,6 +593,8 @@ void Robot::setAlpha(float a)
 ***/
 void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, */ bool visual, bool collision ){
 
+   update_timer_->stop();
+
    TiXmlDocument doc;
    doc.LoadFile(robot_file);
 
@@ -607,7 +665,8 @@ void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, *
     }
   }
 
- 
+
+    update_timer_->start( 33.333332 ); 
     
 }
 

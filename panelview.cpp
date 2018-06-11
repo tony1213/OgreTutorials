@@ -52,7 +52,7 @@ void PanelView::setRobot(Robot* robot){
     robot_ = robot;
     initJointStates();
 
-    loopSending();
+   // loopSending();
 }
 
 /** init JointStates for all joints*/
@@ -128,6 +128,7 @@ void PanelView::loopSending(){
     while (ros::ok())
     {
         sendJointStatesToTf();
+        ros::spinOnce();
         two_seconds.sleep();
     } 
 

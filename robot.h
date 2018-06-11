@@ -93,7 +93,8 @@ public:
    */
   virtual void setVisible( bool visible );
 
-  void updateRobot(); //add by chenrui
+  void cycleUpdate(const LinkUpdater& updater);
+  void firstUpdateRobot(); //add by chenrui
   void updateRobot(const std::string& linkname, int value);
   void setOgreRoot(Ogre::Root* root);
   /**
@@ -168,6 +169,18 @@ public:
     virtual RobotJoint* createJoint( Robot* robot, const urdf::JointConstSharedPtr& joint);
   };
 
+protected Q_SLOTS:
+  /** @brief Call update() on all managed objects.
+   *
+   * This is the central place where update() is called on most rviz
+   * objects.  Display objects, the FrameManager, the current
+   * ViewController, the SelectionManager, PropertyManager.  Also
+   * calls ros::spinOnce(), so any callbacks on the global
+   * CallbackQueue get called from here as well.
+   *
+   * It is called at 30Hz from the update timer. */
+  void onUpdate();
+
 
 protected:
 
@@ -206,6 +219,7 @@ protected:
       bool updateTf;
 
       urdf::Model pUrdf;
+      QTimer* update_timer_;
 
 };
 
