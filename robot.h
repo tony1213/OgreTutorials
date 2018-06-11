@@ -93,6 +93,10 @@ public:
    */
   virtual void setVisible( bool visible );
 
+    /**
+   * @brief Resets the wall and ROS elapsed time to zero and calls resetDisplays().
+   */
+  void resetTime();
   void cycleUpdate(const LinkUpdater& updater);
   void firstUpdateRobot(); //add by chenrui
   void updateRobot(const std::string& linkname, int value);
@@ -193,7 +197,10 @@ protected:
   void initLinkTreeStyle(); 
   static bool styleShowLink(LinkTreeStyle style);
   static bool styleShowJoint(LinkTreeStyle style);
-  static bool styleIsTree(LinkTreeStyle style);    
+  static bool styleIsTree(LinkTreeStyle style);   
+
+  void updateTime();
+  void updateFrames(); 
 
       LinkFactory *link_factory_;
       M_NameToLink links_;                      ///< Map of name to link info, stores all loaded links.
@@ -220,7 +227,15 @@ protected:
 
       urdf::Model pUrdf;
       QTimer* update_timer_;
-
+      ros::Time last_update_ros_time_;                        ///< Update stopwatch.  Stores how long it's been since the last update
+      ros::WallTime last_update_wall_time_;
+      ros::WallTime wall_clock_begin_;
+      ros::Time ros_time_begin_;
+      ros::WallDuration wall_clock_elapsed_;
+      ros::Duration ros_time_elapsed_;
+      float time_update_timer_;
+      float frame_update_timer_;
+      
 };
 
 #endif /*ROBOT_H_ */

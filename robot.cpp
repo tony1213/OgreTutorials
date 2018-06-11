@@ -86,7 +86,10 @@ Robot::Robot( Ogre::SceneNode* root_node, Ogre::SceneManager* sceneManger, const
 
     update_timer_ = new QTimer;
     connect( update_timer_, SIGNAL( timeout() ), this, SLOT( onUpdate() ));
-
+    last_update_ros_time_ = ros::Time::now();
+    last_update_wall_time_ = ros::WallTime::now();
+    time_update_timer_ = 0.0f;
+    frame_update_timer_ = 0.0f; 
 }
 
 
@@ -134,9 +137,99 @@ void Robot::clear()
   root_other_node_->removeAndDestroyAllChildren();
 }
 
+void Robot::resetTime()
+{
+ // root_display_group_->reset();  //???chenrui
+  frame_manager_->getTFClient()->clear();
+
+  ros_time_begin_ = ros::Time();
+  wall_clock_begin_ = ros::WallTime();
+
+ // queueRender();
+}
+
+void Robot::updateTime(){
+
+    if( ros_time_begin_.isZero() )
+  {
+    ros_time_begin_ = ros::Time::now();
+  }
+
+  ros_time_elapsed_ = ros::Time::now() - ros_time_begin_;
+
+  if( wall_clock_begin_.isZero() )
+  {
+    wall_clock_begin_ = ros::WallTime::now();
+  }
+
+  wall_clock_elapsed_ = ros::WallTime::now() - wall_clock_begin_;
+
+
+}
+
+
+void Robot::updateFrames(){
+
+    typedef std::vector<std::string> V_string;
+    V_string frames;
+    frame_manager_->getTFClient()->getFrameStrings( frames );
+
+    // Check the fixed frame to see if it's ok
+    std::string error;
+    if( frame_manager_->frameHasProblems(frame_manager_->getFixedFrame(), ros::Time(), error ))
+    {
+        if( frames.empty() )
+        {
+        // fixed_prop->setToWarn();
+        }
+        else
+        {
+        }
+    }
+    else
+    {
+        // fixed_prop->setToOK();
+    }
+
+
+}
 void Robot::onUpdate(){
     qDebug(">>>>>Robot::onUpdate");
+
+    ros::WallDuration wall_diff = ros::WallTime::now() - last_update_wall_time_;
+    ros::Duration ros_diff = ros::Time::now() - last_update_ros_time_;
+    float wall_dt = wall_diff.toSec();
+    float ros_dt = ros_diff.toSec();
+    last_update_ros_time_ = ros::Time::now();
+    last_update_wall_time_ = ros::WallTime::now();
+      
+    if(ros_dt < 0.0)
+    {
+        resetTime();
+    }
+
+    ros::spinOnce(); 
+    frame_manager_->update();
     cycleUpdate(TFLinkUpdater(frame_manager_, NULL, "" ));
+
+    //root_display_group_->update( wall_dt, ros_dt );//update robot
+    time_update_timer_ += wall_dt;
+
+    if( time_update_timer_ > 0.1f )
+    {
+        time_update_timer_ = 0.0f;
+    
+        updateTime();
+    }
+    frame_update_timer_ += wall_dt;
+
+    if(frame_update_timer_ > 1.0f)
+    {
+       frame_update_timer_ = 0.0f;    
+       updateFrames();
+    }
+
+
 
 }
 
@@ -151,7 +244,8 @@ void Robot::initFrameManager(){
     qDebug(">>>>>>initFrameManager after create tf::TransformListener:");
      frame_manager_ = new FrameManager(tf);
      pointtf_ = new CoordinateTransform();
-     frame_manager_->setFixedFrame("/base_link");
+     frame_manager_->setFixedFrame("/map");
+   //  frame_manager_->setFixedFrame("/base_link");
     // pointtf_->setFixedFrame("/base_link");
 
 
@@ -312,8 +406,8 @@ void Robot::cycleUpdate(const LinkUpdater& updater){
         }
 
 
-
-     } 
+     }
+     mRoot->renderOneFrame(); 
 }
 void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int value){
 
@@ -666,6 +760,7 @@ void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, *
   }
 
 
+    frame_manager_->setFixedFrame("/base_link");
     update_timer_->start( 33.333332 ); 
     
 }
