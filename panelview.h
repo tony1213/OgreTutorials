@@ -58,12 +58,13 @@ public:
     void initJointStates();
     void sendJointStatesToTf(); // to send joint state
     void loopSending(); //loop to send tf data to tf
+    static void* work_thread(void* arg);
 protected:
 
     void paintEvent(QPaintEvent* event);
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
-
+     
 
 private Q_SLOTS:
  
@@ -126,6 +127,7 @@ private:
    void initVariablesUI();
    void UpdateRobot(const std::string& jointname, int valuH);
 
+   bool needSend; 
    
 
 

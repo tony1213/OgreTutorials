@@ -14,6 +14,7 @@
 
 #define RANGE  10000
 
+
 PanelView::PanelView(QWidget* parent)
  :QWidget(parent),
  idLabel(NULL),
@@ -23,6 +24,7 @@ PanelView::PanelView(QWidget* parent)
     robot_ = NULL; 
     initVariablesUI();
 
+    needSend = false; 
     jointstate_pub = _privateHandle.advertise<sensor_msgs::JointState>("joint_states", 10);
 }
 
@@ -44,6 +46,7 @@ PanelView::~PanelView()
         var[i] = NULL; 
         slider[i] = NULL; 
     }
+    needSend = false; 
 }
 
 
@@ -52,7 +55,30 @@ void PanelView::setRobot(Robot* robot){
     robot_ = robot;
     initJointStates();
 
-   // loopSending();
+    /*
+    pid_t pid = fork();
+    if(pid == 0){
+        qDebug(">>>>start loop topic sending...");
+        ROS_ERROR(">>>>start loop topic sending>>>chenrui");
+        needSend = true;
+        loopSending();
+    }else
+        qDebug(">>>>start loop topic sending failed...");
+
+     */  
+    pthread_t tid;
+    pthread_create(&tid,NULL,work_thread,this);
+  
+
+}
+
+void* PanelView::work_thread(void* arg)
+{
+    PanelView* curP = (PanelView *)arg;  
+    curP->needSend = true;
+    curP->loopSending();
+
+    return 0;
 }
 
 /** init JointStates for all joints*/
@@ -117,7 +143,8 @@ void PanelView::sendJointStatesToTf(){
         msg.velocity.push_back(joint.velocity * factor);
         msg.effort.push_back(joint.effort) ;  
     }
-    
+   
+    ROS_ERROR(">>>>>sendJointStatesToTf>>>chenrui"); 
     jointstate_pub.publish(msg);
 
 }
@@ -125,10 +152,9 @@ void PanelView::sendJointStatesToTf(){
 
 void PanelView::loopSending(){
     ros::Duration two_seconds(2); 
-    while (ros::ok())
+    while (ros::ok() && needSend )
     {
         sendJointStatesToTf();
-        ros::spinOnce();
         two_seconds.sleep();
     } 
 

@@ -74,7 +74,7 @@ bool TFLinkUpdater::getLinkTransforms(const std::string& _link_name, Ogre::Vecto
  // if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))
   if (!frame_manager_->getTransform(link_name, ros::Time(), position, orientation))
   {
-    qDebug("coordinate_manager_->getTransform  error....");
+    qDebug("frame_manager__->getTransform  error....");
     std::stringstream ss;
     //ss << "No transform from [" << link_name << "] to [" << frame_manager_->getFixedFrame() << "]";
     setLinkStatus(StatusProperty::Error, link_name, ss.str());
