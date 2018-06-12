@@ -251,43 +251,6 @@ void Robot::initFrameManager(){
 
 
 }
-void  Robot::firstUpdateRobot(){
-
-    M_NameToLink::iterator link_it = links_.begin();
-    M_NameToLink::iterator link_end = links_.end();
-    for ( ; link_it != link_end; ++link_it )
-    {
-        RobotLink* link = link_it->second;
-        Ogre::Vector3 visual_position, collision_position;
-        Ogre::Quaternion visual_orientation, collision_orientation;
-       // visual_position = link->getPosition();
-       // visual_orientation = link->getOrientation();
-
-       // link->setTransforms( visual_position, Ogre::Quaternion(1,-1,0,0), collision_position, collision_orientation );
-   
-        TFLinkUpdater  updater(frame_manager_, NULL, "" );
-        if(link != NULL    && updater.getLinkTransforms( link->getName(),
-                                   visual_position, visual_orientation,
-                                   collision_position, collision_orientation
-                                   )  ){
-        link->setTransforms( visual_position, visual_orientation , collision_position, collision_orientation );
-        std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
-        std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
-
-        for ( ; joint_it != joint_end ; ++joint_it )
-        {
-            RobotJoint *joint = getJoint(*joint_it);
-            if (joint)
-            {
-                joint->setTransforms(visual_position, visual_orientation);
-            }
-       }
-
-
-    }
-    }
-
-}
 
 
 /**compute the quaternion....*/

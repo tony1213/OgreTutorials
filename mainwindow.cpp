@@ -146,7 +146,7 @@ void OgreView::createScene()
   //  qDebug(">>>>>createScene 2");
     robot_->load("/home/chenrui/new_Ogre_git/OgreTutorials/urdf/H3.urdf",true,false);
     qDebug(">>>>>createScene 3");
-    robot_->firstUpdateRobot();
+  //  robot_->firstUpdateRobot();
     robot_->setOgreRoot(mRoot);
     
     Ogre::Vector3  robotPos(0,0,0);

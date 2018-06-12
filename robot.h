@@ -97,8 +97,6 @@ public:
    * @brief Resets the wall and ROS elapsed time to zero and calls resetDisplays().
    */
   void resetTime();
-  void cycleUpdate(const LinkUpdater& updater);
-  void firstUpdateRobot(); //add by chenrui
   void setOgreRoot(Ogre::Root* root);
   /**
    * \brief Set whether the visual meshes of the robot should be visible
