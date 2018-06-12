@@ -55,17 +55,6 @@ void PanelView::setRobot(Robot* robot){
     robot_ = robot;
     initJointStates();
 
-    /*
-    pid_t pid = fork();
-    if(pid == 0){
-        qDebug(">>>>start loop topic sending...");
-        ROS_ERROR(">>>>start loop topic sending>>>chenrui");
-        needSend = true;
-        loopSending();
-    }else
-        qDebug(">>>>start loop topic sending failed...");
-
-     */  
     pthread_t tid;
     pthread_create(&tid,NULL,work_thread,this);
   
@@ -169,7 +158,6 @@ void PanelView::UpdateRobot(const std::string& jointname, int valuH){
 
    // sendJointStatesToTf();
    
-   // robot_->updateRobot(jointname, valuH); 
 
 
 }

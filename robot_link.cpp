@@ -132,32 +132,6 @@ RobotLink::RobotLink(Robot* robot, Ogre::SceneManager* scenemanager, const urdf:
     }
   }
 
-    //add transform broadcast command
-/*
-    RobotJoint *parjoint = robot_->getJoint(parent_joint_name_);
-    if(NULL != parjoint){
-    std::string ppLinkName  = parjoint->getParentLinkName();
-
-
-    static tf::TransformBroadcaster br;
-    tf::Transform transform;
-    transform.setOrigin( tf::Vector3(getPosition().x, getPosition().y,getPosition().z) );
-    tf::Quaternion q;
-    q.setW(getOrientation().w);
-    q.setX(getOrientation().x);
-    q.setY(getOrientation().y);
-    q.setZ(getOrientation().z);
-
-    transform.setRotation(q);
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), ppLinkName, getName()));
-
-    qDebug(">>>>>>will send transform point to tf...chenrui");
-    }
-    else {
-        qDebug("NULL and current link's parent joint is: %s  ", parent_joint_name_.c_str());
-    }
-
-*/
 
 }
 
@@ -347,7 +321,7 @@ Ogre::Quaternion RobotLink::getWorldOrientation(){
 void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity)
 {
 
-   Ogre::SceneNode* offset_node = scene_node->createChildSceneNode();
+  Ogre::SceneNode* offset_node = scene_node->createChildSceneNode();
 
   static int count = 0;
   std::stringstream ss;
@@ -359,12 +333,20 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
   Ogre::Vector3 offset_position(Ogre::Vector3::ZERO);
   Ogre::Quaternion offset_orientation(Ogre::Quaternion::IDENTITY);
 
+ // qDebug("");
+
+
   rOrigin = origin; 
 
   {
     Ogre::Vector3 position( origin.position.x, origin.position.y, origin.position.z );
     Ogre::Quaternion orientation( Ogre::Quaternion::IDENTITY );
     orientation = orientation * Ogre::Quaternion( origin.rotation.w, origin.rotation.x, origin.rotation.y, origin.rotation.z  );
+
+    if("LShoulderRoll" == getName()){
+        qDebug("********current origin orientation is: %f, %f, %f, %f", origin.rotation.w, origin.rotation.x, origin.rotation.y, origin.rotation.z);
+    }
+
 
     offset_position = position;
     offset_orientation = orientation;
@@ -396,7 +378,7 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
     offset_node->attachObject(entity);
     offset_node->setScale(scale);
     offset_node->setPosition(offset_position);
-    //set position and orientation  to link, chenrui
+   
 
     position_property_->setVector(offset_position );
     orientation_property_->setQuaternion(offset_orientation );
@@ -622,11 +604,11 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
 
 
     std::vector<urdf::VisualSharedPtr >::const_iterator vi;
-  for( vi = link->visual_array.begin(); vi != link->visual_array.end(); vi++ )
-  {
-    urdf::VisualSharedPtr visual = *vi;
-    if( visual && visual->geometry )
+    for( vi = link->visual_array.begin(); vi != link->visual_array.end(); vi++ )
     {
+        urdf::VisualSharedPtr visual = *vi;
+        if( visual && visual->geometry )
+       {
       Ogre::Entity* visual_mesh = NULL;
       createEntityForGeometryElement( link, *visual->geometry, visual->origin, visual->material_name, visual_node_, visual_mesh );
       if( visual_mesh )
@@ -637,18 +619,6 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
     }
   }
 
-/*
-  if( !valid_visual_found && link->visual && link->visual->geometry )
-  {
-    qDebug(">>>>>RobotLink::createVisual>>>>>the second condistion");
-    Ogre::Entity* visual_mesh = NULL;
-    createEntityForGeometryElement( link, *link->visual->geometry, link->visual->origin, link->visual->material_name, visual_node_, visual_mesh );
-    if( visual_mesh )
-    {
-      visual_meshes_.push_back( visual_mesh );
-    }
-  }
-*/
   visual_node_->setVisible(true);
 
 

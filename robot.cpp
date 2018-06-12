@@ -195,6 +195,8 @@ void Robot::updateFrames(){
 }
 void Robot::onUpdate(){
     qDebug(">>>>>Robot::onUpdate");
+    //we need to test this and remove this temporily...
+
 
     ros::WallDuration wall_diff = ros::WallTime::now() - last_update_wall_time_;
     ros::Duration ros_diff = ros::Time::now() - last_update_ros_time_;
@@ -210,9 +212,8 @@ void Robot::onUpdate(){
 
     ros::spinOnce(); 
     frame_manager_->update();
-    cycleUpdate(TFLinkUpdater(frame_manager_, NULL, "" ));
+    update(TFLinkUpdater(frame_manager_, NULL, "" ));
 
-    //root_display_group_->update( wall_dt, ros_dt );//update robot
     time_update_timer_ += wall_dt;
 
     if( time_update_timer_ > 0.1f )
@@ -259,37 +260,31 @@ void  Robot::firstUpdateRobot(){
         RobotLink* link = link_it->second;
         Ogre::Vector3 visual_position, collision_position;
         Ogre::Quaternion visual_orientation, collision_orientation;
-        visual_position = link->getPosition();
-        visual_orientation = link->getOrientation();
+       // visual_position = link->getPosition();
+       // visual_orientation = link->getOrientation();
 
+       // link->setTransforms( visual_position, Ogre::Quaternion(1,-1,0,0), collision_position, collision_orientation );
+   
+        TFLinkUpdater  updater(frame_manager_, NULL, "" );
+        if(link != NULL    && updater.getLinkTransforms( link->getName(),
+                                   visual_position, visual_orientation,
+                                   collision_position, collision_orientation
+                                   )  ){
+        link->setTransforms( visual_position, visual_orientation , collision_position, collision_orientation );
+        std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
+        std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
+
+        for ( ; joint_it != joint_end ; ++joint_it )
         {
-//            if(link->getName() == "Head"){
-//            }else if (link->getName() == "RAnklePitch") {
-//                link->setTransforms(Ogre::Vector3(-3.5,-31,-1),visual_orientation, collision_position, collision_orientation);
-//            }else {
-                link->setTransforms( visual_position, Ogre::Quaternion(1,-1,0,0), collision_position, collision_orientation );
-                link->setOriginalPosition(visual_position);
-                link->setOriginalOrientation(Ogre::Quaternion(1,-1,0,0));  //Quaternion (Real fW, Real fX, Real fY, Real fZ)
-//            }
-
-           // Ogre::Quaternion visual_orientation2 = link->getOrientation();
-           // qDebug("updateRobot: link name: %s, link orientation is:: (%f,%f,%f)",link->getName().c_str(),visual_orientation2.x,visual_orientation2.y,visual_orientation2.z);
-
-            std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
-            std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
-
-            for ( ; joint_it != joint_end ; ++joint_it )
-            {
             RobotJoint *joint = getJoint(*joint_it);
             if (joint)
             {
                 joint->setTransforms(visual_position, visual_orientation);
             }
-            }
-        }
+       }
 
 
-
+    }
     }
 
 }
@@ -363,7 +358,7 @@ bool Robot::world2Screen(Ogre::Vector3 objPos, Ogre::Vector2& screenPos){
 
 
 /**timer to cycle updating the robot*/
-void Robot::cycleUpdate(const LinkUpdater& updater){
+void Robot::update(const LinkUpdater& updater){
 
 
     M_NameToLink::iterator link_it = links_.begin();
@@ -372,23 +367,30 @@ void Robot::cycleUpdate(const LinkUpdater& updater){
     for ( ; link_it != link_end; ++link_it )
     {
         RobotLink* link = link_it->second;
-        Ogre::Vector3 visual_position, collision_position, curPos;
-        Ogre::Quaternion visual_orientation, collision_orientation, curOrientation;
+        Ogre::Vector3 visual_position, collision_position ;
+        Ogre::Quaternion visual_orientation, collision_orientation;
+/*
 
+        visual_position = link->getOriginalPosition();
+        visual_orientation = link->getOriginalOrientation();
 
-         visual_position = link->getOriginalPosition();
-         visual_orientation = link->getOriginalOrientation();
+         if("LShoulderRoll" == link->getName()){
+                qDebug("********current visual_orientation is: %f, %f, %f, %f", visual_orientation.w, visual_orientation.x, visual_orientation.y, visual_orientation.z);
+                qDebug("********current position is: %f, %f, %f", visual_position.x, visual_position.y, visual_position.z);
+         }
 
+*/
          if(link != NULL    && updater.getLinkTransforms( link->getName(),
                                    visual_position, visual_orientation,
                                    collision_position, collision_orientation
                                    )  )  //now, chenrui to open the tf function
 
          {
-
-
-
-
+            if("LShoulderRoll" == link->getName()){
+                qDebug("current visual_orientation is: %f, %f, %f, %f", visual_orientation.w, visual_orientation.x, visual_orientation.y, visual_orientation.z);
+                qDebug("current position is: %f, %f, %f", visual_position.x, visual_position.y, visual_position.z);
+            }
+           // visual_orientation = visual_orientation * Ogre::Quaternion(1,-1,0,0);
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
 
@@ -409,149 +411,8 @@ void Robot::cycleUpdate(const LinkUpdater& updater){
      }
      mRoot->renderOneFrame(); 
 }
-void Robot::update(const LinkUpdater& updater, const std::string& jonitname, int value){
 
 
-    RobotJoint *joint = getJoint(jonitname);
-    std::string linkname = joint->getChildLinkName(); 
-
- 
-
-    M_NameToLink::iterator link_it = links_.begin();
-    M_NameToLink::iterator link_end = links_.end();
-    for ( ; link_it != link_end; ++link_it )
-    {
-        RobotLink* link = link_it->second;
-        Ogre::Vector3 visual_position, collision_position, curPos;
-        Ogre::Quaternion visual_orientation, collision_orientation, curOrientation;
-
-
-         visual_position = link->getOriginalPosition();
-         visual_orientation = link->getOriginalOrientation();
-
-
-        if(link != NULL){
-            
-
-                if(link->getName() == linkname){
-                
-                if("LShoulderRoll" == linkname){
-
-                    curPos = link->getWorldPosition();
-                    curOrientation = link->getWorldOrientation();
-/*
-                 
-                  float roll  = -1.57;
-                  float pitch = 0;
-                  float yaw   = 1.57;
-
-                  visual_position.x = 32;
-                  visual_position.y = 20;
-                  visual_position.z = 0;
-
-               
-
-                Ogre::Quaternion  transform_orientation = quaternion_from_euler(roll,pitch, yaw);
-                visual_orientation = transform_orientation;
-                visual_position = visual_position;
-*/
-
-               // std::string parentJointname = link->getParentJointName();
-               // RobotJoint *parjoint = getJoint(parentJointname);
-               // RobotLink * ppLink = parjoint->getParentLink();
-
-               // parjoint->setOrginalOrientation(transform_orientation);
-               // parjoint->setTransforms(ppLink->getPosition(), ppLink->getOrientation());
-               // visual_position = parjoint->getPosition();
-               // visual_orientation = parjoint->getOrientation();
-                
-
-               // qDebug("******************joint name: %s, joint pos is:: (%f,%f,%f)",parentJointname.c_str(),visual_position.x,visual_position.y,visual_position.z);
-                //yaw is 1.57, then x,y z is: 5, 18, -20; 
-                //roll 1,57, pitch 0, yaw -1.57;
-
-
-               // float roll  = 0;
-               // float pitch = 1.57;
-               // float yaw   = 0;
-
-                Ogre::Vector3 linkPos(32, 20, 0);
-               // visual_position.x = 32;
-               // visual_position.y = 20;
-               // visual_position.z = 0; 
-
-               // Ogre::Quaternion  transform_orientation = quaternion_from_euler(roll,pitch, yaw);
-               // visual_position = linkPos +  transform_orientation * visual_position;
-               // visual_orientation = visual_orientation * transform_orientation;
-    
-      
-               // updater.getLinkTransforms( link->getName(), visual_position, visual_orientation, collision_position, collision_orientation );
-
-               }
-
-          }
-            
-        }
-        if(link != NULL    && updater.getLinkTransforms( link->getName(),
-                                   visual_position, visual_orientation,
-                                   collision_position, collision_orientation
-                                   )  )  //now, chenrui to open the tf function
-
-        {
-
-  
-             
-              
-            link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
-
-
-            std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
-            std::vector<std::string>::const_iterator joint_end = link->getChildJointNames().end();
-
-            for ( ; joint_it != joint_end ; ++joint_it )
-            {
-            RobotJoint *joint = getJoint(*joint_it);
-            if (joint)
-            {
-                joint->setTransforms(visual_position, visual_orientation);
-                if(joint->getName() == "LShoulderPitch_joint"){ 
-                    /*
-                    
-                    Ogre::Vector3 position = joint->getPosition();
-                    Ogre::Quaternion orientation = joint->getOrientation(); 
-                    std::string curlinkname = joint->getChildLinkName();
-                    RobotLink *childLink = getLink(curlinkname);
-                    childLink->setOrientation(orientation);
-                    childLink->setPosition(position);
-                    RobotJoint *joint2 = getJoint("LElbow_joint");
-                    joint2->setTransforms(position, orientation);
-
-                    Ogre::Vector3 position2 = joint2->getPosition();
-                    Ogre::Quaternion orientation2 = joint2->getOrientation();
-                    RobotLink *childLink2 = getLink("LElbow");
-                    childLink2->setOrientation(orientation2);
-                    childLink2->setPosition(position2);
-                   */                    
-                    
-                } 
-            }
-            }
-        }
-
-
-        }
-       mRoot->renderOneFrame();
-
-}
-
-
-/** update the link position according to panel view*/
-void Robot::updateRobot(const std::string& linkname, int value){
-
-    update( TFLinkUpdater(frame_manager_, NULL, "" ), linkname, value);  //chenrui
-   
-
-}
 RobotLink* Robot::LinkFactory::createLink(
     Robot* robot,
     Ogre::SceneManager* sceneManger ,

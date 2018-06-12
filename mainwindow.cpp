@@ -121,6 +121,9 @@ void OgreView::setupView()
     mCamera = mSceneManager->createCamera("PlayerCam");
     mCamera->setPosition(Ogre::Vector3(0,0,80));
     mCamera->lookAt(Ogre::Vector3(0,0,-300));
+
+ 
+
     mCamera->setNearClipDistance(5);
 
     mViewport = mRenderWindow->addViewport(mCamera);

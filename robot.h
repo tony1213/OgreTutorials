@@ -64,6 +64,7 @@ class Robot;
 class RobotLink;
 class RobotJoint;
 class Property;
+//class EnumProperty;
 
 class Robot : public QObject
 {
@@ -85,8 +86,7 @@ public:
    * \brief Clears all data loaded from a URDF
    */
   virtual void clear();
-  virtual void update(const LinkUpdater& updater, const std::string& jonitname, int value);
-
+  virtual void update(const LinkUpdater& updater);
     /**
    * \brief Set the robot as a whole to be visible or not
    * @param visible Should we be visible?
@@ -99,7 +99,6 @@ public:
   void resetTime();
   void cycleUpdate(const LinkUpdater& updater);
   void firstUpdateRobot(); //add by chenrui
-  void updateRobot(const std::string& linkname, int value);
   void setOgreRoot(Ogre::Root* root);
   /**
    * \brief Set whether the visual meshes of the robot should be visible
@@ -235,6 +234,8 @@ protected:
       ros::Duration ros_time_elapsed_;
       float time_update_timer_;
       float frame_update_timer_;
+
+      Property* link_tree_;
       
 };
 
