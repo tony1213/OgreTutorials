@@ -64,8 +64,8 @@ public:
   Ogre::Vector3 getPosition();
   Ogre::Quaternion getOrientation();
 
-  Ogre::Vector3 getOrginalPosition();
-  Ogre::Quaternion getOrginalOrientation();
+ // Ogre::Vector3 getOrginalPosition();
+ // Ogre::Quaternion getOrginalOrientation();
 
   void setOrginalPosition(Ogre::Vector3 pos);
   void setOrginalOrientation(Ogre::Quaternion orientation);
@@ -109,8 +109,8 @@ private:
   Ogre::Quaternion joint_origin_rot_;
 
 
-  Ogre::Vector3  _origin_pos_;
-  Ogre::Quaternion  _origin_rot_;
+ // Ogre::Vector3  _origin_pos_;
+ // Ogre::Quaternion  _origin_rot_;
 
   bool has_decendent_links_with_geometry_;
 

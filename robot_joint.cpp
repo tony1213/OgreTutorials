@@ -66,10 +66,8 @@ RobotJoint::RobotJoint( Robot* robot, const urdf::JointConstSharedPtr& joint )
 
 
   //following two lines is added by chenrui
-  position_property_->setVector(joint_origin_pos_);
-  orientation_property_->setQuaternion(joint_origin_rot_ );
-  _origin_pos_ = joint_origin_pos_;
-  _origin_rot_ = joint_origin_rot_;
+ // position_property_->setVector(joint_origin_pos_);
+ // orientation_property_->setQuaternion(joint_origin_rot_ );
 
 
 }
@@ -79,6 +77,7 @@ RobotJoint::~RobotJoint()
     delete joint_property_;
 }
 
+/*
 Ogre::Vector3 RobotJoint::getOrginalPosition(){
 
     return _origin_pos_;
@@ -89,6 +88,7 @@ Ogre::Quaternion RobotJoint::getOrginalOrientation(){
 
     return _origin_rot_; 
 }
+*/
 Ogre::Vector3 RobotJoint::getPosition()
 {
   return position_property_->getVector();
@@ -108,7 +108,6 @@ void RobotJoint::setOrginalPosition(Ogre::Vector3 pos){
 void RobotJoint::setOrginalOrientation(Ogre::Quaternion orientation){
 
     joint_origin_rot_ = orientation; 
-
 
 }
 void RobotJoint::setParentProperty(Property* new_parent)

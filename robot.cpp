@@ -53,16 +53,14 @@
 
 #define EPSILON 0.000001
 
-/*
+
 void linkUpdaterStatusFunction( StatusProperty::Level level,
                                 const std::string& link_name,
                                 const std::string& text,
                                 Robot* display )
 {
-  display->setStatus( level, QString::fromStdString( link_name ), QString::fromStdString( text ));
+    qDebug(">>>>>link_name and text is: %s, %s", link_name.c_str(), text.c_str());  
 }
-
-*/
 
 
 
@@ -210,7 +208,7 @@ void Robot::onUpdate(){
 
     ros::spinOnce(); 
     frame_manager_->update();
-    update(TFLinkUpdater(frame_manager_, NULL, "" ));
+    update(TFLinkUpdater(frame_manager_, boost::bind(linkUpdaterStatusFunction, _1, _2, _3, this), "" ));
 
     time_update_timer_ += wall_dt;
 

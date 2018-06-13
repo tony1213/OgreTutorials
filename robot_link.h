@@ -127,6 +127,7 @@ public Q_SLOTS:
 
 private:
 
+  void setRenderQueueGroup( Ogre::uint8 group );
   bool getEnabled() const;
   void createEntityForGeometryElement( const urdf::LinkConstSharedPtr& link, const urdf::Geometry& geom, const urdf::Pose& origin, const std::string material_name, Ogre::SceneNode* scene_node, Ogre::Entity*& entity );
 

@@ -146,6 +146,7 @@ RobotLink::~RobotLink()
     {
         scene_manager_->destroyRibbonTrail( trail_ );
     }
+    scene_manager_->destroySceneNode( visual_node_ );
     delete link_property_;
  
 }
@@ -164,6 +165,24 @@ bool RobotLink::getEnabled() const
     return true;
   return link_property_->getValue().toBool();
 
+}
+
+void RobotLink::setRenderQueueGroup( Ogre::uint8 group )
+{
+  Ogre::SceneNode::ChildNodeIterator child_it = visual_node_->getChildIterator();
+  while( child_it.hasMoreElements() )
+  {
+    Ogre::SceneNode* child = dynamic_cast<Ogre::SceneNode*>( child_it.getNext() );
+    if( child )
+    {
+      Ogre::SceneNode::ObjectIterator object_it = child->getAttachedObjectIterator();
+      while( object_it.hasMoreElements() )
+      { 
+        Ogre::MovableObject* obj = object_it.getNext();
+        obj->setRenderQueueGroup(group);
+      }
+    }
+  }
 }
 
 
@@ -620,7 +639,6 @@ void RobotLink::createVisual(const urdf::LinkConstSharedPtr& link ){
   }
 
   visual_node_->setVisible(true);
-
 
 
 }

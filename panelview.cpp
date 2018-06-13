@@ -65,7 +65,7 @@ void* PanelView::work_thread(void* arg)
 {
     PanelView* curP = (PanelView *)arg;  
     curP->needSend = true;
-    curP->loopSending();
+   // curP->loopSending();
 
     return 0;
 }
