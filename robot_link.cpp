@@ -266,7 +266,7 @@ void RobotLink::setRobotAlpha( float a )
 void RobotLink::setTransforms( const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation,
                                const Ogre::Vector3& collision_position, const Ogre::Quaternion& collision_orientation )
 {
- // if ( visual_node_ )
+  if ( visual_node_ )
   {
     visual_node_->setPosition( visual_position );
     visual_node_->setOrientation( visual_orientation );
@@ -355,7 +355,6 @@ void RobotLink::createEntityForGeometryElement(const urdf::LinkConstSharedPtr& l
  // qDebug("");
 
 
-  rOrigin = origin; 
 
   {
     Ogre::Vector3 position( origin.position.x, origin.position.y, origin.position.z );

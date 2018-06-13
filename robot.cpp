@@ -242,7 +242,7 @@ void Robot::initFrameManager(){
      frame_manager_ = new FrameManager(tf);
      pointtf_ = new CoordinateTransform();
      frame_manager_->setFixedFrame("/map");
-   //  frame_manager_->setFixedFrame("/base_link");
+    // frame_manager_->setFixedFrame("/base_link");
     // pointtf_->setFixedFrame("/base_link");
 
 
@@ -339,10 +339,10 @@ void Robot::update(const LinkUpdater& updater){
             if("LShoulderRoll" == link->getName()){ // 0.503312, -0.503264, -0.496714, 0.496666
                 qDebug("current visual_orientation is: %f, %f, %f, %f", visual_orientation.w, visual_orientation.x, visual_orientation.y, visual_orientation.z);
                 qDebug("current position is: %f, %f, %f", visual_position.x, visual_position.y, visual_position.z);
-                visual_orientation.w = 0.707141;
-                visual_orientation.x = -0.707073;
-                visual_orientation.y = 0.000000;
-                visual_orientation.z = 0.000000; 
+               // visual_orientation.w = 0.707141;
+               // visual_orientation.x = -0.707073;
+               // visual_orientation.y = 0.000000;
+               // visual_orientation.z = 0.000000; 
             }
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
@@ -389,7 +389,6 @@ RobotLink* Robot::getLink( const std::string& name )
   M_NameToLink::iterator it = links_.find( name );
   if ( it == links_.end() )
   {
-    qDebug(">>>>>Robot::getLink failed");
     return NULL;
   }
 
@@ -502,6 +501,10 @@ void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, *
 
    update_timer_->stop();
 
+  // the root link is discovered below.  Set to NULL until found.
+   root_link_ = NULL;
+
+
    TiXmlDocument doc;
    doc.LoadFile(robot_file);
 
@@ -528,11 +531,8 @@ void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, *
   clear();
   //using descr ; the descr is 
   typedef std::map<std::string, urdf::LinkSharedPtr > M_NameToUrdfLink;
-  qDebug(">>>>>step 1");
   M_NameToUrdfLink::const_iterator link_it = urdf.links_.begin();
-  qDebug(">>>>>step 2");
   M_NameToUrdfLink::const_iterator link_end = urdf.links_.end();
-  qDebug(">>>>>step 3");
   initFrameManager();
 
   for( ; link_it != link_end; ++link_it )

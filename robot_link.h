@@ -167,7 +167,6 @@ private:
 
   Ogre::Vector3  originPos; 
   Ogre::Quaternion  originOrientation;
-  urdf::Pose rOrigin;  //recorded original pose got from urdf...  
 
   float material_alpha_; ///< If material is not a texture, this saves the alpha value set in the URDF, otherwise is 1.0.
   float robot_alpha_; ///< Alpha value from top-level robot alpha Property (set via setRobotAlpha())
