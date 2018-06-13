@@ -66,9 +66,8 @@ bool TFLinkUpdater::getLinkTransforms(const std::string& _link_name, Ogre::Vecto
   qDebug("TFLinkUpdater::getLinkTransforms");
   qDebug(link_name.c_str()); 
 
-  Ogre::Vector3 position = visual_position;
-  Ogre::Quaternion orientation = visual_orientation;
-
+  Ogre::Vector3 position;
+  Ogre::Quaternion orientation;
 
  // frame_manager_.waitForTransform("/turtle2", "/turtle1", ros::Time(0), ros::Duration(3.0));
  // if (!coordinate_manager_->getTransform(link_name, QDateTime::currentDateTime(), position, orientation))

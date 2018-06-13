@@ -151,14 +151,18 @@ void PanelView::loopSending(){
 }
 void PanelView::UpdateRobot(const std::string& jointname, int valuH){
     Joint joint = free_joints[jointname];
-    float pctvalue = valuH / float(RANGE); 
-   // joint['min'] + (joint['max']-joint['min']) * pctvalue
-    double radiant = joint.min + (joint.max - joint.min) * pctvalue;  
+    qDebug("valuH is: %d", valuH);
+    float pctvalue = valuH / float(RANGE);
+    qDebug("pctvalue is: %f", pctvalue);
+    qDebug("joint.min is: %f", joint.min);
+    qDebug("joint.max is: %f", joint.max);
+    double radiant = joint.min + (joint.max - joint.min) * pctvalue; 
+    float test = joint.max - joint.min; 
+    qDebug("test is: %f", test);
+ 
     free_joints[jointname].position = radiant ; 
 
-   // sendJointStatesToTf();
-   
-
+    ROS_ERROR(">>>>>chenrui>>>>(position is)radiant is: %f", radiant);
 
 }
 
