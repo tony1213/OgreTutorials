@@ -266,10 +266,16 @@ void RobotLink::setRobotAlpha( float a )
 void RobotLink::setTransforms( const Ogre::Vector3& visual_position, const Ogre::Quaternion& visual_orientation,
                                const Ogre::Vector3& collision_position, const Ogre::Quaternion& collision_orientation )
 {
+
+  
+
+
   if ( visual_node_ )
   {
     visual_node_->setPosition( visual_position );
     visual_node_->setOrientation( visual_orientation );
+   // visual_node_->rotate(visual_orientation, Ogre::Node::TS_PARENT);
+   // visual_node_->translate(visual_position, Ogre::Node::TS_WORLD);
   }
 
   position_property_->setVector( visual_position );

@@ -339,11 +339,27 @@ void Robot::update(const LinkUpdater& updater){
             if("LShoulderRoll" == link->getName()){ // 0.503312, -0.503264, -0.496714, 0.496666
                 qDebug("current visual_orientation is: %f, %f, %f, %f", visual_orientation.w, visual_orientation.x, visual_orientation.y, visual_orientation.z);
                 qDebug("current position is: %f, %f, %f", visual_position.x, visual_position.y, visual_position.z);
-               // visual_orientation.w = 0.707141;
-               // visual_orientation.x = -0.707073;
-               // visual_orientation.y = 0.000000;
-               // visual_orientation.z = 0.000000; 
+/*                visual_position.x = 0;
+                visual_position.y = 0; 
+                visual_position.z = 0; 
+
+                Ogre::Quaternion q = quaternion_from_euler(0,0,0);
+                visual_orientation.w = q.w;
+                visual_orientation.x = q.x;
+                visual_orientation.y = q.y;
+                visual_orientation.z = q.z; 
+*/
             }
+
+            if (visual_orientation.isNaN())
+            {
+                continue;
+            }
+            if (visual_position.isNaN())
+            {
+                continue;
+            }
+            
             link->setTransforms( visual_position, visual_orientation, collision_position, collision_orientation );
 
             std::vector<std::string>::const_iterator joint_it = link->getChildJointNames().begin();
@@ -544,6 +560,7 @@ void Robot::load( std::string robot_file ,/* const urdf::ModelInterface &urdf, *
       {
         parent_joint_name = urdf_link->parent_joint->name;
       }
+      qDebug("******will create link and current joint is: %s", parent_joint_name.c_str());
       RobotLink* link = link_factory_->createLink( this,
                                                    scene_manager_,
                                                    urdf_link,

@@ -9,7 +9,6 @@
 #include "robot.h"
 #include "panelview.h"
 
-int value = 0; 
 
 OgreView::OgreView(QWidget* parent)
  :QWidget(parent,Qt::WindowFlags(Qt::MSWindowsOwnDC)),
@@ -120,8 +119,8 @@ void OgreView::setupView()
     mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC);
     mCamera = mSceneManager->createCamera("PlayerCam");
     mCamera->setPosition(Ogre::Vector3(0,0,80));
-    mCamera->lookAt(Ogre::Vector3(0,0,-300));
-
+   // mCamera->lookAt(Ogre::Vector3(0,0,-300));
+    mCamera->lookAt(Ogre::Vector3(0,0,0));
  
 
     mCamera->setNearClipDistance(5);
@@ -188,8 +187,6 @@ void OgreView::mousePressEvent(QMouseEvent* event)
 
 
     qDebug("mousePressEvent");
-    // value = value + 20; 
-    // mSceneNode->setPosition(0,value,0);
 
     if(event->button() == Qt::LeftButton)
     {
